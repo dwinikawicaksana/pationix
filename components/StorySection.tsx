@@ -1,10 +1,16 @@
 "use client";
 import { motion } from "framer-motion";
 import { StoryData } from "@/types/landing";
+import { useLanguage } from "./LanguageProvider";
+import { localize } from "@/lib/i18n";
 
-;
-
-function StoryCard({ story }: { story: StoryData }) {
+function StoryCard({
+  story,
+  language,
+}: {
+  story: StoryData;
+  language: "id" | "en";
+}) {
   const isRight = story.align === "right";
 
   return (
@@ -18,16 +24,16 @@ function StoryCard({ story }: { story: StoryData }) {
         transition={{ duration: 0.65 }}
       >
         <span className="inline-block text-[10px] font-bold tracking-[0.22em] uppercase text-zinc-400 dark:text-zinc-500 mb-5">
-          {story.tag}
+          {localize(story.tag, language)}
         </span>
         <h2
           className="text-3xl md:text-4xl lg:text-[2.75rem] font-black tracking-tighter text-zinc-900 dark:text-zinc-50 mb-5 leading-[1.1]"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
-          {story.title}
+          {localize(story.title, language)}
         </h2>
         <p className="text-zinc-500 dark:text-zinc-400 text-[17px] leading-relaxed max-w-md">
-          {story.description}
+          {localize(story.description, language)}
         </p>
       </motion.div>
 
@@ -58,10 +64,11 @@ function StoryCard({ story }: { story: StoryData }) {
 }
 
 export default function StorySection({ stories }: { stories: StoryData[] }) {
+  const { language } = useLanguage();
   return (
     <section id="story" className="max-w-7xl mx-auto px-6">
       {stories.map((story) => (
-        <StoryCard key={story.id} story={story} />
+        <StoryCard key={story.id} story={story} language={language} />
       ))}
     </section>
   );

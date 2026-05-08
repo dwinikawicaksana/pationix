@@ -1,11 +1,15 @@
 import { fetchLandingData } from "@/lib/fetcher";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import PreviewSlides from "@/components/PreviewSlides";
+import ProductCatalogue from "@/components/ProductCatalogue";
+import Testimonials from "@/components/Testimonials";
+import ChatbotPanel from "@/components/ChatbotPanel";
 import StorySection from "@/components/StorySection";
 import FeatureReveal from "@/components/FeatureReveal";
 import CaseStudy from "@/components/CaseStudy";
 import CTASection from "@/components/CTASection";
-import Footer from "@/components/Footer";
+import FooterNew from "@/components/FooterNew";
 
 export default async function Home() {
   const data = await fetchLandingData();
@@ -13,14 +17,18 @@ export default async function Home() {
   return (
     <>
       <Navbar data={data.navbar} />
-      <main>
+      <main className="mt-16">
         <Hero data={data.hero} />
+        <PreviewSlides />
+        <ProductCatalogue />
+        <Testimonials />
+        <ChatbotPanel />
         <StorySection stories={data.stories} />
         <FeatureReveal features={data.features} />
         <CaseStudy caseStudies={data.caseStudies} />
         <CTASection data={data.cta} />
       </main>
-      <Footer footer={data.footer} navbar={data.navbar} />
+      <FooterNew footer={data.footer} navbar={data.navbar} />
     </>
   );
 }

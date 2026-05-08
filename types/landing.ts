@@ -1,15 +1,20 @@
+export interface LocalizedField {
+  id: string;
+  en: string;
+}
+
 export interface HeroData {
-  title: string;
-  subtitle: string;
-  cta: string;
-  badge?: string;
+  title: LocalizedField;
+  subtitle: LocalizedField;
+  cta: LocalizedField;
+  badge?: LocalizedField;
 }
 
 export interface StoryData {
   id: string;
-  tag: string;
-  title: string;
-  description: string;
+  tag: LocalizedField;
+  title: LocalizedField;
+  description: LocalizedField;
   image: string;
   imageAlt: string;
   align: "left" | "right";
@@ -18,37 +23,48 @@ export interface StoryData {
 export interface FeatureData {
   id: string;
   icon: string;
-  title: string;
-  description: string;
+  title: LocalizedField;
+  description: LocalizedField;
   highlight?: boolean;
 }
 
 export interface CaseStudyData {
   id: string;
   client: string;
-  title: string;
-  result: string;
+  title: LocalizedField;
+  result: LocalizedField;
   metric: string;
-  metricLabel: string;
-  tags: string[];
+  metricLabel: LocalizedField;
+  tags: LocalizedField[];
   image: string;
 }
 
 export interface CTAData {
-  title: string;
-  subtitle: string;
-  button: string;
-  secondaryButton?: string;
+  title: LocalizedField;
+  subtitle: LocalizedField;
+  button: LocalizedField;
+  secondaryButton?: LocalizedField;
+}
+
+export interface NavbarLink {
+  label: LocalizedField;
+  href: string;
 }
 
 export interface NavbarData {
   logo: string;
-  links: { label: string; href: string }[];
+  links: NavbarLink[];
+}
+
+export interface FooterLink {
+  label: LocalizedField;
+  href: string;
 }
 
 export interface FooterData {
-  tagline: string;
-  links: { label: string; href: string }[];
+  tagline: LocalizedField;
+  description?: LocalizedField;
+  links: FooterLink[];
   copyright: string;
 }
 

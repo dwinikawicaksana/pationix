@@ -1,117 +1,172 @@
 "use client";
 import { motion } from "framer-motion";
 import { HeroData } from "@/types/landing";
-
-;
+import { useLanguage } from "./LanguageProvider";
+import { localize } from "@/lib/i18n";
 
 export default function Hero({ data }: { data: HeroData }) {
-  const titleLines = data.title.split("\n");
+  const { language } = useLanguage();
+  const titleText = localize(data.title, language);
+  const titleLines = titleText.split("\n");
+  const ctaText = localize(data.cta, language);
+  const subtitleText = localize(data.subtitle, language);
+  const badgeText = data.badge ? localize(data.badge, language) : undefined;
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 pt-16">
-      {/* Background */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-zinc-200/40 dark:bg-zinc-800/20 blur-[120px]" />
-        <div className="absolute bottom-0 right-[-10%] w-[400px] h-[400px] rounded-full bg-zinc-100/60 dark:bg-zinc-900/40 blur-[80px]" />
-      </div>
-
-      {/* Dot grid */}
-      <div
-        className="absolute inset-0 -z-10 opacity-[0.035] dark:opacity-[0.06]"
-        style={{
-          backgroundImage: "radial-gradient(circle, #52525b 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }}
-      />
-
-      <div className="max-w-5xl w-full text-center">
-        {/* Badge */}
-        {data.badge && (
+    <section
+      className="relative overflow-hidden bg-slate-950 text-white"
+      style={{
+        backgroundImage: "url('/assets/images/hero-background.svg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[1px]" />
+      <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-slate-950/40 via-transparent to-transparent" />
+      <div className="relative max-w-7xl mx-auto px-6 py-24 lg:py-28">
+        <div className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] items-center">
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 mb-10 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-md shadow-sm"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="space-y-8"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 tracking-[0.18em] uppercase">
-              {data.badge}
-            </span>
-          </motion.div>
-        )}
+            <div className="inline-flex items-center gap-4 rounded-full bg-white/10 border border-white/10 px-4 py-2 shadow-lg shadow-slate-950/20 backdrop-blur-xl">
+              <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-slate-900/95 text-white shadow-xl shadow-slate-950/40">
+                <span className="text-2xl font-black">P</span>
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-sky-300">
+                  {badgeText}
+                </p>
+                <p className="mt-1 text-sm text-slate-200">
+                  {localize(
+                    {
+                      id: "Platform landing page, web app, dan AI chatbot dalam satu pengalaman.",
+                      en: "Landing page platform, web app, and AI chatbot in one experience.",
+                    },
+                    language,
+                  )}
+                </p>
+              </div>
+            </div>
 
-        {/* Title — each line staggers in */}
-        <h1
-          className="text-[clamp(3.5rem,11vw,9.5rem)] font-black leading-[0.88] tracking-tighter text-zinc-900 dark:text-zinc-50 mb-8"
-          style={{ fontFamily: "'Playfair Display', serif" }}
-        >
-          {titleLines.map((line, i) => (
-            <motion.span
-              key={i}
-              className="block"
-              initial={{ opacity: 0, y: 30 }}
+            <div>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[0.96]">
+                {titleLines.map((line, i) => (
+                  <motion.span
+                    key={i}
+                    className="block"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.65, delay: 0.2 + i * 0.1 }}
+                  >
+                    {i === 1 ? (
+                      <span className="text-slate-200">{line}</span>
+                    ) : (
+                      line
+                    )}
+                  </motion.span>
+                ))}
+              </h1>
+            </div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.2 + i * 0.12 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="max-w-2xl text-base sm:text-lg text-slate-200 leading-relaxed"
             >
-              {i === 1 ? (
-                <span className="italic text-zinc-500 dark:text-zinc-400">
-                  {line}
-                </span>
-              ) : (
-                line
-              )}
-            </motion.span>
-          ))}
-        </h1>
+              {subtitleText}
+            </motion.p>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.58 }}
-          className="max-w-xl mx-auto text-lg md:text-xl text-zinc-500 dark:text-zinc-400 leading-relaxed mb-12"
-        >
-          {data.subtitle}
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.72 }}
-          className="flex flex-col sm:flex-row gap-3 justify-center items-center"
-        >
-          <a
-            href="#cta"
-            className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900 font-semibold text-sm hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors duration-250 shadow-md"
-          >
-            {data.cta}
-            <motion.span
-              className="inline-block"
-              whileHover={{ x: 3 }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.55 }}
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
             >
-              →
-            </motion.span>
-          </a>
-          <a
-            href="#story"
-            className="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors font-medium"
+              <a
+                href="#cta"
+                className="inline-flex items-center justify-center rounded-full bg-sky-500 px-7 py-3.5 text-sm font-semibold text-slate-950 shadow-xl shadow-sky-500/20 transition hover:-translate-y-0.5 hover:bg-sky-400"
+              >
+                {ctaText}
+                <span className="ml-3">→</span>
+              </a>
+              <a
+                href="#preview"
+                className="text-sm font-medium text-slate-200 hover:text-white transition"
+              >
+                {localize(
+                  { id: "Lihat preview slide ↓", en: "View preview slides ↓" },
+                  language,
+                )}
+              </a>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.75, ease: "easeOut" }}
+            className="relative mx-auto w-full max-w-2xl"
           >
-            Lihat cara kami bekerja ↓
-          </a>
-        </motion.div>
+            <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-br from-sky-500/20 via-transparent to-transparent blur-3xl" />
+            <div className="relative rounded-[2rem] border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 shadow-[0_40px_80px_rgba(15,23,42,0.08)] dark:shadow-[0_40px_80px_rgba(0,0,0,0.3)] overflow-hidden backdrop-blur-sm">
+              <div className="bg-gradient-to-br from-slate-950 to-slate-900 dark:from-slate-900 dark:to-slate-950 px-6 py-6 text-slate-50">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-sky-200 dark:text-cyan-300">
+                      App preview
+                    </p>
+                    <p className="mt-2 text-sm text-slate-200 dark:text-slate-300">
+                      Tampilan startup modern
+                    </p>
+                  </div>
+                  <div className="inline-flex items-center rounded-full bg-amber-300 dark:bg-sky-500 px-3 py-1 text-[11px] font-semibold text-slate-950 dark:text-white">
+                    Aplikasi LIVE
+                  </div>
+                </div>
+                <div className="mt-8 grid gap-4 rounded-[1.75rem] bg-slate-900/95 dark:bg-slate-800/60 p-5 ring-1 ring-white/10 dark:ring-cyan-500/20 shadow-inner">
+                  <div className="rounded-3xl bg-slate-800/90 dark:bg-slate-700/50 p-4">
+                    <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-300">
+                      <span>Insight</span>
+                      <span>Realtime</span>
+                    </div>
+                    <div className="mt-4 grid gap-3">
+                      <div className="h-2.5 rounded-full bg-slate-700/80 dark:bg-cyan-500/40" />
+                      <div className="h-2.5 rounded-full bg-slate-700/80 dark:bg-cyan-500/40 w-5/6" />
+                      <div className="h-2.5 rounded-full bg-slate-700/80 dark:bg-cyan-500/40 w-3/4" />
+                    </div>
+                  </div>
+                  <div className="rounded-3xl bg-white/95 dark:bg-slate-700/60 p-4 text-slate-950 dark:text-white">
+                    <p className="text-sm font-semibold dark:text-slate-100">
+                      Paitonix AI
+                    </p>
+                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                      Chat dengan asisten produk untuk menyiapkan roadmap dan
+                      desain fitur Anda.
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between rounded-3xl bg-slate-800/90 dark:bg-slate-700/50 px-4 py-3 text-sm text-slate-300 dark:text-slate-200">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] text-sky-400 dark:text-cyan-400">
+                        Startup launch
+                      </p>
+                      <p className="mt-1 text-sm text-slate-100 dark:text-slate-200">
+                        1.2K pengguna baru
+                      </p>
+                    </div>
+                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-amber-300 dark:bg-sky-500 text-slate-950 dark:text-white font-bold">
+                      +23%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
-
-      {/* Scroll line */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.6 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
-      >
-        <div className="w-px h-10 bg-gradient-to-b from-zinc-400/50 to-transparent dark:from-zinc-600/50 animate-pulse" />
-      </motion.div>
     </section>
   );
 }

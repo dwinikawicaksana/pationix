@@ -3,8 +3,11 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { NavbarData } from "@/types/landing";
 import ThemeToggle from "./ThemeToggle";
+import { useLanguage } from "./LanguageProvider";
+import { localize } from "@/lib/i18n";
 
 export default function Navbar({ data }: { data: NavbarData }) {
+  const { language, setLanguage } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -16,67 +19,85 @@ export default function Navbar({ data }: { data: NavbarData }) {
 
   return (
     <motion.header
-      initial={{ y: -10, opacity: 0 }}
+      initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
         scrolled
-          ? "bg-white/80 dark:bg-zinc-950/80 backdrop-blur-2xl border-b border-zinc-200/50 dark:border-zinc-800/50 shadow-[0_1px_12px_rgba(0,0,0,0.06)]"
+          ? "bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl border-b border-slate-200/50 dark:border-slate-800/60 shadow-lg shadow-slate-900/5"
           : "bg-transparent"
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
         <a
           href="#"
-          className="text-[1.35rem] font-black tracking-[-0.05em] text-zinc-900 dark:text-zinc-50 hover:opacity-60 transition-opacity duration-200"
-          style={{ fontFamily: "'Playfair Display', serif" }}
+          className="inline-flex items-center gap-3 text-slate-950 dark:text-white transition-opacity duration-200"
         >
-          {data.logo}
+          <img
+            src="/assets/images/logo-header.png"
+            alt="Paitonix logo"
+            className="h-[8em] w-auto dark:contrast-[0.5]"
+          />
         </a>
 
-        <ul className="hidden md:flex items-center gap-7">
+        <ul className="hidden md:flex items-center gap-8">
           {data.links.map((link) => (
-            <li key={link.label}>
+            <li key={link.href + localize(link.label, language)}>
               <a
                 href={link.href}
-                className="text-[13px] font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-200 tracking-wide"
+                className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition"
               >
-                {link.label}
+                {localize(link.label, language)}
               </a>
             </li>
           ))}
         </ul>
 
         <div className="flex items-center gap-4">
+          <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-sm text-slate-900 dark:text-white">
+            {(["id", "en"] as const).map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                onClick={() => setLanguage(lang)}
+                className={`rounded-full px-3 py-1 transition ${
+                  language === lang
+                    ? "bg-slate-900 text-white"
+                    : "text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                }`}
+              >
+                {lang.toUpperCase()}
+              </button>
+            ))}
+          </div>
           <ThemeToggle />
           <a
             href="#cta"
-            className="hidden md:inline-flex items-center px-4 py-2 text-[13px] font-semibold rounded-full bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors duration-200"
+            className="hidden md:inline-flex items-center px-5 py-2 rounded-full bg-slate-950 text-white text-sm font-semibold shadow-lg shadow-slate-900/20 transition hover:bg-slate-800"
           >
-            Hubungi Kami
+            {localize({ id: "Hubungi Kami", en: "Contact Us" }, language)}
           </a>
           <button
-            className="md:hidden w-8 h-8 flex flex-col justify-center items-center gap-[5px]"
+            className="md:hidden w-10 h-10 flex flex-col justify-center items-center gap-[6px]"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
             <motion.span
-              animate={menuOpen ? { rotate: 45, y: 6.5 } : { rotate: 0, y: 0 }}
-              className="block w-5 h-[1.5px] bg-zinc-700 dark:bg-zinc-300 origin-center"
+              animate={menuOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
+              className="block w-6 h-[2px] bg-slate-900 dark:bg-slate-100 origin-center"
             />
             <motion.span
               animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
-              className="block w-5 h-[1.5px] bg-zinc-700 dark:bg-zinc-300"
+              className="block w-6 h-[2px] bg-slate-900 dark:bg-slate-100"
             />
             <motion.span
-              animate={menuOpen ? { rotate: -45, y: -6.5 } : { rotate: 0, y: 0 }}
-              className="block w-5 h-[1.5px] bg-zinc-700 dark:bg-zinc-300 origin-center"
+              animate={menuOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
+              className="block w-6 h-[2px] bg-slate-900 dark:bg-slate-100 origin-center"
             />
           </button>
         </div>
       </nav>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -84,37 +105,37 @@ export default function Navbar({ data }: { data: NavbarData }) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.28, ease: "easeOut" }}
-            className="md:hidden overflow-hidden border-t border-zinc-200 dark:border-zinc-800 bg-white/96 dark:bg-zinc-950/96 backdrop-blur-2xl"
+            className="md:hidden overflow-hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl"
           >
-            <ul className="flex flex-col px-6 py-5 gap-5">
+            <ul className="flex flex-col px-6 py-5 gap-4">
               {data.links.map((link, i) => (
                 <motion.li
-                  key={link.label}
-                  initial={{ opacity: 0, x: -8 }}
+                  key={link.href + localize(link.label, language)}
+                  initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.25 }}
+                  transition={{ delay: i * 0.05, duration: 0.22 }}
                 >
                   <a
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className="text-[15px] font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                    className="text-base font-medium text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white transition"
                   >
-                    {link.label}
+                    {localize(link.label, language)}
                   </a>
                 </motion.li>
               ))}
               <motion.li
-                initial={{ opacity: 0, x: -8 }}
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: data.links.length * 0.05, duration: 0.25 }}
-                className="pt-1"
+                transition={{ delay: data.links.length * 0.05, duration: 0.22 }}
+                className="pt-2"
               >
                 <a
                   href="#cta"
                   onClick={() => setMenuOpen(false)}
-                  className="inline-flex items-center px-5 py-2.5 text-sm font-semibold rounded-full bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900"
+                  className="inline-flex items-center justify-center w-full rounded-full bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white"
                 >
-                  Hubungi Kami
+                  {localize({ id: "Hubungi Kami", en: "Contact Us" }, language)}
                 </a>
               </motion.li>
             </ul>
