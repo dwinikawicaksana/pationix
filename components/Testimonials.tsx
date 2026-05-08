@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
 
@@ -44,6 +45,15 @@ const uiText = {
 
 export default function Testimonials() {
   const { language } = useLanguage();
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % testimonials.length);
+    }, 5500);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   return (
     <section
@@ -115,37 +125,53 @@ export default function Testimonials() {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          {testimonials.map((item, index) => (
+        <div className="relative mx-auto max-w-3xl">
+          <AnimatePresence mode="wait">
             <motion.div
-              key={item.name}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.55, delay: index * 0.08 }}
+              key={activeIndex}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
               className="rounded-[2rem] border border-slate-200 dark:border-zinc-700/50 bg-white dark:bg-zinc-800/60 p-8 shadow-xl shadow-slate-200/70 dark:shadow-black/30 backdrop-blur-lg"
             >
               <p className="text-base leading-relaxed text-slate-700 dark:text-gray-200">
-                "{localize(item.quote, language)}"
+                "{localize(testimonials[activeIndex].quote, language)}"
               </p>
               <div className="mt-8 flex items-center gap-4">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950 dark:bg-sky-600 text-white text-lg font-black">
-                  {item.name
+                  {testimonials[activeIndex].name
                     .split(" ")
                     .map((part) => part[0])
                     .join("")}
                 </div>
                 <div>
                   <p className="font-semibold text-slate-950 dark:text-white">
-                    {item.name}
+                    {testimonials[activeIndex].name}
                   </p>
                   <p className="text-sm text-slate-500 dark:text-gray-400">
-                    {item.role}
+                    {testimonials[activeIndex].role}
                   </p>
                 </div>
               </div>
             </motion.div>
-          ))}
+          </AnimatePresence>
+
+          <div className="mt-8 flex justify-center gap-2">
+            {testimonials.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setActiveIndex(idx)}
+                className={`h-2.5 w-2.5 rounded-full transition ${
+                  idx === activeIndex
+                    ? "bg-slate-950 dark:bg-white"
+                    : "bg-slate-300 dark:bg-slate-600"
+                }`}
+                aria-label={`Show testimonial ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -11,6 +11,7 @@ import CaseStudy from "@/components/CaseStudy";
 import CTASection from "@/components/CTASection";
 import FooterNew from "@/components/FooterNew";
 import PhilosophyCard from "@/components/PhilosophyCard";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default async function Home() {
   const data = await fetchLandingData();
@@ -31,6 +32,7 @@ export default async function Home() {
         <CTASection data={data.cta} />
       </main>
       <FooterNew footer={data.footer} navbar={data.navbar} />
+      <WhatsAppButton />
     </>
   );
 }

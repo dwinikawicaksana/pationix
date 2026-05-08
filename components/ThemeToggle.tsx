@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ compact }: { compact?: boolean }) {
   const [dark, setDark] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const stored = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     const isDark = stored ? stored === "dark" : prefersDark;
     setDark(isDark);
     document.documentElement.classList.toggle("dark", isDark);
@@ -21,22 +23,50 @@ export default function ThemeToggle() {
     localStorage.setItem("theme", next ? "dark" : "light");
   };
 
-  if (!mounted) return <div className="w-10 h-5" />;
+  if (!mounted) return <div className={compact ? "w-10 h-6" : "w-14 h-7"} />;
+
+  const baseClasses = compact
+    ? "relative inline-flex h-8 w-16 items-center rounded-full p-1"
+    : "relative inline-flex h-11 w-24 items-center rounded-full p-1";
+
+  const knobClasses = compact
+    ? "absolute inset-y-1 left-1 h-6 w-6 rounded-full border border-slate-200 shadow transition-transform duration-300"
+    : "absolute inset-y-1 left-1 h-9 w-9 rounded-full border border-slate-200 shadow-md transition-transform duration-300";
 
   return (
     <button
       onClick={toggle}
-      aria-label="Toggle theme"
-      className="relative w-10 h-5 rounded-full transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-400"
-      style={{ backgroundColor: dark ? "#e4e4e7" : "#27272a" }}
+      aria-label={dark ? "Switch to day mode" : "Switch to night mode"}
+      className={`${baseClasses} transition duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500 ${
+        dark
+          ? "bg-slate-900/90 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.85)]"
+          : "bg-gradient-to-r from-amber-300 via-sky-200 to-slate-100 shadow-[0_16px_40px_-24px_rgba(251,191,36,0.75)]"
+      }`}
     >
+      {!compact && (
+        <>
+          <span className="absolute left-3 text-[11px] font-semibold text-slate-900 dark:text-slate-200">
+            Day
+          </span>
+          <span className="absolute right-3 text-[11px] font-semibold text-slate-900 dark:text-slate-200">
+            Night
+          </span>
+        </>
+      )}
       <span
-        className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full transition-transform duration-300 shadow-sm"
-        style={{
-          backgroundColor: dark ? "#18181b" : "#fafafa",
-          transform: dark ? "translateX(20px)" : "translateX(0)",
-        }}
-      />
+        className={`${knobClasses} ${
+          dark
+            ? "translate-x-8 bg-slate-950 text-white"
+            : "translate-x-0 bg-white text-amber-400"
+        }`}
+      >
+        <span
+          className={`absolute inset-0 flex items-center justify-center ${compact ? "text-xs" : "text-sm"}`}
+        >
+          {dark ? "🌙" : "☀️"}
+        </span>
+      </span>
+      <span className="sr-only">{dark ? "Night mode" : "Day mode"}</span>
     </button>
   );
 }

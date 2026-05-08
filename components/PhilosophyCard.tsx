@@ -42,29 +42,31 @@ export default function PhilosophyCard() {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-slate-900/75 to-slate-950/80" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-transparent to-slate-950/40" />
 
-        {/* Animated orb left – light */}
-        <motion.div
-          className="absolute -left-32 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-sky-300/20 dark:bg-sky-500/10 blur-3xl opacity-100"
-          animate={{ x: [0, 20, 0], y: [0, -20, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Animated orb right – light */}
-        <motion.div
-          className="absolute -right-32 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-indigo-300/20 dark:bg-purple-500/10 blur-3xl opacity-100"
-          animate={{ x: [0, -20, 0], y: [0, 20, 0] }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
-        {/* Center glow */}
-        <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] rounded-full bg-cyan-400/10 dark:bg-cyan-500/8 blur-3xl"
-          animate={{ scaleX: [1, 1.1, 1], scaleY: [1, 0.9, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
+        <div className="hidden lg:block">
+          {/* Animated orb left – light */}
+          <motion.div
+            className="absolute -left-32 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-sky-300/20 dark:bg-sky-500/10 blur-3xl opacity-100"
+            animate={{ x: [0, 20, 0], y: [0, -20, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
+          {/* Animated orb right – light */}
+          <motion.div
+            className="absolute -right-32 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-indigo-300/20 dark:bg-purple-500/10 blur-3xl opacity-100"
+            animate={{ x: [0, -20, 0], y: [0, 20, 0] }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          />
+          {/* Center glow */}
+          <motion.div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] rounded-full bg-cyan-400/10 dark:bg-cyan-500/8 blur-3xl"
+            animate={{ scaleX: [1, 1.1, 1], scaleY: [1, 0.9, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
       </div>
 
       <div className="relative max-w-4xl mx-auto">

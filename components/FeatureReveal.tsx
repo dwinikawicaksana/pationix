@@ -65,7 +65,6 @@ function FeatureCard({
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6, delay: index * 0.08, ease: "easeOut" }}
-      animate={{ y: [0, -8, 0] }}
       whileHover={{
         y: -12,
         transition: { duration: 0.3 },
@@ -80,25 +79,11 @@ function FeatureCard({
       {/* Continuous animated background glow effect */}
       {!isHighlight && (
         <>
-          <motion.div
+          <div
             className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-2xl bg-gradient-to-br ${neonColors[index % 6]} pointer-events-none`}
-            animate={{
-              backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
-              opacity: [0.05, 0.15, 0.05],
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
-          <motion.div
-            className={`absolute inset-0 rounded-2xl opacity-0 bg-gradient-to-br ${neonColors[index % 6]} pointer-events-none`}
-            animate={{
-              opacity: [0, 0.08, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.5,
-            }}
+          <div
+            className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 bg-gradient-to-br ${neonColors[index % 6]} pointer-events-none`}
           />
         </>
       )}
@@ -107,12 +92,9 @@ function FeatureCard({
         <motion.div
           className={`text-2xl mb-5 ${isHighlight ? "text-zinc-400 dark:text-zinc-300" : `${["text-sky-500", "text-cyan-500", "text-blue-500", "text-purple-500", "text-pink-500", "text-rose-500"][index % 6]} dark:text-cyan-400`}`}
           whileHover={{ rotate: 20, scale: 1.2 }}
-          animate={{
-            scale: [1, 1.05, 1],
-          }}
           transition={{
             rotate: { type: "spring", stiffness: 300 },
-            scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+            duration: 0.25,
           }}
         >
           {feature.icon}
@@ -170,80 +152,82 @@ export default function FeatureReveal({
     >
       {/* Animated background glow elements */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Light mode orbs */}
-        <motion.div
-          className="absolute top-20 left-10 w-72 h-72 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
-          animate={{
-            y: [0, 30, 0],
-            x: [0, 20, 0],
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-10 w-72 h-72 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
-          animate={{
-            y: [0, -30, 0],
-            x: [0, -20, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/2 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-indigo-400/12 rounded-full blur-3xl"
-          animate={{
-            y: [0, -40, 0],
-            x: [0, 30, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
+        <div className="hidden lg:block">
+          {/* Light mode orbs */}
+          <motion.div
+            className="absolute top-20 left-10 w-72 h-72 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
+            animate={{
+              y: [0, 30, 0],
+              x: [0, 20, 0],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-10 w-72 h-72 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
+            animate={{
+              y: [0, -30, 0],
+              x: [0, -20, 0],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-1/2 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-indigo-400/12 rounded-full blur-3xl"
+            animate={{
+              y: [0, -40, 0],
+              x: [0, 30, 0],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          />
 
-        {/* Dark mode orbs */}
-        <motion.div
-          className="absolute top-20 left-10 w-72 h-72 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
-          animate={{
-            y: [0, 30, 0],
-            x: [0, 20, 0],
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-10 w-72 h-72 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
-          animate={{
-            y: [0, -30, 0],
-            x: [0, -20, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/2 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-purple-500/10 rounded-full blur-3xl"
-          animate={{
-            y: [0, -40, 0],
-            x: [0, 30, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
-        />
+          {/* Dark mode orbs */}
+          <motion.div
+            className="absolute top-20 left-10 w-72 h-72 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
+            animate={{
+              y: [0, 30, 0],
+              x: [0, 20, 0],
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-10 w-72 h-72 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
+            animate={{
+              y: [0, -30, 0],
+              x: [0, -20, 0],
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-1/2 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-purple-500/10 rounded-full blur-3xl"
+            animate={{
+              y: [0, -40, 0],
+              x: [0, 30, 0],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          />
 
-        {/* Animated grid for dark mode */}
-        <motion.div
-          className="absolute inset-0 opacity-0 dark:opacity-5"
-          style={{
-            backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
-            backgroundSize: "50px 50px",
-          }}
-          animate={{
-            backgroundPosition: ["0px 0px", "50px 50px"],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
+          {/* Animated grid for dark mode */}
+          <motion.div
+            className="absolute inset-0 opacity-0 dark:opacity-5"
+            style={{
+              backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
+              backgroundSize: "50px 50px",
+            }}
+            animate={{
+              backgroundPosition: ["0px 0px", "50px 50px"],
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          />
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">

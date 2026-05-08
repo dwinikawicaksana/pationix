@@ -28,7 +28,7 @@ export default function Navbar({ data }: { data: NavbarData }) {
           : "bg-transparent"
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+      <nav className="max-w-7xl mx-auto md:px-6 px-0 h-16 flex items-center justify-between gap-4">
         <a
           href="#"
           className="inline-flex items-center gap-3 text-slate-950 dark:text-white transition-opacity duration-200"
@@ -53,24 +53,25 @@ export default function Navbar({ data }: { data: NavbarData }) {
           ))}
         </ul>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-sm text-slate-900 dark:text-white">
+        <div className="flex items-center gap-2">
+          <div className="hidden md:inline-flex items-center gap-1 rounded-full border border-slate-200/60 bg-white/90 px-2 py-1 text-sm shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-950/85">
             {(["id", "en"] as const).map((lang) => (
               <button
                 key={lang}
                 type="button"
                 onClick={() => setLanguage(lang)}
-                className={`rounded-full px-3 py-1 transition ${
+                aria-label={lang === "id" ? "Indonesian" : "English"}
+                className={`inline-flex items-center justify-center rounded-full p-1 transition ${
                   language === lang
-                    ? "bg-slate-900 text-white"
-                    : "text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                    ? "bg-sky-600 text-slate-50 shadow-sm shadow-sky-600/20 dark:bg-sky-500 dark:text-white dark:shadow-sky-500/30"
+                    : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                 }`}
               >
-                {lang.toUpperCase()}
+                <span>{lang === "id" ? "🇮🇩" : "🇺🇸"}</span>
               </button>
             ))}
           </div>
-          <ThemeToggle />
+          <ThemeToggle compact />
           <a
             href="#cta"
             className="hidden md:inline-flex items-center px-5 py-2 rounded-full bg-slate-950 text-white text-sm font-semibold shadow-lg shadow-slate-900/20 transition hover:bg-slate-800"
@@ -78,7 +79,7 @@ export default function Navbar({ data }: { data: NavbarData }) {
             {localize({ id: "Hubungi Kami", en: "Contact Us" }, language)}
           </a>
           <button
-            className="md:hidden w-10 h-10 flex flex-col justify-center items-center gap-[6px]"
+            className="md:hidden w-10 h-10 flex flex-col justify-center items-center gap-[6px] rounded-full border border-slate-200/70 bg-white/90 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/75"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
@@ -139,6 +140,31 @@ export default function Navbar({ data }: { data: NavbarData }) {
                 </a>
               </motion.li>
             </ul>
+            <div className="border-t border-slate-200 dark:border-slate-800 px-6 py-4">
+              <p className="text-xs uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400 mb-3">
+                {localize({ id: "Bahasa", en: "Language" }, language)}
+              </p>
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-slate-50/90 px-3 py-2 dark:border-slate-700/70 dark:bg-slate-900/80">
+                {(["id", "en"] as const).map((lang) => (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => {
+                      setLanguage(lang);
+                      setMenuOpen(false);
+                    }}
+                    aria-label={lang === "id" ? "Indonesian" : "English"}
+                    className={`rounded-full px-3 py-2 transition text-base ${
+                      language === lang
+                        ? "bg-slate-950 text-white dark:bg-slate-100 dark:text-slate-950"
+                        : "text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
+                    }`}
+                  >
+                    {lang === "id" ? "🇮🇩" : "🇺🇸"}
+                  </button>
+                ))}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

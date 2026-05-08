@@ -17,29 +17,142 @@ export default function LoadingScreen() {
   }, []);
 
   useEffect(() => {
+    const getAudio = () => {
+      return (
+        ((window as any).__welcomeAudio as HTMLAudioElement | undefined) ||
+        (document.getElementById("welcome-audio") as HTMLAudioElement | null)
+      );
+    };
+
+    const tryPlayAudio = async (unmute = false) => {
+      const audio = getAudio();
+      if (!audio) return false;
+
+      if (unmute) {
+        audio.muted = false;
+        audio.volume = 1.0;
+      }
+
+      try {
+        await audio.play();
+        if (unmute) {
+          audio.muted = false;
+          audio.volume = 1.0;
+        }
+        return true;
+      } catch (_err) {
+        return false;
+      }
+    };
+
+    const addGestureFallback = () => {
+      const gestureHandler = async () => {
+        const success = await tryPlayAudio(true);
+        if (success) {
+          window.removeEventListener("click", gestureHandler);
+          window.removeEventListener("touchstart", gestureHandler);
+          window.removeEventListener("keydown", gestureHandler);
+        }
+      };
+
+      window.addEventListener("click", gestureHandler, {
+        once: true,
+        passive: true,
+      });
+      window.addEventListener("touchstart", gestureHandler, {
+        once: true,
+        passive: true,
+      });
+      window.addEventListener("keydown", gestureHandler, {
+        once: true,
+        passive: true,
+      });
+    };
+
     if (!isLoading) {
-      const audioTimer = setTimeout(() => {
-        try {
-          const audio =
-            (window as any).__welcomeAudio ||
-            (document.getElementById("welcome-audio") as HTMLAudioElement);
-
-          if (!audio) return;
-
-          if (!audio.paused) {
-            audio.muted = false;
-            audio.volume = 1.0;
-          } else {
-            audio.muted = false;
-            audio.volume = 1.0;
-            audio.play().catch(() => {});
-          }
-        } catch (_) {}
+      const audioTimer = window.setTimeout(async () => {
+        const success = await tryPlayAudio(true);
+        if (!success) {
+          addGestureFallback();
+        }
       }, 400);
 
-      return () => clearTimeout(audioTimer);
+      return () => window.clearTimeout(audioTimer);
     }
+
+    return undefined;
   }, [isLoading]);
+
+  useEffect(() => {
+    const getAudio = () => {
+      return (
+        ((window as any).__welcomeAudio as HTMLAudioElement | undefined) ||
+        (document.getElementById("welcome-audio") as HTMLAudioElement | null)
+      );
+    };
+
+    const playAudioAtTop = async () => {
+      if (window.scrollY === 0) {
+        try {
+          const audio = getAudio();
+          if (!audio) return;
+          audio.muted = false;
+          audio.volume = 1.0;
+          audio.currentTime = 0;
+          await audio.play();
+        } catch (_err) {
+          const gestureHandler = async () => {
+            const audio = getAudio();
+            if (!audio) return;
+            audio.muted = false;
+            audio.volume = 1.0;
+            try {
+              await audio.play();
+            } catch (_) {}
+          };
+          window.addEventListener("click", gestureHandler, {
+            once: true,
+            passive: true,
+          });
+          window.addEventListener("touchstart", gestureHandler, {
+            once: true,
+            passive: true,
+          });
+          window.addEventListener("keydown", gestureHandler, {
+            once: true,
+            passive: true,
+          });
+        }
+      }
+    };
+
+    const playAudioOnInteraction = async () => {
+      try {
+        const audio = getAudio();
+        if (!audio) return;
+        audio.muted = false;
+        audio.volume = 1.0;
+        audio.currentTime = 0;
+        await audio.play();
+      } catch (_err) {
+        // ignore and wait for a clearer gesture
+      }
+    };
+
+    window.addEventListener("scroll", playAudioAtTop, { passive: true });
+    window.addEventListener("mousemove", playAudioOnInteraction, {
+      passive: true,
+    });
+    window.addEventListener("pointermove", playAudioOnInteraction, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", playAudioAtTop);
+      window.removeEventListener("mousemove", playAudioOnInteraction);
+      window.removeEventListener("pointermove", playAudioOnInteraction);
+    };
+  }, []);
 
   return (
     <AnimatePresence>

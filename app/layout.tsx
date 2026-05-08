@@ -54,6 +54,9 @@ export default function RootLayout({
           id="welcome-audio"
           src="/assets/audio/welcome-voice.mp3"
           preload="auto"
+          autoPlay
+          muted
+          playsInline
         />
         {/* Start audio muted as early as possible — bypasses autoplay policy */}
         <script

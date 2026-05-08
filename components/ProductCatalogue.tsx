@@ -61,7 +61,7 @@ export default function ProductCatalogue() {
       {/* Electrical video background */}
       <video
         className="absolute inset-0 w-full h-full object-cover opacity-25"
-        src="/assets/videos/video-section.mp4"
+        src="/assets/videos/electrical.mp4"
         autoPlay
         muted
         loop
@@ -70,8 +70,8 @@ export default function ProductCatalogue() {
       {/* Dark overlay to keep cards legible */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85 pointer-events-none" />
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="hidden lg:block absolute top-20 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-2xl" />
+        <div className="hidden lg:block absolute bottom-0 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-2xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -79,8 +79,9 @@ export default function ProductCatalogue() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
           className="max-w-3xl mx-auto text-center mb-16"
+          style={{ willChange: "opacity, transform" }}
         >
           <span className="inline-flex items-center gap-2 rounded-full bg-slate-900/60 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-300 ring-1 ring-sky-400/30">
             {localize(uiText.sectionLabel, language)}
@@ -100,7 +101,12 @@ export default function ProductCatalogue() {
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.65, delay: index * 0.12 }}
+              transition={{
+                duration: 0.55,
+                delay: index * 0.08,
+                ease: "easeOut",
+              }}
+              style={{ willChange: "opacity, transform" }}
             >
               <Link href={`/projects/${project.id}`}>
                 <div className="group block h-full cursor-pointer">
