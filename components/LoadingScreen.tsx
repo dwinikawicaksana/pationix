@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const loadingText = "PAITONIX".split("");
+
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -18,7 +20,6 @@ export default function LoadingScreen() {
     if (!isLoading) {
       const audioTimer = setTimeout(() => {
         try {
-          // Use the audio element started by the inline script
           const audio =
             (window as any).__welcomeAudio ||
             (document.getElementById("welcome-audio") as HTMLAudioElement);
@@ -26,11 +27,9 @@ export default function LoadingScreen() {
           if (!audio) return;
 
           if (!audio.paused) {
-            // Already playing muted — just unmute
             audio.muted = false;
             audio.volume = 1.0;
           } else {
-            // Autoplay was blocked; try play() now (needs user gesture on strict browsers)
             audio.muted = false;
             audio.volume = 1.0;
             audio.play().catch(() => {});
@@ -49,60 +48,54 @@ export default function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="fixed inset-0 z-[9999] bg-black flex items-center justify-center"
+          className="fixed inset-0 z-[9999] bg-black flex items-center justify-center px-6"
         >
-          {/* Netflix-style loading animation */}
-          <div className="relative w-40 h-40 flex items-center justify-center">
-            {/* Outer rotating ring */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 border-2 border-transparent border-t-sky-500 border-r-sky-400 rounded-full"
-            />
+          <div className="relative flex flex-col items-center gap-8">
+            <div className="relative flex items-end gap-2">
+              {loadingText.map((letter, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.55,
+                    delay: index * 0.08,
+                    ease: "easeOut",
+                  }}
+                  className="text-5xl sm:text-6xl md:text-7xl font-black tracking-[0.28em] text-white"
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </div>
 
-            {/* Middle rotating ring - opposite direction */}
             <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-4 border-2 border-transparent border-t-amber-400 border-r-amber-300 rounded-full"
-            />
-
-            {/* Center logo/text */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative z-10 text-center"
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.6 }}
+              className="relative h-1 w-72 overflow-hidden rounded-full bg-slate-800"
             >
-              <img
-                src="/assets/images/favicon.png"
-                alt="Paitonix"
-                className="h-16 w-16 mx-auto mb-3"
-              />
               <motion.div
-                animate={{ opacity: [1, 0.3, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="text-xs uppercase tracking-widest text-sky-300 font-semibold"
-              >
-                Loading
-              </motion.div>
+                className="absolute inset-0 bg-gradient-to-r from-sky-400 via-cyan-300 to-amber-400"
+                initial={{ x: "-100%" }}
+                animate={{ x: ["-100%", "0%", "100%"] }}
+                transition={{
+                  duration: 2.4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
             </motion.div>
 
-            {/* Pulsing background glow */}
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 rounded-full bg-sky-500/20 blur-2xl"
-            />
+            <motion.p
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.3 }}
+              className="text-sm uppercase tracking-[0.34em] text-slate-400"
+            >
+              welcome
+            </motion.p>
           </div>
-
-          {/* Bottom progress indicator */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 2.5, ease: "easeInOut" }}
-            className="absolute bottom-20 h-1 w-32 bg-gradient-to-r from-sky-500 to-amber-400 rounded-full origin-left"
-          />
         </motion.div>
       )}
     </AnimatePresence>
