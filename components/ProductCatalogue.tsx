@@ -31,7 +31,7 @@ const projects = [
     },
     gradient: "from-sky-600 via-blue-600 to-slate-800",
     accent: "sky",
-    image: "/assets/images/aksara-prototype.svg",
+    image: "/assets/images/aksara-card.png",
   },
   {
     id: "fitnex",
@@ -46,7 +46,7 @@ const projects = [
     },
     gradient: "from-purple-600 via-pink-600 to-slate-800",
     accent: "purple",
-    image: "/assets/images/fitnex-prototype.svg",
+    image: "/assets/images/fitnex-card.png",
   },
 ];
 
@@ -110,55 +110,75 @@ export default function ProductCatalogue() {
             >
               <Link href={`/projects/${project.id}`}>
                 <div className="group block h-full cursor-pointer">
-                  <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-gradient-to-br bg-slate-900 h-96 shadow-2xl shadow-slate-950/40 transition-all duration-300 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/60">
-                    {/* Gradient Overlay Background */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-40 group-hover:opacity-50 transition-opacity duration-300`}
-                    />
-
-                    {/* Content */}
-                    <div className="relative h-full p-8 flex flex-col justify-between">
-                      {/* Top Badge */}
-                      <div>
-                        <span
-                          className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ring-1 ${
-                            project.accent === "sky"
-                              ? "bg-sky-500/20 text-sky-200 ring-sky-400/30"
-                              : "bg-purple-500/20 text-purple-200 ring-purple-400/30"
-                          }`}
-                        >
-                          {localize(project.subtitle, language)}
-                        </span>
-                      </div>
-
-                      {/* Middle - Title and Description */}
-                      <div>
-                        <h3 className="text-4xl sm:text-5xl font-black text-white mb-4">
-                          {localize(project.title, language)}
-                        </h3>
-                        <p className="text-sm sm:text-base text-slate-300 leading-relaxed line-clamp-3">
-                          {localize(project.description, language)}
-                        </p>
-                      </div>
-
-                      {/* Bottom - CTA */}
-                      <div className="flex items-center gap-3 text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">
-                        <span>{localize(uiText.exploreProject, language)}</span>
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-white">
-                          →
-                        </span>
-                      </div>
+                  <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/70 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/90">
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={project.image}
+                        alt={`${localize(project.title, language)} preview`}
+                        className="h-72 w-full object-cover"
+                      />
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-35`}
+                      />
                     </div>
 
-                    {/* Hover Effect - Glow */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                      <div
-                        className={`absolute top-0 right-0 w-64 h-64 blur-3xl rounded-full ${
-                          project.accent === "sky"
-                            ? "bg-sky-500/20"
-                            : "bg-purple-500/20"
-                        }`}
-                      />
+                    <div className="relative p-8 flex flex-col justify-between min-h-[420px] bg-slate-950/95 backdrop-blur-sm">
+                      <div className="space-y-6">
+                        <div className="flex flex-wrap items-center justify-between gap-4">
+                          <span
+                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ring-1 ${
+                              project.accent === "sky"
+                                ? "bg-sky-500/25 text-sky-100 ring-sky-400/40"
+                                : "bg-purple-500/25 text-purple-100 ring-purple-400/40"
+                            }`}
+                          >
+                            {localize(project.subtitle, language)}
+                          </span>
+                          <span className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                            {project.id.toUpperCase()}
+                          </span>
+                        </div>
+
+                        <div className="space-y-4">
+                          <h3 className="text-4xl sm:text-5xl font-black uppercase tracking-[0.14em] text-white">
+                            {localize(project.title, language)}
+                          </h3>
+                          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                            {localize(project.description, language)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-4">
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/80 p-4 text-sm text-slate-300">
+                            {localize(
+                              {
+                                id: "UI yang intuitif dan siap scaling.",
+                                en: "Intuitive UI ready for scaling.",
+                              },
+                              language,
+                            )}
+                          </div>
+                          <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/80 p-4 text-sm text-slate-300">
+                            {localize(
+                              {
+                                id: "Kolaborasi real-time dan insight produk.",
+                                en: "Real-time collaboration and product insight.",
+                              },
+                              language,
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">
+                          <span>
+                            {localize(uiText.exploreProject, language)}
+                          </span>
+                          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/15 group-hover:bg-white/25 transition-colors text-white">
+                            →
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

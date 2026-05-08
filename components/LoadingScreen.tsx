@@ -1,11 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const loadingText = "PAITONIX".split("");
 
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
+  const playedRef = useRef(false);
 
   useEffect(() => {
     // Simulate loading time
@@ -24,133 +23,38 @@ export default function LoadingScreen() {
       );
     };
 
-    const tryPlayAudio = async (unmute = false) => {
+    const isAtTop = () => window.scrollY === 0;
+
+    const tryPlayAudio = async ({ force = false } = {}) => {
       const audio = getAudio();
-      if (!audio) return false;
+      if (!audio || playedRef.current) return;
+      if (!force && !isAtTop()) return;
 
-      if (unmute) {
-        audio.muted = false;
-        audio.volume = 1.0;
-      }
+      audio.muted = false;
+      audio.volume = 1.0;
+      audio.playbackRate = 0.75;
+      audio.currentTime = 0;
 
       try {
         await audio.play();
-        if (unmute) {
-          audio.muted = false;
-          audio.volume = 1.0;
-        }
-        return true;
+        playedRef.current = true;
       } catch (_err) {
-        return false;
+        // Ignore autoplay failures and retry later when the user scrolls to top
       }
     };
 
-    const addGestureFallback = () => {
-      const gestureHandler = async () => {
-        const success = await tryPlayAudio(true);
-        if (success) {
-          window.removeEventListener("click", gestureHandler);
-          window.removeEventListener("touchstart", gestureHandler);
-          window.removeEventListener("keydown", gestureHandler);
-        }
-      };
-
-      window.addEventListener("click", gestureHandler, {
-        once: true,
-        passive: true,
-      });
-      window.addEventListener("touchstart", gestureHandler, {
-        once: true,
-        passive: true,
-      });
-      window.addEventListener("keydown", gestureHandler, {
-        once: true,
-        passive: true,
-      });
-    };
-
-    if (!isLoading) {
-      const audioTimer = window.setTimeout(async () => {
-        const success = await tryPlayAudio(true);
-        if (!success) {
-          addGestureFallback();
-        }
-      }, 400);
-
-      return () => window.clearTimeout(audioTimer);
-    }
-
-    return undefined;
-  }, [isLoading]);
-
-  useEffect(() => {
-    const getAudio = () => {
-      return (
-        ((window as any).__welcomeAudio as HTMLAudioElement | undefined) ||
-        (document.getElementById("welcome-audio") as HTMLAudioElement | null)
-      );
-    };
-
-    const playAudioAtTop = async () => {
-      if (window.scrollY === 0) {
-        try {
-          const audio = getAudio();
-          if (!audio) return;
-          audio.muted = false;
-          audio.volume = 1.0;
-          audio.currentTime = 0;
-          await audio.play();
-        } catch (_err) {
-          const gestureHandler = async () => {
-            const audio = getAudio();
-            if (!audio) return;
-            audio.muted = false;
-            audio.volume = 1.0;
-            try {
-              await audio.play();
-            } catch (_) {}
-          };
-          window.addEventListener("click", gestureHandler, {
-            once: true,
-            passive: true,
-          });
-          window.addEventListener("touchstart", gestureHandler, {
-            once: true,
-            passive: true,
-          });
-          window.addEventListener("keydown", gestureHandler, {
-            once: true,
-            passive: true,
-          });
-        }
+    const handleScroll = () => {
+      if (isAtTop()) {
+        tryPlayAudio();
       }
     };
 
-    const playAudioOnInteraction = async () => {
-      try {
-        const audio = getAudio();
-        if (!audio) return;
-        audio.muted = false;
-        audio.volume = 1.0;
-        audio.currentTime = 0;
-        await audio.play();
-      } catch (_err) {
-        // ignore and wait for a clearer gesture
-      }
-    };
-
-    window.addEventListener("scroll", playAudioAtTop, { passive: true });
-    window.addEventListener("mousemove", playAudioOnInteraction, {
-      passive: true,
-    });
-    window.addEventListener("pointermove", playAudioOnInteraction, {
-      passive: true,
-    });
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    tryPlayAudio({ force: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener("scroll", playAudioAtTop);
-      window.removeEventListener("mousemove", playAudioOnInteraction);
-      window.removeEventListener("pointermove", playAudioOnInteraction);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -160,54 +64,36 @@ export default function LoadingScreen() {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
-          className="fixed inset-0 z-[9999] bg-black flex items-center justify-center px-6"
+          transition={{ duration: 0.55, ease: "easeInOut" }}
+          className="fixed inset-0 z-[9999] bg-slate-950 text-white flex items-center justify-center px-4"
         >
-          <div className="relative flex flex-col items-center gap-8">
-            <div className="relative flex items-end gap-2">
-              {loadingText.map((letter, index) => (
-                <motion.span
-                  key={index}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.55,
-                    delay: index * 0.08,
-                    ease: "easeOut",
-                  }}
-                  className="text-5xl sm:text-6xl md:text-7xl font-black tracking-[0.28em] text-white"
-                >
-                  {letter}
-                </motion.span>
-              ))}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(30,58,138,0.18),transparent_35%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.12),transparent_30%)]" />
+
+          <div className="relative z-10 mx-auto flex w-full max-w-[min(520px,calc(100vw-2rem))] flex-col items-center justify-center gap-6 px-4 py-2">
+            <div className="w-full text-center text-[clamp(1rem,4vw,1.9rem)] sm:text-[clamp(1.2rem,3vw,2.4rem)] font-black tracking-[0.35em] text-white uppercase whitespace-nowrap">
+              <span className="inline-block opacity-95">PAITONIX</span>
             </div>
-
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ duration: 1.6, ease: "easeInOut", delay: 0.6 }}
-              className="relative h-1 w-72 overflow-hidden rounded-full bg-slate-800"
-            >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-sky-400 via-cyan-300 to-amber-400"
-                initial={{ x: "-100%" }}
-                animate={{ x: ["-100%", "0%", "100%"] }}
-                transition={{
-                  duration: 2.4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.3 }}
-              className="text-sm uppercase tracking-[0.34em] text-slate-400"
-            >
-              welcome
-            </motion.p>
+            <div className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)] backdrop-blur-xl">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),transparent_35%)]" />
+              <div className="relative">
+                <div className="mb-3 text-center text-xs uppercase tracking-[0.32em] text-slate-400 sm:text-sm">
+                  Loading
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800/80">
+                  <motion.div
+                    className="h-full w-[35%] rounded-full bg-gradient-to-r from-sky-400 via-cyan-400 to-fuchsia-500"
+                    initial={{ x: "-35%" }}
+                    animate={{ x: ["-35%", "100%"] }}
+                    transition={{
+                      duration: 1.9,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
       )}

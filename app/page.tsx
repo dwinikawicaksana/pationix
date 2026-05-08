@@ -27,6 +27,7 @@ export default async function Home() {
         <Testimonials />
         <ChatbotPanel />
         <StorySection stories={data.stories} />
+        <div id="services" className="block pt-24 -mt-24" />
         <FeatureReveal features={data.features} />
         <CaseStudy caseStudies={data.caseStudies} />
         <CTASection data={data.cta} />

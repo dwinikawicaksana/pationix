@@ -56,14 +56,27 @@ export default function ProjectDetailPage() {
               </span>
             </Link>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6">
-              {localize(project.title, language)}
-            </h1>
-
-            <p className="text-base sm:text-lg text-slate-400 leading-relaxed mb-8 max-w-2xl">
-              {localize(project.heroDescription, language)}
-            </p>
-
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/10 bg-slate-900/90 shadow-xl shadow-slate-950/40 overflow-hidden">
+                <img
+                  src={
+                    slug === "aksara"
+                      ? "/assets/images/aksara-card.png"
+                      : "/assets/images/fitnex-card.png"
+                  }
+                  alt={`${localize(project.title, language)} icon`}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div>
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white">
+                  {localize(project.title, language)}
+                </h1>
+                <p className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed max-w-2xl">
+                  {localize(project.heroDescription, language)}
+                </p>
+              </div>
+            </div>
             <div className="flex flex-wrap gap-4">
               <button className="px-8 py-3 rounded-full bg-sky-500 text-white font-semibold hover:bg-sky-600 transition">
                 {language === "id" ? "Minta Demo" : "Request Demo"}

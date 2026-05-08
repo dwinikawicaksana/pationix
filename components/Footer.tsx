@@ -43,11 +43,50 @@ export default function Footer({
           </nav>
         </div>
 
-        <div className="mt-12 border-t border-slate-800 pt-6 text-sm text-slate-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <p>{footer.copyright}</p>
-          {footer.description && (
-            <p>{localize(footer.description, language)}</p>
-          )}
+        <div className="mt-12 border-t border-slate-800 pt-6 text-sm text-slate-500 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+            <p>{footer.copyright}</p>
+            {footer.description && (
+              <p>{localize(footer.description, language)}</p>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href="https://instagram.com/paitonix"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+            >
+              <span className="text-lg">📷</span>
+              Instagram
+            </a>
+            <a
+              href="https://facebook.com/paitonix"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+            >
+              <span className="text-lg">📘</span>
+              Facebook
+            </a>
+            <a
+              href="https://www.tiktok.com/@paitonix"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+            >
+              <span className="text-lg">🎵</span>
+              TikTok
+            </a>
+            <a
+              href="https://x.com/paitonix"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+            >
+              <span className="text-lg">✕</span>X
+            </a>
+          </div>
         </div>
       </div>
     </footer>

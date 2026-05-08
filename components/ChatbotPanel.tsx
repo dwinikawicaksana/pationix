@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
 
@@ -61,6 +62,15 @@ const uiText = {
 
 export default function ChatbotPanel() {
   const { language } = useLanguage();
+  const [inputValue, setInputValue] = useState("");
+  const [toastVisible, setToastVisible] = useState(false);
+
+  const handleSend = () => {
+    if (!inputValue.trim()) return;
+    setToastVisible(true);
+    setInputValue("");
+    window.setTimeout(() => setToastVisible(false), 2400);
+  };
 
   return (
     <section id="chatbot" className="py-20 sm:py-24 bg-slate-950 text-slate-50">
@@ -112,37 +122,57 @@ export default function ChatbotPanel() {
                   {localize(uiText.sectionSubtitle, language)}
                 </p>
               </div>
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-3xl bg-amber-300 text-slate-950 font-black">
-                AI
-              </span>
+              <div className="inline-flex h-10 w-10 items-center justify-center rounded-3xl bg-slate-800 overflow-hidden">
+                <img
+                  src="/assets/images/ai-assistant.png"
+                  alt="AI assistant"
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
             <div className="space-y-4 px-6 py-6">
               {messages.map((message, index) => (
                 <div
                   key={index}
-                  className={`rounded-3xl p-4 ${message.role === "assistant" ? "bg-slate-800 text-slate-100 self-start" : "bg-amber-300/15 text-amber-100 self-end"}`}
+                  className={`flex ${message.role === "assistant" ? "justify-start" : "justify-end"}`}
                 >
-                  <p className="text-sm leading-relaxed">
-                    {localize(message.content, language)}
-                  </p>
+                  <div
+                    className={`rounded-3xl px-4 py-3 text-sm leading-relaxed ${message.role === "assistant" ? "bg-slate-800 text-slate-100" : "bg-amber-300/15 text-amber-100"}`}
+                  >
+                    <p>{localize(message.content, language)}</p>
+                  </div>
                 </div>
               ))}
             </div>
             <div className="border-t border-slate-800/80 px-6 py-5">
-              <div className="flex items-center gap-3 rounded-full border border-slate-700/80 bg-slate-950 px-4 py-3">
+              <div className="flex flex-col gap-3 rounded-3xl border border-slate-700/80 bg-slate-950 px-4 py-3 sm:flex-row sm:items-center">
                 <input
                   type="text"
+                  value={inputValue}
+                  onChange={(event) => setInputValue(event.target.value)}
                   aria-label={localize(uiText.sectionTitle, language)}
                   placeholder={localize(uiText.placeholder, language)}
                   className="w-full bg-transparent text-sm text-slate-100 outline-none placeholder:text-slate-500"
                 />
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center rounded-full bg-amber-300 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-amber-300/30"
+                  onClick={handleSend}
+                  className="inline-flex items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600 transition"
                 >
                   {localize(uiText.button, language)}
                 </button>
               </div>
+              {toastVisible && (
+                <div className="mt-3 rounded-3xl bg-slate-800/90 px-4 py-3 text-sm text-slate-100 shadow-lg shadow-slate-950/20">
+                  {localize(
+                    {
+                      id: "Terima kasih, itu sudah ditampilkan pada inquiries.",
+                      en: "Thanks, that's already showing in inquiries.",
+                    },
+                    language,
+                  )}
+                </div>
+              )}
             </div>
           </motion.div>
         </div>

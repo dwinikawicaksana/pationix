@@ -265,13 +265,13 @@ export default function PreviewSlides() {
       <AnimatePresence>
         {selectedSlide !== null && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-xl"
+            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className={previewModalClass}
+              className={`${previewModalClass} w-full max-w-[min(100vw-1.5rem,56rem)] max-h-[calc(100vh-2rem)] overflow-y-auto`}
               initial={{ y: 40, opacity: 0, scale: 0.96 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: 40, opacity: 0, scale: 0.96 }}
@@ -286,7 +286,7 @@ export default function PreviewSlides() {
                 ×
               </button>
 
-              <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] p-6 sm:p-8 lg:p-10">
+              <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] p-5 sm:p-6 lg:p-10">
                 <div className="space-y-5">
                   <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[11px] uppercase tracking-[0.32em] text-cyan-200 shadow-sm shadow-cyan-500/10">
                     {localize(slides[selectedSlide].modalTag, language)}

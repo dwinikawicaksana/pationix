@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import LanguageProvider from "@/components/LanguageProvider";
 import LoadingScreen from "@/components/LoadingScreen";
+import ScrollToTop from "@/components/ScrollToTop";
+import AutoScrollButton from "@/components/AutoScrollButton";
 
 export const metadata: Metadata = {
   title: "Paitonix — Landing page untuk startup web dan app",
@@ -64,15 +66,19 @@ export default function RootLayout({
             __html: `(function(){
   var a=document.getElementById('welcome-audio');
   if(!a){a=new Audio('/assets/audio/welcome-voice.mp3');a.id='welcome-audio-js';document.body&&document.body.appendChild(a);}
-  a.muted=true;a.volume=0;
+  a.muted=true;a.volume=0;a.playbackRate=0.75;
   var p=a.play();
   if(p)p.then(function(){window.__audioStarted=true;}).catch(function(){window.__audioStarted=false;});
   window.__welcomeAudio=a;
 })()`,
           }}
         />
-        <LoadingScreen />
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <LoadingScreen />
+          <ScrollToTop />
+          {children}
+          <AutoScrollButton />
+        </LanguageProvider>
       </body>
     </html>
   );

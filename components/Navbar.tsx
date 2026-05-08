@@ -22,10 +22,10 @@ export default function Navbar({ data }: { data: NavbarData }) {
       initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.45, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-all duration-500 ease-out backdrop-blur-3xl backdrop-saturate-150 ${
         scrolled
-          ? "bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl border-b border-slate-200/50 dark:border-slate-800/60 shadow-lg shadow-slate-900/5"
-          : "bg-transparent"
+          ? "bg-white/70 dark:bg-slate-950/80 border-slate-200/30 dark:border-slate-800/40 shadow-xl shadow-slate-950/15"
+          : "bg-white/30 dark:bg-slate-950/35 border-slate-200/20 dark:border-slate-800/20 shadow-none"
       }`}
     >
       <nav className="max-w-7xl mx-auto md:px-6 px-0 h-16 flex items-center justify-between gap-4">

@@ -5,25 +5,25 @@ export function getLandingData(): LandingData {
     navbar: {
       logo: "Paitonix",
       links: [
-        { label: { id: "Portofolio", en: "Portfolio" }, href: "#case-studies" },
-        { label: { id: "Layanan", en: "Services" }, href: "#features" },
-        { label: { id: "Pendekatan", en: "Approach" }, href: "#story" },
+        { label: { id: "Produk Kami", en: "Our Product" }, href: "#projects" },
+        { label: { id: "Layanan", en: "Services" }, href: "#services" },
+        { label: { id: "Tentang Kami", en: "About Us" }, href: "#story" },
         { label: { id: "Kontak", en: "Contact" }, href: "#cta" },
       ],
     },
 
     hero: {
       badge: {
-        id: "Software Agency untuk Produk & Sistem Modern",
-        en: "Software agency for modern products & systems",
+        id: "Studio Digital untuk Platform & Sistem Modern",
+        en: "Digital product studio for modern platforms & systems",
       },
       title: {
-        id: "Kami Bangun\nSoftware\nYang Tumbuh.",
-        en: "We Build\nSoftware\nThat Grows.",
+        id: "Temukan Ruang Anda\nDalam Definisi Baru.",
+        en: "Discover Your Space\nRedefined.",
       },
       subtitle: {
-        id: "Kami membantu perusahaan merancang software yang cepat, stabil, dan mudah berkembang — tanpa kompleksitas yang tidak perlu.",
-        en: "We help companies design software that is fast, stable, and ready to scale — without unnecessary complexity.",
+        id: "Solusi digital lengkap: landing page, web app, dan chatbot AI dalam satu pengalaman yang kohesif.",
+        en: "A complete digital solution: landing page, web app, and AI chatbot in one cohesive experience.",
       },
       cta: { id: "Mulai Percakapan", en: "Start the Conversation" },
     },

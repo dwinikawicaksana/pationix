@@ -40,7 +40,7 @@ export default function ThemeToggle({ compact }: { compact?: boolean }) {
       className={`${baseClasses} transition duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500 ${
         dark
           ? "bg-slate-900/90 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.85)]"
-          : "bg-gradient-to-r from-amber-300 via-sky-200 to-slate-100 shadow-[0_16px_40px_-24px_rgba(251,191,36,0.75)]"
+          : "bg-gradient-to-r from-cyan-300 via-sky-200 to-slate-100 shadow-[0_16px_40px_-24px_rgba(56,189,248,0.75)]"
       }`}
     >
       {!compact && (
@@ -57,7 +57,7 @@ export default function ThemeToggle({ compact }: { compact?: boolean }) {
         className={`${knobClasses} ${
           dark
             ? "translate-x-8 bg-slate-950 text-white"
-            : "translate-x-0 bg-white text-amber-400"
+            : "translate-x-0 bg-white text-sky-500"
         }`}
       >
         <span

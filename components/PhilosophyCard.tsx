@@ -8,21 +8,18 @@ export default function PhilosophyCard() {
 
   const quote = localize(
     {
-      id: "Dari aliran energi Jawa dan Bali, lahirlah Paitonix — menghubungkan kekuatan, inovasi, dan harmoni dalam satu visi.",
-      en: "From the energy currents of Java and Bali, Paitonix was born — connecting strength, innovation, and harmony in a single vision.",
+      id: "Paitonix lahir sebagai simbol energi penghubung antara Jawa dan Bali, menggambarkan sinergi tanpa batas yang melampaui budaya dan wilayah untuk menghadirkan inovasi dan koneksi global.",
+      en: "Paitonix was born as a bridge of energy between Java and Bali, symbolizing boundless synergy beyond cultures and regions to bring innovation and global connection.",
     },
     language,
   );
 
   const label = localize(
-    { id: "Filosofi Kami", en: "Our Philosophy" },
+    { id: "Filosofi Paitonix", en: "Paitonix Philosophy" },
     language,
   );
 
-  const origin = localize(
-    { id: "Jawa · Bali · Indonesia", en: "Java · Bali · Indonesia" },
-    language,
-  );
+  const origin = localize({ id: "Indonesia", en: "Indonesia" }, language);
 
   return (
     <section className="relative overflow-hidden bg-slate-950 py-24 px-6">
@@ -117,8 +114,8 @@ export default function PhilosophyCard() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="text-xl sm:text-2xl lg:text-3xl font-semibold leading-snug text-white tracking-tight"
-              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              className="text-center text-xl sm:text-2xl lg:text-3xl font-semibold leading-snug text-white tracking-tight font-sans"
+              style={{ fontFamily: "Inter, system-ui, sans-serif" }}
             >
               {quote}
             </motion.p>
@@ -129,9 +126,8 @@ export default function PhilosophyCard() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="mt-10 flex items-center gap-4"
+              className="mt-10 flex flex-col items-center gap-4"
             >
-              <div className="flex-1 h-px bg-gradient-to-r from-sky-400/50 via-cyan-400/30 to-transparent" />
               <div className="flex items-center gap-3">
                 <img
                   src="/assets/images/logo-2.png"
@@ -139,10 +135,10 @@ export default function PhilosophyCard() {
                   className="h-8 w-8 rounded-xl object-cover shadow-md shadow-sky-500/20"
                 />
                 <div>
-                  <p className="text-xs font-bold text-white tracking-wide">
+                  <p className="text-xs font-bold text-white tracking-wide text-center">
                     Paitonix
                   </p>
-                  <p className="text-[11px] text-sky-400 tracking-widest uppercase">
+                  <p className="text-[11px] text-sky-400 tracking-widest uppercase text-center">
                     {origin}
                   </p>
                 </div>

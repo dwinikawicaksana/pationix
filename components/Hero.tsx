@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HeroData } from "@/types/landing";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
@@ -8,8 +8,32 @@ import { localize } from "@/lib/i18n";
 export default function Hero({ data }: { data: HeroData }) {
   const { language } = useLanguage();
   const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [showSayHi, setShowSayHi] = useState(false);
+  const [chatStep, setChatStep] = useState(0);
+  const [heroChatStep, setHeroChatStep] = useState(0);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const heroChatContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const chatSamples = [
+    {
+      sender: "customer",
+      text: "Halo, saya ingin membuat landing page dengan chatbot AI untuk produk saya.",
+    },
+    {
+      sender: "ai",
+      text: "Tentu, kami bisa bantu dengan desain modern, pengalaman interaktif, dan integrasi chatbot.",
+    },
+    {
+      sender: "customer",
+      text: "Berapa lama prosesnya dan apa saja yang termasuk?",
+    },
+    {
+      sender: "ai",
+      text: "Biasanya 2-3 minggu dengan prototipe, UI responsif, dan asisten AI siap pakai.",
+    },
+  ];
 
   useEffect(() => {
     const stored = window.localStorage.getItem("theme");
@@ -19,14 +43,6 @@ export default function Hero({ data }: { data: HeroData }) {
     const initialDark = stored ? stored === "dark" : prefersDark;
     setIsDark(initialDark);
 
-    const updateSayHi = () => {
-      const audio =
-        (window as any).__welcomeAudio ||
-        (document.getElementById("welcome-audio") as HTMLAudioElement | null);
-      const audioPlaying = audio ? !audio.paused : false;
-      setShowSayHi(window.scrollY === 0 || audioPlaying);
-    };
-
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
@@ -35,28 +51,91 @@ export default function Hero({ data }: { data: HeroData }) {
       attributeFilter: ["class"],
     });
 
-    const onScroll = () => updateSayHi();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const getAudio = () => {
+      return (
+        ((window as any).__welcomeAudio as HTMLAudioElement | undefined) ||
+        (document.getElementById("welcome-audio") as HTMLAudioElement | null) ||
+        (document.getElementById("welcome-audio-js") as HTMLAudioElement | null)
+      );
+    };
 
-    const audio =
-      (window as any).__welcomeAudio ||
-      (document.getElementById("welcome-audio") as HTMLAudioElement | null);
+    const updateSayHi = () => {
+      const audio = getAudio();
+      setShowSayHi(Boolean(audio && !audio.paused && !audio.muted));
+    };
+
+    const audio = getAudio();
     if (audio) {
       audio.addEventListener("play", updateSayHi);
       audio.addEventListener("pause", updateSayHi);
+      audio.addEventListener("ended", updateSayHi);
+      audio.addEventListener("volumechange", updateSayHi);
     }
 
     updateSayHi();
+    setMounted(true);
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("scroll", onScroll);
       if (audio) {
         audio.removeEventListener("play", updateSayHi);
         audio.removeEventListener("pause", updateSayHi);
+        audio.removeEventListener("ended", updateSayHi);
+        audio.removeEventListener("volumechange", updateSayHi);
       }
     };
   }, []);
+
+  useEffect(() => {
+    let timer: number | undefined;
+    if (modalOpen) {
+      setChatStep(1);
+      timer = window.setInterval(() => {
+        setChatStep((prev) => {
+          if (prev >= chatSamples.length) {
+            window.clearInterval(timer);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 1800);
+    } else {
+      setChatStep(0);
+    }
+
+    return () => {
+      if (timer) window.clearInterval(timer);
+    };
+  }, [modalOpen]);
+
+  useEffect(() => {
+    let timer: number | undefined;
+    setHeroChatStep(1);
+    timer = window.setInterval(() => {
+      setHeroChatStep((prev) => {
+        if (prev >= chatSamples.length) {
+          window.clearInterval(timer);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 1800);
+
+    return () => {
+      if (timer) window.clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+    if (heroChatContainerRef.current) {
+      heroChatContainerRef.current.scrollTop =
+        heroChatContainerRef.current.scrollHeight;
+    }
+  }, [chatStep, heroChatStep]);
 
   const titleText = localize(data.title, language);
   const titleLines = titleText.split("\n");
@@ -67,6 +146,8 @@ export default function Hero({ data }: { data: HeroData }) {
   );
   const subtitleText = localize(data.subtitle, language);
   const badgeText = data.badge ? localize(data.badge, language) : undefined;
+  const chatMessages = chatSamples.slice(0, chatStep);
+  const heroChatMessages = chatSamples.slice(0, heroChatStep);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/50 to-white dark:from-slate-950 dark:via-slate-900/50 dark:to-slate-950 text-slate-950 dark:text-white">
@@ -87,25 +168,27 @@ export default function Hero({ data }: { data: HeroData }) {
             ease: "easeInOut",
           }}
         >
-          <video
-            className={`w-full h-full object-cover ${
-              isDark
-                ? "brightness-105 contrast-110 saturate-115"
-                : "brightness-95 contrast-105 saturate-110"
-            }`}
-            src={
-              isDark
-                ? "/assets/videos/video-section.mp4"
-                : "/assets/videos/video-hero-white.mp4"
-            }
-            preload="auto"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
+          {mounted && (
+            <video
+              className={`w-full h-full object-cover ${
+                isDark
+                  ? "brightness-105 contrast-110 saturate-115"
+                  : "brightness-95 contrast-105 saturate-110"
+              }`}
+              src={
+                isDark
+                  ? "/assets/videos/video-section.mp4"
+                  : "/assets/videos/video-hero-white.mp4"
+              }
+              preload="auto"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          )}
           <div
-            className={`absolute inset-0 ${isDark ? "bg-gradient-to-br from-slate-950/45 via-slate-950/25 to-transparent" : "bg-gradient-to-br from-white/80 via-white/55 to-transparent"}`}
+            className={`absolute inset-0 ${isDark ? "bg-gradient-to-br from-slate-950/70 via-slate-950/45 to-transparent" : "bg-gradient-to-br from-white/80 via-white/55 to-transparent"}`}
           />
         </motion.div>
 
@@ -227,9 +310,94 @@ export default function Hero({ data }: { data: HeroData }) {
       </div>
 
       <div className="absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-sky-500/5 via-transparent to-transparent" />
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 lg:py-28">
+      <div className="pointer-events-none absolute inset-0 z-5 flex items-center justify-center px-4 text-center">
+        <span className="mx-auto max-w-full select-none text-[clamp(1rem,16vw,3rem)] font-black uppercase tracking-[0.18em] leading-none text-slate-950/5 dark:text-slate-500/10 sm:text-[clamp(2.2rem,10vw,5.5rem)] sm:tracking-[0.28em] lg:text-[clamp(2.6rem,9vw,6rem)] lg:tracking-[0.35em]">
+          paitonix-labs
+        </span>
+      </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 lg:py-28">
+        <div className="relative z-20 mb-8 flex w-full justify-start">
+          <div className="w-full max-w-[840px] text-left">
+            <div className="flex items-center gap-4 mb-6">
+              <img
+                src="/assets/images/logo-black-transparent.png"
+                alt="Paitonix"
+                className="h-12 w-12 object-cover"
+              />
+              <div>
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600 shadow-sm shadow-slate-900/5 dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-300">
+                  <svg
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-4 w-4 text-sky-500"
+                    aria-hidden="true"
+                  >
+                    <path d="M10 2a6 6 0 100 12 6 6 0 000-12zm1 9H9V6h2v5zm-1 3a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
+                  </svg>
+                  {localize({ id: "Visi", en: "Vision" }, language)}
+                </div>
+                <p className="max-w-xl text-sm text-slate-600 dark:text-slate-300">
+                  {localize(
+                    {
+                      id: "Visi kami adalah menghubungkan produk, orang, dan kecerdasan dalam pengalaman digital yang mulus.",
+                      en: "Our vision is to connect products, people, and intelligence in a seamless digital experience.",
+                    },
+                    language,
+                  )}
+                </p>
+                <span className="text-lg font-semibold uppercase tracking-[0.35em] text-sky-400">
+                  paitonix-labs
+                </span>
+              </div>
+            </div>
+            <div className="space-y-10">
+              <div className="space-y-3 text-sky-900/85 dark:text-sky-100/95">
+                <div className="relative pl-8">
+                  <span className="absolute left-0 top-2 block h-3 w-3 rounded-full bg-slate-900/95 dark:bg-slate-100/95 shadow-[0_0_18px_rgba(15,23,42,0.35)]" />
+                  <span className="absolute left-2 top-5 block h-16 w-1 rounded-full bg-gradient-to-b from-sky-600/50 to-sky-400/20 opacity-90 dark:from-slate-200/70 dark:to-white/20" />
+                  <div className="rounded-3xl border border-slate-300/30 bg-white/10 px-4 py-3 dark:border-slate-600/40 dark:bg-slate-950/20">
+                    <p className="text-3xl sm:text-4xl lg:text-[4rem] font-black tracking-[-0.05em] leading-[0.95] text-current">
+                      integrate.
+                    </p>
+                  </div>
+                </div>
+                <div className="relative pl-14">
+                  <span className="absolute left-0 top-10 block h-1 w-14 rounded-full bg-sky-700/30 shadow-[0_0_20px_rgba(56,189,248,0.12)] dark:bg-slate-200/70" />
+                  <div className="rounded-3xl border border-slate-300/30 bg-white/10 px-4 py-3 dark:border-slate-600/40 dark:bg-slate-950/20">
+                    <p className="text-3xl sm:text-4xl lg:text-[4rem] font-black tracking-[-0.05em] leading-[0.95] text-current">
+                      connect.
+                    </p>
+                  </div>
+                </div>
+                <div className="relative pl-20">
+                  <span className="absolute left-4 top-10 block h-1 w-14 rounded-full bg-sky-700/30 shadow-[0_0_20px_rgba(56,189,248,0.12)] dark:bg-slate-200/70" />
+                  <div className="rounded-3xl border border-slate-300/30 bg-white/10 px-4 py-3 dark:border-slate-600/40 dark:bg-slate-950/20">
+                    <p className="text-3xl sm:text-4xl lg:text-[4rem] font-black tracking-[-0.05em] leading-[0.95] text-current">
+                      innovate.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-300/30 pt-8 dark:border-slate-700/40">
+                <div className="relative mb-6 h-1 overflow-hidden rounded-full bg-slate-200/50 dark:bg-slate-700/40">
+                  <motion.div
+                    className="absolute left-0 top-0 h-full w-24 rounded-full bg-cyan-500 shadow-[0_0_18px_rgba(56,189,248,0.45)]"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: ["-100%", "100%"] }}
+                    transition={{
+                      duration: 1.8,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <motion.div
-          className={`absolute inset-x-0 top-0 flex items-start lg:items-center justify-center pointer-events-none pt-6 sm:pt-10 transition-opacity duration-500 ${showSayHi ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-x-0 top-0 flex items-start lg:items-center justify-center pointer-events-none pt-2 sm:pt-10 transition-opacity duration-500 ${showSayHi ? "opacity-100" : "opacity-0"}`}
           animate={showSayHi ? { scale: [1, 1.02, 1] } : { scale: 1 }}
           transition={{
             duration: 6,
@@ -240,48 +408,23 @@ export default function Hero({ data }: { data: HeroData }) {
           <img
             src="/assets/images/say-hi-transparent.gif"
             alt="say hi gif"
-            className={`max-w-[85%] sm:max-w-[75%] lg:max-w-[70%] opacity-20 ${isDark ? "filter brightness-[0.8]" : "filter brightness-[1.15]"}`}
+            className={`max-w-[85%] sm:max-w-[75%] lg:max-w-[70%] opacity-20 rotate-12 scale-105 ${isDark ? "filter brightness-[0.8]" : "filter brightness-[1.15]"}`}
           />
         </motion.div>
-        <div className="relative z-10 grid gap-14 lg:grid-cols-[1.05fr_0.95fr] items-center">
+        <div className="relative z-10 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] items-center">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -32 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="space-y-8"
+            className="space-y-10"
           >
-            <div className="inline-flex items-center gap-4 rounded-full bg-white/80 dark:bg-white/10 border border-white/60 dark:border-white/10 px-4 py-2 shadow-lg shadow-slate-950/10 backdrop-blur-xl">
-              <img
-                src="/assets/images/logo-2.png"
-                alt="Paitonix"
-                className="h-14 w-14 rounded-3xl object-cover shadow-xl shadow-slate-950/40"
-              />
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-sky-600 dark:text-sky-300">
-                  {badgeText}
-                </p>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-200">
-                  {localize(
-                    {
-                      id: "Platform landing page, web app, dan AI chatbot dalam satu pengalaman.",
-                      en: "Landing page platform, web app, and AI chatbot in one experience.",
-                    },
-                    language,
-                  )}
-                </p>
-              </div>
-            </div>
-
             <div>
-              <h1
-                className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-950 dark:text-white leading-[0.96]"
-                style={{ textShadow: "0 16px 48px rgba(15,23,42,0.12)" }}
-              >
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tight text-slate-950 dark:text-white leading-[0.96]">
                 {titleLines.map((line, i) => (
                   <motion.span
                     key={i}
                     className="block"
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 28 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.65, delay: 0.2 + i * 0.1 }}
                   >
@@ -292,16 +435,16 @@ export default function Hero({ data }: { data: HeroData }) {
             </div>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="max-w-2xl text-base sm:text-lg text-slate-900 dark:text-slate-200 leading-relaxed font-medium drop-shadow-sm"
+              transition={{ duration: 0.6, delay: 0.35 }}
+              className="max-w-2xl text-base sm:text-lg text-slate-900 dark:text-slate-200 leading-relaxed font-medium"
             >
               {subtitleText}
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.55 }}
               className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
@@ -309,7 +452,7 @@ export default function Hero({ data }: { data: HeroData }) {
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="relative inline-flex items-center justify-center rounded-full px-6 py-3 text-base font-extrabold transition-all duration-300 hover:-translate-y-1 bg-gradient-to-r from-cyan-500 to-sky-600 text-white shadow-[0_20px_40px_-24px_rgba(14,165,233,0.9)] hover:from-cyan-400 hover:to-sky-500"
+                className="inline-flex w-full sm:w-auto items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-sky-600 px-6 py-3 text-base font-semibold text-white shadow-[0_24px_48px_-28px_rgba(14,165,233,0.95)] transition-all duration-300 hover:-translate-y-0.5"
               >
                 {startConversationText}
                 <span className="ml-2">→</span>
@@ -324,68 +467,117 @@ export default function Hero({ data }: { data: HeroData }) {
                 )}
               </a>
             </motion.div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-[1.75rem] border border-slate-200/70 bg-slate-50/80 p-5 shadow-sm shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-900/60">
+                <p className="text-xs uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
+                  Premium Suite
+                </p>
+                <p className="mt-3 text-sm text-slate-900 dark:text-slate-100 leading-relaxed">
+                  Desain yang selaras dengan pengguna dan sistem yang siap
+                  berkembang.
+                </p>
+              </div>
+              <div className="rounded-[1.75rem] border border-slate-200/70 bg-white/80 p-5 shadow-sm shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/50">
+                <p className="text-xs uppercase tracking-[0.28em] text-sky-600 dark:text-cyan-300">
+                  Modern Delivery
+                </p>
+                <p className="mt-3 text-sm text-slate-900 dark:text-slate-100 leading-relaxed">
+                  Iterasi cepat, komunikasi jelas, dan pengalaman yang konsisten
+                  di setiap layar.
+                </p>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 32 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.75, ease: "easeOut" }}
-            className="relative mx-auto w-full max-w-2xl"
+            className="relative mx-auto w-full max-w-full sm:max-w-lg"
           >
             <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-br from-sky-500/20 via-transparent to-transparent blur-3xl" />
-            <div className="relative rounded-[2rem] border border-sky-200/80 dark:border-slate-700/50 bg-white/90 dark:bg-slate-800/50 shadow-[0_40px_80px_rgba(15,23,42,0.12),0_0_0_1px_rgba(14,165,233,0.08)] dark:shadow-[0_40px_80px_rgba(0,0,0,0.3)] overflow-hidden backdrop-blur-md">
-              {/* Card header */}
-              <div className="bg-gradient-to-br from-sky-600 via-sky-700 to-slate-800 dark:from-slate-900 dark:to-slate-950 px-6 py-6 text-slate-50">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-sky-200 dark:text-cyan-300">
-                      App preview
-                    </p>
-                    <p className="mt-2 text-sm text-sky-100 dark:text-slate-300">
-                      Tampilan startup modern
-                    </p>
-                  </div>
-                  <div className="inline-flex items-center rounded-full bg-amber-300 dark:bg-sky-500 px-3 py-1 text-[11px] font-semibold text-slate-950 dark:text-white">
-                    Aplikasi LIVE
-                  </div>
-                </div>
-
-                {/* Inner cards */}
-                <div className="mt-8 grid gap-4 rounded-[1.75rem] bg-white/10 dark:bg-slate-800/60 p-5 ring-1 ring-white/20 dark:ring-cyan-500/20 shadow-inner">
-                  {/* Insight bar */}
-                  <div className="rounded-3xl bg-white/15 dark:bg-slate-700/50 p-4">
-                    <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-sky-100 dark:text-slate-300">
-                      <span>Insight</span>
-                      <span>Realtime</span>
-                    </div>
-                    <div className="mt-4 grid gap-3">
-                      <div className="h-2.5 rounded-full bg-white/40 dark:bg-cyan-500/40" />
-                      <div className="h-2.5 rounded-full bg-white/40 dark:bg-cyan-500/40 w-5/6" />
-                      <div className="h-2.5 rounded-full bg-white/40 dark:bg-cyan-500/40 w-3/4" />
-                    </div>
-                  </div>
-                  {/* AI chat */}
-                  <div className="rounded-3xl bg-white/95 dark:bg-slate-700/60 p-4 text-slate-950 dark:text-white">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                      Paitonix AI
-                    </p>
-                    <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                      Chat dengan asisten produk untuk menyiapkan roadmap dan
-                      desain fitur Anda.
-                    </p>
-                  </div>
-                  {/* Startup launch */}
-                  <div className="flex items-center justify-between rounded-3xl bg-white/15 dark:bg-slate-700/50 px-4 py-3 text-sm">
+            <div className="relative z-20 overflow-hidden rounded-[2rem] border border-white/30 bg-white/40 shadow-2xl shadow-slate-950/10 backdrop-blur-2xl dark:border-slate-700/40 dark:bg-slate-950/75 dark:shadow-black/20">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.16),_transparent_42%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,_rgba(255,255,255,0.35)_0%,_rgba(255,255,255,0.08)_55%,_transparent_100%)]" />
+              <div className="relative p-6 sm:p-8">
+                <div
+                  className={`rounded-[2rem] border ${isDark ? "border-white/10 bg-slate-950/95" : "border-slate-200/80 bg-white/95"} p-5 shadow-2xl shadow-slate-950/10`}
+                >
+                  <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-xs uppercase tracking-[0.3em] text-amber-200 dark:text-cyan-400">
-                        Startup launch
+                      <p className="text-xs uppercase tracking-[0.3em] text-sky-500/80">
+                        Paitonix Chat
                       </p>
-                      <p className="mt-1 text-sm text-white dark:text-slate-200 font-medium">
-                        1.2K pengguna baru
+                      <p className="mt-2 text-sm text-slate-500 dark:text-slate-300">
+                        AI untuk percakapan produk.
                       </p>
                     </div>
-                    <div className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-amber-300 dark:bg-sky-500 text-slate-950 dark:text-white font-bold text-xs">
-                      +23%
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-900 overflow-hidden border border-white/10">
+                      <img
+                        src="/assets/images/ai-assistant.png"
+                        alt="AI assistant"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    ref={heroChatContainerRef}
+                    className="mt-6 flex max-h-[340px] flex-col gap-3 overflow-y-auto pr-1"
+                  >
+                    {heroChatMessages.map((message, index) => (
+                      <div
+                        key={index}
+                        className={`flex ${message.sender === "customer" ? "justify-end" : "justify-start"}`}
+                      >
+                        <div
+                          className={`max-w-[80%] rounded-[1.75rem] px-4 py-3 text-sm leading-relaxed ${
+                            message.sender === "customer"
+                              ? isDark
+                                ? "bg-slate-800 text-slate-100"
+                                : "bg-slate-100 text-slate-950"
+                              : isDark
+                                ? "bg-slate-900/90 text-slate-100"
+                                : "bg-slate-900 text-white"
+                          } ${message.sender === "customer" ? "rounded-tl-[1.75rem] rounded-tr-[1.75rem] rounded-bl-[1.75rem] rounded-br-[0.5rem]" : "rounded-tr-[1.75rem] rounded-bl-[1.75rem] rounded-br-[1.75rem] rounded-tl-[0.5rem]"}`}
+                        >
+                          {message.text}
+                        </div>
+                      </div>
+                    ))}
+                    {heroChatStep < chatSamples.length && (
+                      <div
+                        className={`inline-flex items-center gap-2 rounded-[1.5rem] px-4 py-3 text-sm ${isDark ? "bg-slate-900/85 text-slate-400" : "bg-slate-100 text-slate-600"}`}
+                      >
+                        <span className="inline-flex h-2.5 w-2.5 rounded-full bg-current animate-pulse" />
+                        {localize(
+                          {
+                            id: "AI sedang mengetik...",
+                            en: "AI is typing...",
+                          },
+                          language,
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    className={`mt-5 rounded-[1.75rem] border ${isDark ? "border-white/10 bg-slate-900/75 text-slate-300" : "border-slate-200/80 bg-slate-50 text-slate-700"} px-4 py-4`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm text-slate-400 dark:text-slate-400">
+                        {localize(
+                          {
+                            id: "Tanyakan ide fitur...",
+                            en: "Ask feature ideas...",
+                          },
+                          language,
+                        )}
+                      </span>
+                      <button className="rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-cyan-500/20">
+                        {localize({ id: "Kirim", en: "Send" }, language)}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -398,13 +590,13 @@ export default function Hero({ data }: { data: HeroData }) {
       <AnimatePresence>
         {modalOpen && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-xl"
+            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className={`relative max-w-4xl w-full overflow-hidden rounded-[2rem] border backdrop-blur-2xl ${
+              className={`relative w-full max-w-[min(100vw-1.5rem,56rem)] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-[2rem] border backdrop-blur-2xl ${
                 isDark
                   ? "border-slate-700/65 bg-slate-950/95 shadow-2xl shadow-slate-950/40"
                   : "border-slate-200/65 bg-white/95 shadow-2xl shadow-slate-200/30"
@@ -444,9 +636,15 @@ export default function Hero({ data }: { data: HeroData }) {
                 </div>
 
                 <div className="grid gap-6 lg:grid-cols-[1fr_0.85fr]">
-                  <div className="space-y-5 rounded-[1.75rem] bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 p-6 text-white shadow-xl shadow-cyan-500/20 dark:shadow-cyan-500/10">
-                    <div className="rounded-3xl bg-white/5 p-5">
-                      <p className="text-xs uppercase tracking-[0.30em] text-cyan-200/80">
+                  <div
+                    className={`space-y-5 rounded-[1.75rem] p-6 shadow-xl ${isDark ? "bg-gradient-to-br from-slate-950 via-slate-900 to-cyan-900 text-white shadow-cyan-500/20" : "bg-white/95 text-slate-950 shadow-slate-200/60 ring-1 ring-slate-200/70"}`}
+                  >
+                    <div
+                      className={`rounded-3xl p-5 ${isDark ? "bg-white/5" : "bg-slate-100/95 ring-1 ring-slate-200/80"}`}
+                    >
+                      <p
+                        className={`text-xs uppercase tracking-[0.30em] ${isDark ? "text-cyan-200/80" : "text-slate-500"}`}
+                      >
                         {localize(
                           {
                             id: "Apa yang Anda butuhkan?",
@@ -455,9 +653,13 @@ export default function Hero({ data }: { data: HeroData }) {
                           language,
                         )}
                       </p>
-                      <ul className="mt-5 space-y-4 text-sm leading-relaxed text-slate-100">
+                      <ul
+                        className={`mt-5 space-y-4 text-sm leading-relaxed ${isDark ? "text-slate-100" : "text-slate-700"}`}
+                      >
                         <li className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-7 w-7 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
+                          <span
+                            className={`mt-1 inline-flex h-7 w-7 items-center justify-center rounded-2xl ${isDark ? "bg-white/10 text-cyan-200" : "bg-slate-200 text-slate-700"}`}
+                          >
                             1
                           </span>
                           {localize(
@@ -469,7 +671,9 @@ export default function Hero({ data }: { data: HeroData }) {
                           )}
                         </li>
                         <li className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-7 w-7 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
+                          <span
+                            className={`mt-1 inline-flex h-7 w-7 items-center justify-center rounded-2xl ${isDark ? "bg-white/10 text-cyan-200" : "bg-slate-200 text-slate-700"}`}
+                          >
                             2
                           </span>
                           {localize(
@@ -481,7 +685,9 @@ export default function Hero({ data }: { data: HeroData }) {
                           )}
                         </li>
                         <li className="flex items-start gap-3">
-                          <span className="mt-1 inline-flex h-7 w-7 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
+                          <span
+                            className={`mt-1 inline-flex h-7 w-7 items-center justify-center rounded-2xl ${isDark ? "bg-white/10 text-cyan-200" : "bg-slate-200 text-slate-700"}`}
+                          >
                             3
                           </span>
                           {localize(
@@ -496,7 +702,7 @@ export default function Hero({ data }: { data: HeroData }) {
                     </div>
 
                     <div
-                      className={`rounded-[1.5rem] p-5 ring-1 ${isDark ? "bg-slate-900/80 ring-white/10 text-slate-300" : "bg-slate-100/95 ring-slate-200/80 text-slate-700"}`}
+                      className={`rounded-[1.5rem] p-5 ring-1 ${isDark ? "bg-slate-900/90 ring-white/10 text-slate-200" : "bg-white/95 ring-slate-200/80 text-slate-900"}`}
                     >
                       <div className="flex items-center justify-between">
                         <span
@@ -507,11 +713,15 @@ export default function Hero({ data }: { data: HeroData }) {
                             language,
                           )}
                         </span>
-                        <span className="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-semibold text-cyan-100">
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${isDark ? "bg-cyan-500/15 text-cyan-100" : "bg-cyan-500/10 text-cyan-700"}`}
+                        >
                           {localize({ id: "Gratis", en: "Free" }, language)}
                         </span>
                       </div>
-                      <p className="mt-4 text-sm leading-relaxed text-slate-300">
+                      <p
+                        className={`mt-4 text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-700"}`}
+                      >
                         {localize(
                           {
                             id: "Kami mulai dengan kebutuhan Anda, lalu rekomendasikan paket yang tepat.",
@@ -520,6 +730,66 @@ export default function Hero({ data }: { data: HeroData }) {
                           language,
                         )}
                       </p>
+                    </div>
+
+                    <div
+                      className={`rounded-[1.5rem] p-4 ring-1 ${isDark ? "bg-slate-900/90 ring-white/10 text-slate-200" : "bg-slate-50 ring-slate-200/80 text-slate-900"}`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span
+                          className={`text-xs uppercase tracking-[0.3em] ${isDark ? "text-slate-400" : "text-slate-500"}`}
+                        >
+                          {localize(
+                            { id: "Chat AI", en: "AI Chat Preview" },
+                            language,
+                          )}
+                        </span>
+                        <span
+                          className={`rounded-full px-3 py-1 text-[11px] font-semibold ${isDark ? "bg-sky-500/15 text-sky-200" : "bg-slate-900/10 text-slate-900"}`}
+                        >
+                          {localize(
+                            { id: "Live demo", en: "Live demo" },
+                            language,
+                          )}
+                        </span>
+                      </div>
+                      <div
+                        ref={chatContainerRef}
+                        className="mt-4 max-h-56 space-y-3 overflow-y-auto pr-1"
+                      >
+                        {chatMessages.map((message, index) => (
+                          <div
+                            key={index}
+                            className={`flex ${message.sender === "customer" ? "justify-end" : "justify-start"}`}
+                          >
+                            <div
+                              className={`max-w-[80%] rounded-[1.5rem] px-4 py-3 text-sm leading-relaxed ${
+                                message.sender === "ai"
+                                  ? isDark
+                                    ? "bg-cyan-500/15 text-cyan-100"
+                                    : "bg-cyan-500/10 text-slate-950"
+                                  : isDark
+                                    ? "bg-slate-800/85 text-slate-100"
+                                    : "bg-white shadow-sm text-slate-900"
+                              }`}
+                            >
+                              {message.text}
+                            </div>
+                          </div>
+                        ))}
+                        {chatStep < chatSamples.length && (
+                          <div className="inline-flex items-center gap-2 rounded-[1.5rem] bg-slate-100 px-4 py-3 text-sm text-slate-700 dark:bg-slate-800/90 dark:text-slate-300">
+                            <span className="inline-flex h-2.5 w-2.5 rounded-full bg-current animate-pulse" />
+                            {localize(
+                              {
+                                id: "AI sedang mengetik...",
+                                en: "AI is typing...",
+                              },
+                              language,
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
