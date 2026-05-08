@@ -54,7 +54,7 @@ export default function FooterNew({
             transition={{ duration: 0.6 }}
           >
             <img
-              src="/assets/images/logo-long-transparent.png"
+              src="/assets/images/logo-long-white.png"
               alt="Paitonix"
               className="h-[8em] w-auto rounded-2xl mb-6 contrast-150 dark:contrast-50 border border-sky-500/60 dark:border-sky-400/50 shadow-lg shadow-sky-500/20"
             />

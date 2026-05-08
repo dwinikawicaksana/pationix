@@ -10,6 +10,7 @@ import FeatureReveal from "@/components/FeatureReveal";
 import CaseStudy from "@/components/CaseStudy";
 import CTASection from "@/components/CTASection";
 import FooterNew from "@/components/FooterNew";
+import PhilosophyCard from "@/components/PhilosophyCard";
 
 export default async function Home() {
   const data = await fetchLandingData();
@@ -19,6 +20,7 @@ export default async function Home() {
       <Navbar data={data.navbar} />
       <main className="mt-16">
         <Hero data={data.hero} />
+        <PhilosophyCard />
         <PreviewSlides />
         <ProductCatalogue />
         <Testimonials />

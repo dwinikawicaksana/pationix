@@ -18,7 +18,7 @@ export default function Footer({
           <div className="max-w-xl">
             <div className="inline-flex items-center gap-3 rounded-3xl bg-gradient-to-r from-sky-500 via-amber-400 to-[#8b5e3c] px-4 py-3 text-white shadow-xl shadow-slate-900/20 mb-4">
               <img
-                src="/assets/images/logo-long-transparent.png"
+                src="/assets/images/logo-long-white.png"
                 alt="Paitonix logo"
                 className="h-12 w-auto rounded-2xl bg-white p-2 shadow-sm shadow-slate-900/10"
               />

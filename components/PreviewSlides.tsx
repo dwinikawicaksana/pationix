@@ -52,8 +52,47 @@ export default function PreviewSlides() {
   return (
     <section
       id="preview"
-      className="relative overflow-hidden py-20 sm:py-24 bg-white dark:bg-zinc-950 transition-colors"
+      className="relative overflow-hidden py-20 sm:py-24 bg-white dark:bg-slate-950 transition-colors"
     >
+      {/* Animated background elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Light mode orbs */}
+        <motion.div
+          className="absolute top-40 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
+          animate={{
+            y: [0, 40, 0],
+            x: [0, 20, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-40 right-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
+          animate={{
+            y: [0, -30, 0],
+            x: [0, -30, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Dark mode orbs */}
+        <motion.div
+          className="absolute top-40 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
+          animate={{
+            y: [0, 40, 0],
+            x: [0, 20, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-40 right-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
+          animate={{
+            y: [0, -30, 0],
+            x: [0, -30, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
       <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-sky-100/50 dark:from-sky-500/10 to-transparent" />
       <div className="max-w-7xl mx-auto px-6 relative">
         <div className="mx-auto max-w-3xl text-center mb-12">
@@ -77,7 +116,7 @@ export default function PreviewSlides() {
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.55, delay: index * 0.12 }}
               whileHover={{ y: -8, transition: { duration: 0.25 } }}
-              className="group overflow-hidden rounded-[2rem] border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/60 shadow-2xl shadow-slate-200/50 dark:shadow-black/30 transition hover:-translate-y-1 hover:shadow-2xl backdrop-blur"
+              className="group overflow-hidden rounded-[2rem] border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/60 shadow-2xl shadow-slate-200/50 dark:shadow-black/30 transition hover:-translate-y-1 hover:shadow-2xl backdrop-blur-lg"
             >
               <div className="relative overflow-hidden bg-slate-950/5">
                 <img

@@ -48,9 +48,61 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="py-24 lg:py-32 bg-slate-100 dark:bg-zinc-900/50 text-slate-950 dark:text-white"
+      className="py-24 lg:py-32 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900/40 dark:to-slate-950 text-slate-950 dark:text-white relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Light mode orbs */}
+        <motion.div
+          className="absolute top-32 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
+          animate={{
+            y: [0, 50, 0],
+            x: [0, 30, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-32 left-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
+          animate={{
+            y: [0, -40, 0],
+            x: [0, -20, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Dark mode orbs */}
+        <motion.div
+          className="absolute top-32 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
+          animate={{
+            y: [0, 50, 0],
+            x: [0, 30, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-32 left-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
+          animate={{
+            y: [0, -40, 0],
+            x: [0, -20, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Animated grid for dark mode */}
+        <motion.div
+          className="absolute inset-0 opacity-0 dark:opacity-5"
+          style={{
+            backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
+            backgroundSize: "50px 50px",
+          }}
+          animate={{
+            backgroundPosition: ["0px 0px", "50px 50px"],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
         <div className="mx-auto max-w-3xl text-center mb-16">
           <span className="inline-flex rounded-full bg-slate-950 dark:bg-sky-500/20 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-300 dark:text-sky-300">
             {localize(uiText.label, language)}
@@ -71,7 +123,7 @@ export default function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.55, delay: index * 0.08 }}
-              className="rounded-[2rem] border border-slate-200 dark:border-zinc-700/50 bg-white dark:bg-zinc-800/60 p-8 shadow-xl shadow-slate-200/70 dark:shadow-black/30 backdrop-blur"
+              className="rounded-[2rem] border border-slate-200 dark:border-zinc-700/50 bg-white dark:bg-zinc-800/60 p-8 shadow-xl shadow-slate-200/70 dark:shadow-black/30 backdrop-blur-lg"
             >
               <p className="text-base leading-relaxed text-slate-700 dark:text-gray-200">
                 "{localize(item.quote, language)}"

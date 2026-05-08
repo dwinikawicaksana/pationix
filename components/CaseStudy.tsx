@@ -48,7 +48,7 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
         transition: { duration: 0.3 },
         boxShadow: `0 25px 50px -12px rgba(14, 165, 233, 0.3)`,
       }}
-      className="group relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/50 hover:border-sky-400/50 dark:hover:border-cyan-500/50 transition-all duration-300 hover:shadow-2xl backdrop-blur-sm"
+      className="group relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/50 hover:border-sky-400/50 dark:hover:border-cyan-500/50 transition-all duration-300 hover:shadow-2xl backdrop-blur-lg"
     >
       {/* Animated neon glow border on hover */}
       <motion.div
@@ -194,12 +194,13 @@ export default function CaseStudy({
   return (
     <section
       id="case-studies"
-      className="py-24 lg:py-32 relative overflow-hidden bg-gradient-to-b from-white via-zinc-50/50 to-white dark:from-black dark:via-zinc-900/30 dark:to-black"
+      className="py-24 lg:py-32 relative overflow-hidden bg-gradient-to-b from-white via-zinc-50/50 to-white dark:from-slate-950 dark:via-slate-900/40 dark:to-slate-950"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none">
+        {/* Light mode orbs */}
         <motion.div
-          className="absolute top-20 right-1/3 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl"
+          className="absolute top-20 right-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
           animate={{
             y: [0, 50, 0],
             x: [0, 30, 0],
@@ -207,12 +208,69 @@ export default function CaseStudy({
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-20 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"
+          className="absolute bottom-20 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
           animate={{
             y: [0, -50, 0],
             x: [0, -30, 0],
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/3 left-20 w-80 h-80 opacity-100 dark:opacity-0 bg-indigo-400/12 rounded-full blur-3xl"
+          animate={{
+            y: [0, -30, 0],
+            x: [0, 20, 0],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        {/* Dark mode orbs */}
+        <motion.div
+          className="absolute top-20 right-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
+          animate={{
+            y: [0, 50, 0],
+            x: [0, 30, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-20 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
+          animate={{
+            y: [0, -50, 0],
+            x: [0, -30, 0],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/3 left-20 w-80 h-80 opacity-0 dark:opacity-100 bg-purple-500/8 rounded-full blur-3xl"
+          animate={{
+            y: [0, -30, 0],
+            x: [0, 20, 0],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        {/* Animated grid for dark mode */}
+        <motion.div
+          className="absolute inset-0 opacity-0 dark:opacity-5"
+          style={{
+            backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
+            backgroundSize: "50px 50px",
+          }}
+          animate={{
+            backgroundPosition: ["0px 0px", "50px 50px"],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
       </div>
 

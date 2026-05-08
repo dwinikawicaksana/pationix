@@ -14,6 +14,34 @@ export default function LoadingScreen() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (!isLoading) {
+      const audioTimer = setTimeout(() => {
+        try {
+          // Use the audio element started by the inline script
+          const audio =
+            (window as any).__welcomeAudio ||
+            (document.getElementById("welcome-audio") as HTMLAudioElement);
+
+          if (!audio) return;
+
+          if (!audio.paused) {
+            // Already playing muted — just unmute
+            audio.muted = false;
+            audio.volume = 1.0;
+          } else {
+            // Autoplay was blocked; try play() now (needs user gesture on strict browsers)
+            audio.muted = false;
+            audio.volume = 1.0;
+            audio.play().catch(() => {});
+          }
+        } catch (_) {}
+      }, 400);
+
+      return () => clearTimeout(audioTimer);
+    }
+  }, [isLoading]);
+
   return (
     <AnimatePresence>
       {isLoading && (

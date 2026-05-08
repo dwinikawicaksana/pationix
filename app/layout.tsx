@@ -49,6 +49,25 @@ export default function RootLayout({
         className="antialiased bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
+        {/* Global audio element for welcome voice */}
+        <audio
+          id="welcome-audio"
+          src="/assets/audio/welcome-voice.mp3"
+          preload="auto"
+        />
+        {/* Start audio muted as early as possible — bypasses autoplay policy */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+  var a=document.getElementById('welcome-audio');
+  if(!a){a=new Audio('/assets/audio/welcome-voice.mp3');a.id='welcome-audio-js';document.body&&document.body.appendChild(a);}
+  a.muted=true;a.volume=0;
+  var p=a.play();
+  if(p)p.then(function(){window.__audioStarted=true;}).catch(function(){window.__audioStarted=false;});
+  window.__welcomeAudio=a;
+})()`,
+          }}
+        />
         <LoadingScreen />
         <LanguageProvider>{children}</LanguageProvider>
       </body>

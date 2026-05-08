@@ -58,6 +58,17 @@ export default function ProductCatalogue() {
       id="projects"
       className="relative py-24 lg:py-32 bg-slate-950 text-white overflow-hidden"
     >
+      {/* Electrical video background */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover opacity-25"
+        src="/assets/videos/video-section.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+      {/* Dark overlay to keep cards legible */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85 pointer-events-none" />
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />

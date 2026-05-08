@@ -20,12 +20,27 @@ export default function CTASection({ data }: { data: CTAData }) {
   return (
     <section
       id="cta"
-      className="py-24 lg:py-32 bg-gradient-to-b from-white via-zinc-50/30 to-white dark:from-black dark:via-zinc-900/30 dark:to-black relative overflow-hidden"
+      className="py-24 lg:py-32 relative overflow-hidden bg-slate-950"
     >
+      {/* Video background */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover opacity-40 dark:opacity-30"
+        src="/assets/videos/video-section.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
+
+      {/* Overlay gradients */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/50 to-slate-950/80 pointer-events-none" />
+
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none">
+        {/* orbs (only dark-style now since video provides base) */}
+        {/* Light mode orbs */}
         <motion.div
-          className="absolute top-10 left-1/4 w-96 h-96 bg-sky-500/15 rounded-full blur-3xl"
+          className="absolute top-10 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
           animate={{
             y: [0, 40, 0],
             x: [0, 30, 0],
@@ -33,7 +48,7 @@ export default function CTASection({ data }: { data: CTAData }) {
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-10 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"
+          className="absolute bottom-10 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
           animate={{
             y: [0, -40, 0],
             x: [0, -30, 0],
@@ -41,12 +56,51 @@ export default function CTASection({ data }: { data: CTAData }) {
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute top-1/2 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"
+          className="absolute top-1/2 right-10 w-72 h-72 opacity-100 dark:opacity-0 bg-indigo-400/12 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.4, 0.7, 0.4],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Dark mode orbs */}
+        <motion.div
+          className="absolute top-10 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
+          animate={{
+            y: [0, 40, 0],
+            x: [0, 30, 0],
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-10 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
+          animate={{
+            y: [0, -40, 0],
+            x: [0, -30, 0],
+          }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/2 right-10 w-72 h-72 opacity-0 dark:opacity-100 bg-purple-500/10 rounded-full blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.6, 0.3],
           }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Animated grid for dark mode */}
+        <motion.div
+          className="absolute inset-0 opacity-0 dark:opacity-5"
+          style={{
+            backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
+            backgroundSize: "50px 50px",
+          }}
+          animate={{
+            backgroundPosition: ["0px 0px", "50px 50px"],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
       </div>
 
@@ -59,9 +113,10 @@ export default function CTASection({ data }: { data: CTAData }) {
           className="relative overflow-hidden rounded-3xl px-8 py-20 md:py-28 text-center backdrop-blur-2xl"
           style={{
             background:
-              "linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(248, 250, 252, 0.5) 100%)",
+              "linear-gradient(135deg, rgba(15,23,42,0.65) 0%, rgba(8,47,73,0.55) 100%)",
             boxShadow:
-              "0 8px 32px rgba(14, 165, 233, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.5)",
+              "0 8px 48px rgba(14, 165, 233, 0.18), inset 0 1px 0 rgba(255,255,255,0.08)",
+            border: "1px solid rgba(56,189,248,0.18)",
           }}
         >
           {/* Animated border gradient */}
@@ -103,7 +158,7 @@ export default function CTASection({ data }: { data: CTAData }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="inline-block text-[10px] font-bold tracking-[0.22em] uppercase bg-gradient-to-r from-sky-600 to-cyan-600 dark:from-sky-400 dark:to-cyan-400 bg-clip-text text-transparent mb-5 animate-pulse"
+            className="inline-block text-[10px] font-bold tracking-[0.22em] uppercase text-sky-400 mb-5 animate-pulse"
           >
             {localize(uiText.label, language)}
           </motion.span>
@@ -113,7 +168,7 @@ export default function CTASection({ data }: { data: CTAData }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.15, duration: 0.7 }}
-            className="text-4xl md:text-6xl lg:text-[4.25rem] font-black tracking-tighter bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 dark:from-white dark:via-cyan-200 dark:to-sky-400 bg-clip-text text-transparent mb-5 leading-[1.05]"
+            className="text-4xl md:text-6xl lg:text-[4.25rem] font-black tracking-tighter bg-gradient-to-r from-white via-cyan-200 to-sky-300 bg-clip-text text-transparent mb-5 leading-[1.05]"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             {title}
@@ -124,7 +179,7 @@ export default function CTASection({ data }: { data: CTAData }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.28, duration: 0.6 }}
-            className="text-zinc-600 dark:text-zinc-300 text-[17px] max-w-md mx-auto mb-11 leading-relaxed"
+            className="text-slate-300 text-[17px] max-w-md mx-auto mb-11 leading-relaxed"
           >
             {subtitle}
           </motion.p>
@@ -158,7 +213,7 @@ export default function CTASection({ data }: { data: CTAData }) {
               <motion.a
                 href="#case-studies"
                 whileHover={{ x: 4 }}
-                className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors font-medium"
+                className="text-sm text-slate-300 hover:text-sky-400 transition-colors font-medium"
               >
                 {secondaryButton}
               </motion.a>
@@ -170,7 +225,7 @@ export default function CTASection({ data }: { data: CTAData }) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.5 }}
-            className="mt-9 text-[11px] text-zinc-500 dark:text-zinc-400 tracking-wide"
+            className="mt-9 text-[11px] text-slate-400 tracking-wide"
           >
             Konsultasi awal 30 menit · Tanpa komitmen
           </motion.p>
