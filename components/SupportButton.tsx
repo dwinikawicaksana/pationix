@@ -53,11 +53,11 @@ export default function SupportButton() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - Right side above WhatsApp */}
       <motion.button
         type="button"
         onClick={handleOpen}
-        className="fixed bottom-6 left-6 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(14,165,233,0.4)] hover:shadow-[0_12px_48px_rgba(14,165,233,0.6)] transition-all duration-300 backdrop-blur-xl border border-white/20 dark:border-cyan-400/30 group"
+        className="fixed bottom-24 right-6 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-[0_8px_32px_rgba(14,165,233,0.4)] hover:shadow-[0_12px_48px_rgba(14,165,233,0.6)] transition-all duration-300 backdrop-blur-xl border border-white/20 dark:border-cyan-400/30 group"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         aria-label="Open support"
@@ -83,11 +83,7 @@ export default function SupportButton() {
 
         {/* Badge */}
         {!isOpen && (
-          <motion.div
-            className="absolute top-0 right-0 w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
+          <span className="absolute top-0 right-0 w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50 animate-pulse" />
         )}
       </motion.button>
 
@@ -108,11 +104,11 @@ export default function SupportButton() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: -20, scale: 0.95 }}
+            initial={{ opacity: 0, x: 20, scale: 0.95 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -20, scale: 0.95 }}
+            exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-1/2 left-4 right-4 -translate-y-1/2 sm:top-auto sm:bottom-24 sm:left-6 sm:right-auto sm:translate-y-0 z-50 w-full sm:w-96 max-h-[calc(100vh-64px)] sm:max-h-96 rounded-2xl sm:rounded-[2rem] border border-slate-700/80 bg-slate-900/95 shadow-2xl shadow-slate-950/60 overflow-hidden flex flex-col"
+            className="fixed top-1/2 left-4 right-4 -translate-y-1/2 md:top-auto md:bottom-40 md:right-6 md:left-auto md:translate-y-0 z-50 w-11/12 md:w-96 max-h-[calc(100vh-64px)] md:max-h-96 rounded-2xl md:rounded-[2rem] border border-slate-700/80 bg-slate-900/95 shadow-2xl shadow-slate-950/60 overflow-hidden flex flex-col"
           >
             {/* Header */}
             <div className="border-b border-slate-800/80 bg-gradient-to-r from-sky-500/10 to-cyan-500/10 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-3 sm:gap-4 backdrop-blur-xl">

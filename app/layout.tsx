@@ -3,7 +3,6 @@ import "./globals.css";
 import LanguageProvider from "@/components/LanguageProvider";
 import LoadingScreen from "@/components/LoadingScreen";
 import ScrollToTop from "@/components/ScrollToTop";
-import AutoScrollButton from "@/components/AutoScrollButton";
 import SupportButton from "@/components/SupportButton";
 
 export const metadata: Metadata = {
@@ -82,7 +81,6 @@ export default function RootLayout({
           <LoadingScreen />
           <ScrollToTop />
           {children}
-          <AutoScrollButton />
           <SupportButton />
         </LanguageProvider>
       </body>

@@ -63,18 +63,20 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
       }
       className="group relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/50 hover:border-sky-400/50 dark:hover:border-cyan-500/50 transition-all duration-300 hover:shadow-2xl backdrop-blur-lg"
     >
-      {/* Animated neon glow border on hover */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl pointer-events-none"
-        initial={{ opacity: 0 }}
-        whileHover={isMobile ? {} : { opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        style={{
-          background: `linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.2), transparent)`,
-          backgroundSize: "200% 100%",
-        }}
-        animate={{ backgroundPosition: ["-200% 0", "200% 0"] }}
-      />
+      {/* Animated neon glow border on hover - desktop only */}
+      {!isMobile && (
+        <motion.div
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          style={{
+            background: `linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.2), transparent)`,
+            backgroundSize: "200% 100%",
+          }}
+          animate={{ backgroundPosition: ["-200% 0", "200% 0"] }}
+        />
+      )}
 
       <div className="relative h-52 overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-50 dark:from-zinc-800 dark:to-zinc-900">
         <motion.img

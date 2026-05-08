@@ -68,10 +68,11 @@ export default function PhilosophyCard() {
 
       <div className="relative max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{ willChange: "opacity" }}
           className="relative rounded-[2.5rem] overflow-hidden
             border border-white/10
             bg-white/8
@@ -84,10 +85,10 @@ export default function PhilosophyCard() {
           <div className="px-8 py-12 sm:px-14 sm:py-16">
             {/* Label */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.15 }}
+              transition={{ duration: 0.25, delay: 0.08 }}
               className="flex items-center gap-3 mb-8"
             >
               <span className="inline-block w-8 h-[2px] rounded-full bg-gradient-to-r from-sky-400 to-cyan-400" />
@@ -101,7 +102,7 @@ export default function PhilosophyCard() {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.25, delay: 0.12 }}
               className="text-[6rem] leading-none font-serif text-white/20 select-none -mt-4 mb-2"
               aria-hidden="true"
             >
@@ -110,10 +111,10 @@ export default function PhilosophyCard() {
 
             {/* Quote text */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.3 }}
+              transition={{ duration: 0.3, delay: 0.15 }}
               className="text-center text-xl sm:text-2xl lg:text-3xl font-semibold leading-snug text-white tracking-tight font-sans"
               style={{ fontFamily: "Inter, system-ui, sans-serif" }}
             >
@@ -122,10 +123,10 @@ export default function PhilosophyCard() {
 
             {/* Divider + origin */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.25, delay: 0.22 }}
               className="mt-10 flex flex-col items-center gap-4"
             >
               <div className="flex items-center gap-3">

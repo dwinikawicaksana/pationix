@@ -1,6 +1,39 @@
 "use client";
 import { useEffect, useState } from "react";
 
+function SunIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  );
+}
+
+function MoonIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
 export default function ThemeToggle({ compact }: { compact?: boolean }) {
   const [dark, setDark] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -23,50 +56,44 @@ export default function ThemeToggle({ compact }: { compact?: boolean }) {
     localStorage.setItem("theme", next ? "dark" : "light");
   };
 
-  if (!mounted) return <div className={compact ? "w-10 h-6" : "w-14 h-7"} />;
-
-  const baseClasses = compact
-    ? "relative inline-flex h-8 w-16 items-center rounded-full p-1"
-    : "relative inline-flex h-11 w-24 items-center rounded-full p-1";
-
-  const knobClasses = compact
-    ? "absolute inset-y-1 left-1 h-6 w-6 rounded-full border border-slate-200 shadow transition-transform duration-300"
-    : "absolute inset-y-1 left-1 h-9 w-9 rounded-full border border-slate-200 shadow-md transition-transform duration-300";
+  if (!mounted) return <div className="w-16 h-8 rounded-full" />;
 
   return (
     <button
       onClick={toggle}
-      aria-label={dark ? "Switch to day mode" : "Switch to night mode"}
-      className={`${baseClasses} transition duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-500 ${
-        dark
-          ? "bg-slate-900/90 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.85)]"
-          : "bg-gradient-to-r from-cyan-300 via-sky-200 to-slate-100 shadow-[0_16px_40px_-24px_rgba(56,189,248,0.75)]"
+      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      className={`relative inline-flex h-8 w-16 shrink-0 cursor-pointer rounded-full border-2 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 ${
+        dark ? "bg-slate-800 border-slate-600" : "bg-sky-100 border-sky-300"
       }`}
     >
-      {!compact && (
-        <>
-          <span className="absolute left-3 text-[11px] font-semibold text-slate-900 dark:text-slate-200">
-            Day
-          </span>
-          <span className="absolute right-3 text-[11px] font-semibold text-slate-900 dark:text-slate-200">
-            Night
-          </span>
-        </>
-      )}
+      {/* Knob with embedded icon */}
       <span
-        className={`${knobClasses} ${
+        className={`absolute top-[3px] flex h-[22px] w-[22px] items-center justify-center rounded-full shadow-md transition-all duration-300 ease-in-out ${
           dark
-            ? "translate-x-8 bg-slate-950 text-white"
-            : "translate-x-0 bg-white text-sky-500"
+            ? "translate-x-[34px] bg-slate-200"
+            : "translate-x-[3px] bg-white"
         }`}
       >
-        <span
-          className={`absolute inset-0 flex items-center justify-center ${compact ? "text-xs" : "text-sm"}`}
-        >
-          {dark ? "🌙" : "☀️"}
-        </span>
+        {dark ? (
+          <MoonIcon className="w-3 h-3 text-indigo-500" />
+        ) : (
+          <SunIcon className="w-3 h-3 text-amber-500" />
+        )}
       </span>
-      <span className="sr-only">{dark ? "Night mode" : "Day mode"}</span>
+      {/* Faint track labels */}
+      <span
+        className={`absolute left-1.5 top-1/2 -translate-y-1/2 transition-opacity duration-200 ${dark ? "opacity-0" : "opacity-40"}`}
+      >
+        <SunIcon className="w-3 h-3 text-amber-400" />
+      </span>
+      <span
+        className={`absolute right-1.5 top-1/2 -translate-y-1/2 transition-opacity duration-200 ${dark ? "opacity-50" : "opacity-0"}`}
+      >
+        <MoonIcon className="w-3 h-3 text-indigo-400" />
+      </span>
+      <span className="sr-only">
+        {dark ? "Switch to light mode" : "Switch to dark mode"}
+      </span>
     </button>
   );
 }
