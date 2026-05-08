@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
 import Link from "next/link";
@@ -52,26 +53,53 @@ const projects = [
 
 export default function ProductCatalogue() {
   const { language } = useLanguage();
+  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    const initialDark = stored ? stored === "dark" : prefersDark;
+    setIsDark(initialDark);
+
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    setMounted(true);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <section
       id="projects"
-      className="relative py-24 lg:py-32 bg-slate-950 text-white overflow-hidden"
+      className="scroll-mt-24 relative py-24 lg:py-32 bg-white dark:bg-slate-950 text-slate-950 dark:text-white overflow-hidden transition-colors duration-300"
     >
-      {/* Electrical video background */}
+      {/* Video background */}
       <video
-        className="absolute inset-0 w-full h-full object-cover opacity-25"
+        className={`absolute inset-0 w-full h-full object-cover ${isDark ? "opacity-25" : "opacity-10"}`}
         src="/assets/videos/electrical.mp4"
         autoPlay
         muted
         loop
         playsInline
       />
-      {/* Dark overlay to keep cards legible */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85 pointer-events-none" />
+      {/* Adaptive overlay */}
+      <div
+        className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85" : "bg-gradient-to-b from-white/90 via-white/70 to-white/85"} pointer-events-none`}
+      />
       <div className="absolute inset-0 pointer-events-none">
-        <div className="hidden lg:block absolute top-20 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-2xl" />
-        <div className="hidden lg:block absolute bottom-0 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-2xl" />
+        <div className="hidden lg:block absolute top-20 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-2xl dark:bg-sky-500/10" />
+        <div className="hidden lg:block absolute bottom-0 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-2xl dark:bg-purple-500/10" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -83,13 +111,17 @@ export default function ProductCatalogue() {
           className="max-w-3xl mx-auto text-center mb-16"
           style={{ willChange: "opacity, transform" }}
         >
-          <span className="inline-flex items-center gap-2 rounded-full bg-slate-900/60 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-300 ring-1 ring-sky-400/30">
+          <span
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] ${isDark ? "bg-slate-900/60 text-sky-300 ring-1 ring-sky-400/30" : "bg-sky-100/60 text-sky-700 ring-1 ring-sky-300/40"}`}
+          >
             {localize(uiText.sectionLabel, language)}
           </span>
-          <h2 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
+          <h2 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-950 dark:text-white">
             {localize(uiText.heading, language)}
           </h2>
-          <p className="mt-5 text-base sm:text-lg text-slate-400 leading-relaxed">
+          <p
+            className={`mt-5 text-base sm:text-lg ${isDark ? "text-slate-400" : "text-slate-600"} leading-relaxed`}
+          >
             {localize(uiText.description, language)}
           </p>
         </motion.div>
@@ -110,7 +142,9 @@ export default function ProductCatalogue() {
             >
               <Link href={`/projects/${project.id}`}>
                 <div className="group block h-full cursor-pointer">
-                  <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/70 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/90">
+                  <div
+                    className={`relative overflow-hidden rounded-[2.5rem] border transition-all duration-300 hover:-translate-y-1 ${isDark ? "border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/70 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/90" : "border-slate-200/50 bg-slate-50 shadow-lg shadow-slate-200/30 hover:border-slate-300/70 hover:shadow-xl hover:shadow-slate-300/40"}`}
+                  >
                     <div className="relative overflow-hidden">
                       <img
                         src={project.image}
@@ -118,32 +152,44 @@ export default function ProductCatalogue() {
                         className="h-72 w-full object-cover"
                       />
                       <div
-                        className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-35`}
+                        className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${isDark ? "opacity-35" : "opacity-20"}`}
                       />
                     </div>
 
-                    <div className="relative p-8 flex flex-col justify-between min-h-[420px] bg-slate-950/95 backdrop-blur-sm">
+                    <div
+                      className={`relative p-8 flex flex-col justify-between min-h-[420px] ${isDark ? "bg-slate-950/95" : "bg-white/95"} backdrop-blur-sm`}
+                    >
                       <div className="space-y-6">
                         <div className="flex flex-wrap items-center justify-between gap-4">
                           <span
                             className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ring-1 ${
                               project.accent === "sky"
-                                ? "bg-sky-500/25 text-sky-100 ring-sky-400/40"
-                                : "bg-purple-500/25 text-purple-100 ring-purple-400/40"
+                                ? isDark
+                                  ? "bg-sky-500/25 text-sky-100 ring-sky-400/40"
+                                  : "bg-sky-100/70 text-sky-700 ring-sky-300/50"
+                                : isDark
+                                  ? "bg-purple-500/25 text-purple-100 ring-purple-400/40"
+                                  : "bg-purple-100/70 text-purple-700 ring-purple-300/50"
                             }`}
                           >
                             {localize(project.subtitle, language)}
                           </span>
-                          <span className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                          <span
+                            className={`text-xs uppercase tracking-[0.3em] ${isDark ? "text-slate-400" : "text-slate-600"}`}
+                          >
                             {project.id.toUpperCase()}
                           </span>
                         </div>
 
                         <div className="space-y-4">
-                          <h3 className="text-4xl sm:text-5xl font-black uppercase tracking-[0.14em] text-white">
+                          <h3
+                            className={`text-4xl sm:text-5xl font-black uppercase tracking-[0.14em] ${isDark ? "text-white" : "text-slate-950"}`}
+                          >
                             {localize(project.title, language)}
                           </h3>
-                          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                          <p
+                            className={`text-sm sm:text-base ${isDark ? "text-slate-300" : "text-slate-700"} leading-relaxed`}
+                          >
                             {localize(project.description, language)}
                           </p>
                         </div>
@@ -151,7 +197,9 @@ export default function ProductCatalogue() {
 
                       <div className="flex flex-col gap-4">
                         <div className="grid gap-3 sm:grid-cols-2">
-                          <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/80 p-4 text-sm text-slate-300">
+                          <div
+                            className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                          >
                             {localize(
                               {
                                 id: "UI yang intuitif dan siap scaling.",
@@ -160,7 +208,9 @@ export default function ProductCatalogue() {
                               language,
                             )}
                           </div>
-                          <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/80 p-4 text-sm text-slate-300">
+                          <div
+                            className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                          >
                             {localize(
                               {
                                 id: "Kolaborasi real-time dan insight produk.",
@@ -170,11 +220,15 @@ export default function ProductCatalogue() {
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-3 text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">
+                        <div
+                          className={`flex items-center gap-3 text-sm font-semibold ${isDark ? "text-slate-300 group-hover:text-white" : "text-slate-700 group-hover:text-slate-950"} transition-colors`}
+                        >
                           <span>
                             {localize(uiText.exploreProject, language)}
                           </span>
-                          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/15 group-hover:bg-white/25 transition-colors text-white">
+                          <span
+                            className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors ${isDark ? "bg-white/15 group-hover:bg-white/25 text-white" : "bg-slate-300/30 group-hover:bg-slate-300/50 text-slate-800"}`}
+                          >
                             →
                           </span>
                         </div>

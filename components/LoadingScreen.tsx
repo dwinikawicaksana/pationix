@@ -23,7 +23,7 @@ export default function LoadingScreen() {
       );
     };
 
-    const isAtTop = () => window.scrollY === 0;
+    const isAtTop = () => window.scrollY <= 2;
 
     const tryPlayAudio = async ({ force = false } = {}) => {
       const audio = getAudio();
@@ -39,22 +39,30 @@ export default function LoadingScreen() {
         await audio.play();
         playedRef.current = true;
       } catch (_err) {
-        // Ignore autoplay failures and retry later when the user scrolls to top
+        // Ignore autoplay failures and retry later when the user interacts.
       }
     };
 
     const handleScroll = () => {
-      if (isAtTop()) {
-        tryPlayAudio();
-      }
+      tryPlayAudio();
+    };
+
+    const handleInteraction = () => {
+      tryPlayAudio({ force: true });
     };
 
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     tryPlayAudio({ force: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("touchend", handleInteraction, { passive: true });
+    window.addEventListener("click", handleInteraction, { passive: true });
+    window.addEventListener("pointerup", handleInteraction, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("touchend", handleInteraction);
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("pointerup", handleInteraction);
     };
   }, []);
 

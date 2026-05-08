@@ -216,6 +216,103 @@ export function getLandingData(): LandingData {
       },
     ],
 
+    blogs: [
+      {
+        id: "blog-1",
+        title: {
+          id: "7 Prinsip Design System yang Mengubah Cara Kerja Tim",
+          en: "7 Design System Principles That Transform Team Workflow",
+        },
+        excerpt: {
+          id: "Bagaimana design system yang terstruktur dapat meningkatkan kolaborasi dan mempercepat development.",
+          en: "How a structured design system can improve collaboration and accelerate development.",
+        },
+        category: { id: "Design", en: "Design" },
+        date: "2024-01-15",
+        thumbnail:
+          "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=800&fit=crop",
+        slug: "design-system-principles",
+      },
+      {
+        id: "blog-2",
+        title: {
+          id: "Membangun API yang Scalable dengan Arsitektur Modern",
+          en: "Building Scalable APIs with Modern Architecture",
+        },
+        excerpt: {
+          id: "Best practices dalam mendesain API yang dapat menangani jutaan request per hari.",
+          en: "Best practices in designing APIs that can handle millions of requests daily.",
+        },
+        category: { id: "Backend", en: "Backend" },
+        date: "2024-01-10",
+        thumbnail:
+          "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=800&fit=crop",
+        slug: "scalable-api-architecture",
+      },
+      {
+        id: "blog-3",
+        title: {
+          id: "User Experience dalam Era AI: Apa yang Berubah?",
+          en: "User Experience in the AI Era: What's Changing?",
+        },
+        excerpt: {
+          id: "Eksplorasi bagaimana AI mengubah cara kita merancang pengalaman pengguna yang lebih personal.",
+          en: "Exploring how AI is reshaping the way we design more personalized user experiences.",
+        },
+        category: { id: "AI/UX", en: "AI/UX" },
+        date: "2024-01-05",
+        thumbnail: "/assets/images/era-ai.png",
+        slug: "ai-user-experience",
+      },
+      {
+        id: "blog-4",
+        title: {
+          id: "Optimasi Performance: Dari Konsep hingga Production",
+          en: "Performance Optimization: From Concept to Production",
+        },
+        excerpt: {
+          id: "Strategi mengoptimalkan performa aplikasi tanpa mengorbankan fitur dan user experience.",
+          en: "Strategies to optimize app performance without compromising features and user experience.",
+        },
+        category: { id: "Performance", en: "Performance" },
+        date: "2023-12-28",
+        thumbnail:
+          "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=800&fit=crop",
+        slug: "performance-optimization",
+      },
+      {
+        id: "blog-5",
+        title: {
+          id: "Mobile-First Development: Trend atau Keharusan?",
+          en: "Mobile-First Development: Trend or Necessity?",
+        },
+        excerpt: {
+          id: "Mengapa pendekatan mobile-first bukan lagi pilihan, tetapi kebutuhan dalam development modern.",
+          en: "Why mobile-first approach is no longer optional but essential in modern development.",
+        },
+        category: { id: "Mobile", en: "Mobile" },
+        date: "2023-12-20",
+        thumbnail: "/assets/images/test-blog.png",
+        slug: "mobile-first-development",
+      },
+      {
+        id: "blog-6",
+        title: {
+          id: "Team Collaboration Tools yang Mengubah Produktivitas",
+          en: "Collaboration Tools That Transform Team Productivity",
+        },
+        excerpt: {
+          id: "Evaluasi tools terbaik untuk meningkatkan kolaborasi tim dalam proyek digital modern.",
+          en: "Evaluating the best tools to enhance team collaboration in modern digital projects.",
+        },
+        category: { id: "Workflow", en: "Workflow" },
+        date: "2023-12-15",
+        thumbnail:
+          "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=800&fit=crop",
+        slug: "collaboration-tools",
+      },
+    ],
+
     cta: {
       title: {
         id: "Teknologi yang baik terasa tidak terlihat.",

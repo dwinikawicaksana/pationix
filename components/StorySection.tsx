@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { StoryData } from "@/types/landing";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
+import { useEffect, useState } from "react";
 
 function StoryCard({
   story,
@@ -11,7 +12,15 @@ function StoryCard({
   story: StoryData;
   language: "id" | "en";
 }) {
+  const [isMobile, setIsMobile] = useState(false);
   const isRight = story.align === "right";
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-20 items-center py-16 lg:py-24 border-b border-slate-200 last:border-0 dark:border-slate-800">
@@ -52,7 +61,7 @@ function StoryCard({
       >
         <motion.div
           className="group relative overflow-hidden rounded-[2.25rem] border border-slate-200/60 bg-slate-100 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.35)] transition-transform duration-500 hover:-translate-y-1 dark:border-slate-700/60 dark:bg-slate-900"
-          whileHover={{ scale: 1.01 }}
+          whileHover={isMobile ? {} : { scale: 1.01 }}
           transition={{ duration: 0.35, ease: "easeOut" }}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-sky-100/20 opacity-100 pointer-events-none dark:from-white/5 dark:via-transparent dark:to-sky-900/20" />
@@ -92,7 +101,7 @@ export default function StorySection({ stories }: { stories: StoryData[] }) {
   return (
     <section
       id="story"
-      className="relative overflow-hidden bg-slate-50 dark:bg-slate-950 py-24 sm:py-28"
+      className="scroll-mt-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950 py-24 sm:py-28"
     >
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-sky-100/70 blur-3xl mix-blend-color-dodge opacity-80 dark:bg-sky-500/15" />

@@ -73,7 +73,10 @@ export default function ChatbotPanel() {
   };
 
   return (
-    <section id="chatbot" className="py-20 sm:py-24 bg-slate-950 text-slate-50">
+    <section
+      id="chatbot"
+      className="scroll-mt-24 py-20 sm:py-24 bg-slate-950 text-slate-50"
+    >
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] items-center">
           <div className="space-y-6">
@@ -157,7 +160,7 @@ export default function ChatbotPanel() {
                 <button
                   type="button"
                   onClick={handleSend}
-                  className="inline-flex items-center justify-center rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600 transition"
+                  className="inline-flex items-center justify-center rounded-full bg-sky-500/85 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(14,165,233,0.35)] hover:shadow-[0_12px_36px_rgba(14,165,233,0.5)] backdrop-blur-xl border border-white/20 transition-all duration-300 hover:bg-sky-500/95 hover:-translate-y-0.5"
                 >
                   {localize(uiText.button, language)}
                 </button>

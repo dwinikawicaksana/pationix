@@ -20,7 +20,7 @@ export default function CTASection({ data }: { data: CTAData }) {
   return (
     <section
       id="cta"
-      className="py-24 lg:py-32 relative overflow-hidden bg-slate-950"
+      className="scroll-mt-24 py-24 lg:py-32 relative overflow-hidden bg-slate-950"
     >
       {/* Video background */}
       <video
@@ -196,11 +196,12 @@ export default function CTASection({ data }: { data: CTAData }) {
               href="mailto:halo@paitonix.id"
               whileHover={{
                 y: -4,
-                boxShadow: "0 20px 40px rgba(14, 165, 233, 0.3)",
+                boxShadow:
+                  "0 25px 50px rgba(14, 165, 233, 0.4), 0 0 30px rgba(6, 182, 212, 0.25)",
                 transition: { duration: 0.2 },
               }}
               whileTap={{ scale: 0.98 }}
-              className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm border border-sky-400/50"
+              className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-sky-500/90 to-cyan-500/90 text-white font-semibold text-sm shadow-[0_8px_32px_rgba(14,165,233,0.3)] hover:shadow-[0_15px_45px_rgba(14,165,233,0.5)] transition-all duration-300 backdrop-blur-xl border border-white/20 dark:border-cyan-400/30"
             >
               {button}
               <motion.span
@@ -214,7 +215,7 @@ export default function CTASection({ data }: { data: CTAData }) {
               <motion.a
                 href="#case-studies"
                 whileHover={{ x: 4 }}
-                className="text-sm text-slate-300 hover:text-sky-400 transition-colors font-medium"
+                className="text-sm text-slate-300 hover:text-sky-400 transition-colors font-medium backdrop-blur-sm px-4 py-2 rounded-full border border-white/10 hover:border-sky-400/50 hover:bg-sky-400/5"
               >
                 {secondaryButton}
               </motion.a>

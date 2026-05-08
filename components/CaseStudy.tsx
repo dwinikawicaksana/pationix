@@ -4,6 +4,7 @@ import { CaseStudyData } from "@/types/landing";
 import { AnimateIn } from "./AnimateIn";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
+import { useEffect, useState } from "react";
 
 function AnimatedCounter({ value }: { value: string }) {
   const numValue = parseFloat(value);
@@ -30,6 +31,7 @@ function AnimatedCounter({ value }: { value: string }) {
 
 function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
   const { language } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
   const neonColors = [
     "from-sky-500 to-cyan-400",
     "from-cyan-400 to-blue-500",
@@ -37,24 +39,35 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
   ];
   const colorClass = neonColors[index % 3];
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 28, scale: 0.92 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
-      whileHover={{
-        y: -8,
-        transition: { duration: 0.3 },
-        boxShadow: `0 25px 50px -12px rgba(14, 165, 233, 0.3)`,
-      }}
+      whileHover={
+        isMobile
+          ? {}
+          : {
+              y: -8,
+              transition: { duration: 0.3 },
+              boxShadow: `0 25px 50px -12px rgba(14, 165, 233, 0.3)`,
+            }
+      }
       className="group relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/50 hover:border-sky-400/50 dark:hover:border-cyan-500/50 transition-all duration-300 hover:shadow-2xl backdrop-blur-lg"
     >
       {/* Animated neon glow border on hover */}
       <motion.div
         className="absolute inset-0 rounded-2xl pointer-events-none"
         initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
+        whileHover={isMobile ? {} : { opacity: 1 }}
         transition={{ duration: 0.3 }}
         style={{
           background: `linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.2), transparent)`,
@@ -70,7 +83,7 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
           className="w-full h-full object-cover"
           loading="lazy"
           initial={{ scale: 1 }}
-          whileHover={{ scale: 1.08 }}
+          whileHover={isMobile ? {} : { scale: 1.08 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
 

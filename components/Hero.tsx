@@ -9,6 +9,7 @@ export default function Hero({ data }: { data: HeroData }) {
   const { language } = useLanguage();
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [showSayHi, setShowSayHi] = useState(false);
   const [chatStep, setChatStep] = useState(0);
@@ -43,6 +44,11 @@ export default function Hero({ data }: { data: HeroData }) {
     const initialDark = stored ? stored === "dark" : prefersDark;
     setIsDark(initialDark);
 
+    // Mobile detection
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
     });
@@ -75,8 +81,16 @@ export default function Hero({ data }: { data: HeroData }) {
     updateSayHi();
     setMounted(true);
 
+    // Listen for support button event
+    const handleShowSayHi = () => {
+      setShowSayHi(true);
+    };
+    window.addEventListener("showSayHi", handleShowSayHi);
+
     return () => {
       observer.disconnect();
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("showSayHi", handleShowSayHi);
       if (audio) {
         audio.removeEventListener("play", updateSayHi);
         audio.removeEventListener("pause", updateSayHi);
@@ -160,10 +174,10 @@ export default function Hero({ data }: { data: HeroData }) {
         {/* Hero background video with animation */}
         <motion.div
           className="absolute inset-0 opacity-100 dark:opacity-100"
-          animate={{ scale: [1, 1.01, 1] }}
+          animate={isMobile ? { scale: 1 } : { scale: [1, 1.01, 1] }}
           transition={{
-            duration: 12,
-            repeat: Infinity,
+            duration: isMobile ? 0 : 12,
+            repeat: isMobile ? 0 : Infinity,
             repeatType: "mirror",
             ease: "easeInOut",
           }}
@@ -194,118 +208,138 @@ export default function Hero({ data }: { data: HeroData }) {
 
         <div className="hidden lg:block">
           {/* Light mode orbs */}
-          {/* Top-left soft blue orb */}
-          <motion.div
-            className="absolute -top-40 -left-40 w-80 h-80 opacity-0 dark:opacity-100 bg-sky-500/20 rounded-full blur-3xl"
-            animate={{
-              y: [0, 40, 0],
-              x: [0, 20, 0],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
+          {!isMobile && (
+            <>
+              {/* Top-left soft blue orb */}
+              <motion.div
+                className="absolute -top-40 -left-40 w-80 h-80 opacity-0 dark:opacity-100 bg-sky-500/20 rounded-full blur-3xl"
+                animate={{
+                  y: [0, 40, 0],
+                  x: [0, 20, 0],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
 
-          {/* Light mode: soft pink orb top-left */}
-          <motion.div
-            className="absolute -top-40 -left-40 w-80 h-80 opacity-100 dark:opacity-0 bg-pink-300/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, 40, 0],
-              x: [0, 20, 0],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
+              {/* Light mode: soft pink orb top-left */}
+              <motion.div
+                className="absolute -top-40 -left-40 w-80 h-80 opacity-100 dark:opacity-0 bg-pink-300/15 rounded-full blur-3xl"
+                animate={{
+                  y: [0, 40, 0],
+                  x: [0, 20, 0],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
 
-          {/* Top-right cyan orb */}
-          <motion.div
-            className="absolute -top-20 -right-20 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, -30, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-          />
+              {/* Top-right cyan orb */}
+              <motion.div
+                className="absolute -top-20 -right-20 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/15 rounded-full blur-3xl"
+                animate={{
+                  y: [0, -30, 0],
+                  x: [0, -30, 0],
+                }}
+                transition={{
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+              />
 
-          {/* Light mode: soft indigo orb top-right */}
-          <motion.div
-            className="absolute -top-20 -right-20 w-96 h-96 opacity-100 dark:opacity-0 bg-indigo-300/12 rounded-full blur-3xl"
-            animate={{
-              y: [0, -30, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-          />
+              {/* Light mode: soft indigo orb top-right */}
+              <motion.div
+                className="absolute -top-20 -right-20 w-96 h-96 opacity-100 dark:opacity-0 bg-indigo-300/12 rounded-full blur-3xl"
+                animate={{
+                  y: [0, -30, 0],
+                  x: [0, -30, 0],
+                }}
+                transition={{
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+              />
 
-          {/* Middle purple orb */}
-          <motion.div
-            className="absolute top-1/3 right-1/4 w-72 h-72 opacity-0 dark:opacity-100 bg-purple-500/10 rounded-full blur-3xl"
-            animate={{
-              y: [0, 50, 0],
-              x: [0, -20, 0],
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2,
-            }}
-          />
+              {/* Middle purple orb */}
+              <motion.div
+                className="absolute top-1/3 right-1/4 w-72 h-72 opacity-0 dark:opacity-100 bg-purple-500/10 rounded-full blur-3xl"
+                animate={{
+                  y: [0, 50, 0],
+                  x: [0, -20, 0],
+                }}
+                transition={{
+                  duration: 12,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 2,
+                }}
+              />
 
-          {/* Light mode: soft blue orb middle */}
-          <motion.div
-            className="absolute top-1/3 right-1/4 w-72 h-72 opacity-100 dark:opacity-0 bg-blue-300/10 rounded-full blur-3xl"
-            animate={{
-              y: [0, 50, 0],
-              x: [0, -20, 0],
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2,
-            }}
-          />
+              {/* Light mode: soft blue orb middle */}
+              <motion.div
+                className="absolute top-1/3 right-1/4 w-72 h-72 opacity-100 dark:opacity-0 bg-blue-300/10 rounded-full blur-3xl"
+                animate={{
+                  y: [0, 50, 0],
+                  x: [0, -20, 0],
+                }}
+                transition={{
+                  duration: 12,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 2,
+                }}
+              />
 
-          {/* Bottom-left accent */}
-          <motion.div
-            className="absolute -bottom-40 -left-60 w-96 h-96 opacity-0 dark:opacity-100 bg-blue-500/10 rounded-full blur-3xl"
-            animate={{
-              y: [0, -20, 0],
-              x: [0, 30, 0],
-            }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          />
+              {/* Bottom-left accent */}
+              <motion.div
+                className="absolute -bottom-40 -left-60 w-96 h-96 opacity-0 dark:opacity-100 bg-blue-500/10 rounded-full blur-3xl"
+                animate={{
+                  y: [0, -20, 0],
+                  x: [0, 30, 0],
+                }}
+                transition={{
+                  duration: 9,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
 
-          {/* Light mode: soft purple bottom-left */}
-          <motion.div
-            className="absolute -bottom-40 -left-60 w-96 h-96 opacity-100 dark:opacity-0 bg-purple-300/10 rounded-full blur-3xl"
-            animate={{
-              y: [0, -20, 0],
-              x: [0, 30, 0],
-            }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          />
+              {/* Light mode: soft purple bottom-left */}
+              <motion.div
+                className="absolute -bottom-40 -left-60 w-96 h-96 opacity-100 dark:opacity-0 bg-purple-300/10 rounded-full blur-3xl"
+                animate={{
+                  y: [0, -20, 0],
+                  x: [0, 30, 0],
+                }}
+                transition={{
+                  duration: 9,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
 
-          {/* Animated grid pattern overlay - dark mode only */}
-          <motion.div
-            className="absolute inset-0 opacity-0 dark:opacity-5"
-            style={{
-              backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
-              backgroundSize: "50px 50px",
-            }}
-            animate={{
-              backgroundPosition: ["0px 0px", "50px 50px"],
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          />
+              {/* Animated grid pattern overlay - dark mode only */}
+              <motion.div
+                className="absolute inset-0 opacity-0 dark:opacity-5"
+                style={{
+                  backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
+                  backgroundSize: "50px 50px",
+                }}
+                animate={{
+                  backgroundPosition: ["0px 0px", "50px 50px"],
+                }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              />
+            </>
+          )}
         </div>
       </div>
 
@@ -322,21 +356,21 @@ export default function Hero({ data }: { data: HeroData }) {
               <img
                 src="/assets/images/logo-black-transparent.png"
                 alt="Paitonix"
-                className="h-12 w-12 object-cover"
+                className="h-16 w-16 object-cover rounded-lg shadow-lg shadow-sky-500/20"
               />
               <div>
-                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-slate-600 shadow-sm shadow-slate-900/5 dark:border-slate-700/60 dark:bg-slate-900/60 dark:text-slate-300">
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-sky-300/60 bg-gradient-to-r from-sky-50 to-cyan-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.35em] text-sky-700 shadow-md shadow-sky-500/15 dark:border-sky-600/40 dark:bg-gradient-to-r dark:from-sky-950/60 dark:to-sky-900/40 dark:text-cyan-300">
                   <svg
                     viewBox="0 0 20 20"
                     fill="currentColor"
-                    className="h-4 w-4 text-sky-500"
+                    className="h-5 w-5 text-sky-500 dark:text-cyan-400"
                     aria-hidden="true"
                   >
                     <path d="M10 2a6 6 0 100 12 6 6 0 000-12zm1 9H9V6h2v5zm-1 3a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
                   </svg>
                   {localize({ id: "Visi", en: "Vision" }, language)}
                 </div>
-                <p className="max-w-xl text-sm text-slate-600 dark:text-slate-300">
+                <p className="max-w-xl text-base font-medium text-slate-700 dark:text-slate-200 leading-relaxed">
                   {localize(
                     {
                       id: "Visi kami adalah menghubungkan produk, orang, dan kecerdasan dalam pengalaman digital yang mulus.",
@@ -345,41 +379,121 @@ export default function Hero({ data }: { data: HeroData }) {
                     language,
                   )}
                 </p>
-                <span className="text-lg font-semibold uppercase tracking-[0.35em] text-sky-400">
+                <span className="text-xl font-black uppercase tracking-[0.4em] bg-gradient-to-r from-sky-600 to-cyan-500 bg-clip-text text-transparent dark:from-cyan-400 dark:to-sky-300">
                   paitonix-labs
                 </span>
               </div>
             </div>
-            <div className="space-y-10">
-              <div className="space-y-3 text-sky-900/85 dark:text-sky-100/95">
-                <div className="relative pl-8">
-                  <span className="absolute left-0 top-2 block h-3 w-3 rounded-full bg-slate-900/95 dark:bg-slate-100/95 shadow-[0_0_18px_rgba(15,23,42,0.35)]" />
-                  <span className="absolute left-2 top-5 block h-16 w-1 rounded-full bg-gradient-to-b from-sky-600/50 to-sky-400/20 opacity-90 dark:from-slate-200/70 dark:to-white/20" />
-                  <div className="rounded-3xl border border-slate-300/30 bg-white/10 px-4 py-3 dark:border-slate-600/40 dark:bg-slate-950/20">
-                    <p className="text-3xl sm:text-4xl lg:text-[4rem] font-black tracking-[-0.05em] leading-[0.95] text-current">
+            <div className="space-y-12">
+              <div className="space-y-5">
+                <motion.div
+                  className="relative pl-12"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                >
+                  <motion.span
+                    className="absolute left-0 top-4 block h-5 w-5 rounded-full bg-gradient-to-br from-sky-500 via-cyan-500 to-blue-500 shadow-[0_0_28px_rgba(14,165,233,0.7)] dark:shadow-[0_0_32px_rgba(34,211,238,0.6)]"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{
+                      duration: isMobile ? 1.5 : 2.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <motion.span
+                    className="absolute left-[8.5px] top-8 block h-24 w-1 rounded-full bg-gradient-to-b from-sky-500/80 via-sky-400/40 to-cyan-400/10 dark:from-cyan-400/80 dark:via-sky-400/50 dark:to-sky-300/10"
+                    animate={{ scaleY: [1, 1.08, 1] }}
+                    transition={{
+                      duration: isMobile ? 1.8 : 2.8,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <motion.div
+                    className="group rounded-2xl border-2 border-sky-300/50 bg-gradient-to-br from-sky-50/80 via-cyan-50/50 to-white/40 px-6 py-5 shadow-xl shadow-sky-200/40 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:shadow-sky-300/50 dark:border-sky-600/40 dark:bg-gradient-to-br dark:from-sky-950/60 dark:via-slate-950/40 dark:to-slate-900/30 dark:shadow-sky-950/40 dark:hover:shadow-sky-900/60"
+                    whileHover={{ y: -4 }}
+                  >
+                    <p className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] leading-tight bg-gradient-to-br from-sky-700 via-sky-600 to-blue-600 bg-clip-text text-transparent dark:from-cyan-200 dark:via-sky-300 dark:to-cyan-400">
                       integrate.
                     </p>
-                  </div>
-                </div>
-                <div className="relative pl-14">
-                  <span className="absolute left-0 top-10 block h-1 w-14 rounded-full bg-sky-700/30 shadow-[0_0_20px_rgba(56,189,248,0.12)] dark:bg-slate-200/70" />
-                  <div className="rounded-3xl border border-slate-300/30 bg-white/10 px-4 py-3 dark:border-slate-600/40 dark:bg-slate-950/20">
-                    <p className="text-3xl sm:text-4xl lg:text-[4rem] font-black tracking-[-0.05em] leading-[0.95] text-current">
+                    <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-cyan-300">
+                      {localize(
+                        { id: "Satu Platform", en: "One Platform" },
+                        language,
+                      )}
+                    </p>
+                  </motion.div>
+                </motion.div>
+
+                <motion.div
+                  className="relative pl-16"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                >
+                  <motion.span
+                    className="absolute left-2 top-14 block h-2.5 w-14 rounded-full bg-gradient-to-r from-sky-500/60 via-cyan-400/40 to-transparent shadow-[0_0_20px_rgba(56,189,248,0.35)] dark:from-cyan-400/70 dark:via-sky-400/40 dark:to-transparent"
+                    animate={{ scaleX: [0.6, 1, 0.6], opacity: [0.7, 1, 0.7] }}
+                    transition={{
+                      duration: 2.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <motion.div
+                    className="group rounded-2xl border-2 border-sky-300/50 bg-gradient-to-br from-sky-50/80 via-cyan-50/50 to-white/40 px-6 py-5 shadow-xl shadow-sky-200/40 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:shadow-sky-300/50 dark:border-sky-600/40 dark:bg-gradient-to-br dark:from-sky-950/60 dark:via-slate-950/40 dark:to-slate-900/30 dark:shadow-sky-950/40 dark:hover:shadow-sky-900/60"
+                    whileHover={{ y: -4 }}
+                  >
+                    <p className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] leading-tight bg-gradient-to-br from-sky-700 via-cyan-600 to-blue-600 bg-clip-text text-transparent dark:from-cyan-200 dark:via-sky-300 dark:to-cyan-400">
                       connect.
                     </p>
-                  </div>
-                </div>
-                <div className="relative pl-20">
-                  <span className="absolute left-4 top-10 block h-1 w-14 rounded-full bg-sky-700/30 shadow-[0_0_20px_rgba(56,189,248,0.12)] dark:bg-slate-200/70" />
-                  <div className="rounded-3xl border border-slate-300/30 bg-white/10 px-4 py-3 dark:border-slate-600/40 dark:bg-slate-950/20">
-                    <p className="text-3xl sm:text-4xl lg:text-[4rem] font-black tracking-[-0.05em] leading-[0.95] text-current">
+                    <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-cyan-300">
+                      {localize(
+                        { id: "Ekosistem Terpadu", en: "Unified Ecosystem" },
+                        language,
+                      )}
+                    </p>
+                  </motion.div>
+                </motion.div>
+
+                <motion.div
+                  className="relative pl-20"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                >
+                  <motion.span
+                    className="absolute left-6 top-14 block h-2.5 w-14 rounded-full bg-gradient-to-r from-sky-500/60 via-cyan-400/40 to-transparent shadow-[0_0_20px_rgba(56,189,248,0.35)] dark:from-cyan-400/70 dark:via-sky-400/40 dark:to-transparent"
+                    animate={{ scaleX: [0.6, 1, 0.6], opacity: [0.7, 1, 0.7] }}
+                    transition={{
+                      duration: 2.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: 0.2,
+                    }}
+                  />
+                  <motion.div
+                    className="group rounded-2xl border-2 border-sky-300/50 bg-gradient-to-br from-sky-50/80 via-cyan-50/50 to-white/40 px-6 py-5 shadow-xl shadow-sky-200/40 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:shadow-sky-300/50 dark:border-sky-600/40 dark:bg-gradient-to-br dark:from-sky-950/60 dark:via-slate-950/40 dark:to-slate-900/30 dark:shadow-sky-950/40 dark:hover:shadow-sky-900/60"
+                    whileHover={{ y: -4 }}
+                  >
+                    <p className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-[-0.03em] leading-tight bg-gradient-to-br from-sky-700 via-cyan-600 to-blue-600 bg-clip-text text-transparent dark:from-cyan-200 dark:via-sky-300 dark:to-cyan-400">
                       innovate.
                     </p>
-                  </div>
-                </div>
+                    <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-cyan-300">
+                      {localize(
+                        { id: "Masa Depan", en: "Future Ready" },
+                        language,
+                      )}
+                    </p>
+                  </motion.div>
+                </motion.div>
               </div>
 
-              <div className="border-t border-slate-300/30 pt-8 dark:border-slate-700/40">
+              <div className="border-t-2 border-sky-300/40 pt-8 dark:border-sky-700/30">
                 <div className="relative mb-6 h-1 overflow-hidden rounded-full bg-slate-200/50 dark:bg-slate-700/40">
                   <motion.div
                     className="absolute left-0 top-0 h-full w-24 rounded-full bg-cyan-500 shadow-[0_0_18px_rgba(56,189,248,0.45)]"
@@ -452,14 +566,14 @@ export default function Hero({ data }: { data: HeroData }) {
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="inline-flex w-full sm:w-auto items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-sky-600 px-6 py-3 text-base font-semibold text-white shadow-[0_24px_48px_-28px_rgba(14,165,233,0.95)] transition-all duration-300 hover:-translate-y-0.5"
+                className="inline-flex w-full sm:w-auto items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-sky-600 dark:from-cyan-500/90 dark:to-sky-600/90 px-6 py-3 text-base font-semibold text-white shadow-[0_8px_32px_rgba(14,165,233,0.35)] hover:shadow-[0_16px_48px_rgba(14,165,233,0.5)] transition-all duration-300 hover:-translate-y-0.5 backdrop-blur-xl border border-white/20 dark:border-cyan-400/30"
               >
                 {startConversationText}
                 <span className="ml-2">→</span>
               </button>
               <a
                 href="#preview"
-                className="text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white transition"
+                className="text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white transition px-4 py-2 rounded-full border border-slate-300/30 dark:border-white/10 backdrop-blur-sm hover:bg-slate-900/5 dark:hover:bg-white/5 hover:shadow-[0_8px_24px_rgba(14,165,233,0.2)]"
               >
                 {localize(
                   { id: "Lihat preview slide ↓", en: "View preview slides ↓" },
@@ -474,8 +588,13 @@ export default function Hero({ data }: { data: HeroData }) {
                   Premium Suite
                 </p>
                 <p className="mt-3 text-sm text-slate-900 dark:text-slate-100 leading-relaxed">
-                  Desain yang selaras dengan pengguna dan sistem yang siap
-                  berkembang.
+                  {localize(
+                    {
+                      id: "Desain yang selaras dengan pengguna dan sistem yang siap berkembang.",
+                      en: "Design aligned with user needs and scalable systems.",
+                    },
+                    language,
+                  )}
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-slate-200/70 bg-white/80 p-5 shadow-sm shadow-slate-900/5 backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/50">
@@ -483,8 +602,13 @@ export default function Hero({ data }: { data: HeroData }) {
                   Modern Delivery
                 </p>
                 <p className="mt-3 text-sm text-slate-900 dark:text-slate-100 leading-relaxed">
-                  Iterasi cepat, komunikasi jelas, dan pengalaman yang konsisten
-                  di setiap layar.
+                  {localize(
+                    {
+                      id: "Iterasi cepat, komunikasi jelas, dan pengalaman yang konsisten di setiap layar.",
+                      en: "Rapid iteration, clear communication, and consistent experience across all screens.",
+                    },
+                    language,
+                  )}
                 </p>
               </div>
             </div>
@@ -594,6 +718,7 @@ export default function Hero({ data }: { data: HeroData }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <motion.div
               className={`relative w-full max-w-[min(100vw-1.5rem,56rem)] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-[2rem] border backdrop-blur-2xl ${
@@ -601,10 +726,10 @@ export default function Hero({ data }: { data: HeroData }) {
                   ? "border-slate-700/65 bg-slate-950/95 shadow-2xl shadow-slate-950/40"
                   : "border-slate-200/65 bg-white/95 shadow-2xl shadow-slate-200/30"
               }`}
-              initial={{ y: 32, opacity: 0, scale: 0.95 }}
+              initial={{ y: 24, opacity: 0, scale: 0.97 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 32, opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
+              exit={{ y: 24, opacity: 0, scale: 0.97 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="flex flex-col gap-6 p-6 sm:p-8 lg:p-10">
                 <div className="flex items-start justify-between gap-4">

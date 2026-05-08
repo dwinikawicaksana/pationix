@@ -39,6 +39,16 @@ export interface CaseStudyData {
   image: string;
 }
 
+export interface BlogData {
+  id: string;
+  title: LocalizedField;
+  excerpt: LocalizedField;
+  category: LocalizedField;
+  date: string;
+  thumbnail: string;
+  slug: string;
+}
+
 export interface CTAData {
   title: LocalizedField;
   subtitle: LocalizedField;
@@ -74,6 +84,7 @@ export interface LandingData {
   stories: StoryData[];
   features: FeatureData[];
   caseStudies: CaseStudyData[];
+  blogs: BlogData[];
   cta: CTAData;
   footer: FooterData;
 }

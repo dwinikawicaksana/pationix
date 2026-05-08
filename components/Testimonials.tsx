@@ -46,70 +46,82 @@ const uiText = {
 export default function Testimonials() {
   const { language } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
     const interval = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % testimonials.length);
     }, 5500);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("resize", checkMobile);
+    };
   }, []);
 
   return (
     <section
       id="testimonials"
-      className="py-24 lg:py-32 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900/40 dark:to-slate-950 text-slate-950 dark:text-white relative overflow-hidden"
+      className="scroll-mt-24 py-24 lg:py-32 bg-gradient-to-b from-slate-100 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900/40 dark:to-slate-950 text-slate-950 dark:text-white relative overflow-hidden"
     >
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Light mode orbs */}
-        <motion.div
-          className="absolute top-32 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
-          animate={{
-            y: [0, 50, 0],
-            x: [0, 30, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-32 left-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
-          animate={{
-            y: [0, -40, 0],
-            x: [0, -20, 0],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
+        {!isMobile && (
+          <>
+            <motion.div
+              className="absolute top-32 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
+              animate={{
+                y: [0, 50, 0],
+                x: [0, 30, 0],
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute bottom-32 left-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
+              animate={{
+                y: [0, -40, 0],
+                x: [0, -20, 0],
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            />
 
-        {/* Dark mode orbs */}
-        <motion.div
-          className="absolute top-32 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
-          animate={{
-            y: [0, 50, 0],
-            x: [0, 30, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-32 left-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
-          animate={{
-            y: [0, -40, 0],
-            x: [0, -20, 0],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
+            {/* Dark mode orbs */}
+            <motion.div
+              className="absolute top-32 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
+              animate={{
+                y: [0, 50, 0],
+                x: [0, 30, 0],
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="absolute bottom-32 left-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
+              animate={{
+                y: [0, -40, 0],
+                x: [0, -20, 0],
+              }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            />
 
-        {/* Animated grid for dark mode */}
-        <motion.div
-          className="absolute inset-0 opacity-0 dark:opacity-5"
-          style={{
-            backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
-            backgroundSize: "50px 50px",
-          }}
-          animate={{
-            backgroundPosition: ["0px 0px", "50px 50px"],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        />
+            {/* Animated grid for dark mode */}
+            <motion.div
+              className="absolute inset-0 opacity-0 dark:opacity-5"
+              style={{
+                backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
+                backgroundSize: "50px 50px",
+              }}
+              animate={{
+                backgroundPosition: ["0px 0px", "50px 50px"],
+              }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            />
+          </>
+        )}
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">

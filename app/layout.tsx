@@ -4,6 +4,7 @@ import LanguageProvider from "@/components/LanguageProvider";
 import LoadingScreen from "@/components/LoadingScreen";
 import ScrollToTop from "@/components/ScrollToTop";
 import AutoScrollButton from "@/components/AutoScrollButton";
+import SupportButton from "@/components/SupportButton";
 
 export const metadata: Metadata = {
   title: "Paitonix — Landing page untuk startup web dan app",
@@ -41,6 +42,10 @@ export default function RootLayout({
           type="image/png"
         />
         <meta name="theme-color" content="#0f4b82" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(t?t==='dark':d)document.documentElement.classList.add('dark')}catch(e){}})()`,
@@ -78,6 +83,7 @@ export default function RootLayout({
           <ScrollToTop />
           {children}
           <AutoScrollButton />
+          <SupportButton />
         </LanguageProvider>
       </body>
     </html>

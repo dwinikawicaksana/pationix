@@ -132,7 +132,7 @@ export default function FooterNew({
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="inline-flex w-full items-center justify-center px-4 py-2.5 rounded-lg bg-gradient-to-r from-sky-500 to-sky-600 text-white font-semibold text-sm hover:from-sky-600 hover:to-sky-700 transition-all duration-200 shadow-lg shadow-sky-500/30 uppercase tracking-wider text-center"
+                className="inline-flex w-full items-center justify-center px-4 py-2.5 rounded-lg bg-gradient-to-r from-sky-500/90 to-sky-600/90 text-white font-semibold text-sm shadow-[0_8px_24px_rgba(14,165,233,0.35)] hover:shadow-[0_12px_36px_rgba(14,165,233,0.5)] transition-all duration-300 backdrop-blur-xl border border-white/15 dark:border-sky-400/30 uppercase tracking-wider text-center hover:bg-gradient-to-r hover:from-sky-500 hover:to-sky-600 hover:-translate-y-0.5"
               >
                 {language === "id" ? "Pesan Demo" : "Book a Demo"}
               </button>
@@ -188,7 +188,7 @@ export default function FooterNew({
               <button
                 type="button"
                 onClick={closeModal}
-                className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/15 transition"
+                className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-white/10 px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(255,255,255,0.1)] backdrop-blur-xl border border-white/20 transition-all duration-300 hover:bg-white/15 hover:shadow-[0_12px_36px_rgba(255,255,255,0.15)] hover:-translate-y-0.5"
               >
                 {language === "id" ? "Tutup" : "Close"}
               </button>
@@ -213,7 +213,7 @@ export default function FooterNew({
               href="https://www.instagram.com/paitonix"
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-slate-100 hover:bg-slate-700 transition-colors duration-200"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800/80 text-slate-100 backdrop-blur-xl border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(168,85,247,0.3)] transition-all duration-300 hover:bg-slate-700/90 hover:-translate-y-0.5"
               aria-label="Instagram"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -225,7 +225,7 @@ export default function FooterNew({
               href="https://www.facebook.com/paitonix"
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-slate-100 hover:bg-slate-700 transition-colors duration-200"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800/80 text-slate-100 backdrop-blur-xl border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(59,130,246,0.3)] transition-all duration-300 hover:bg-slate-700/90 hover:-translate-y-0.5"
               aria-label="Facebook"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -236,7 +236,7 @@ export default function FooterNew({
               href="https://www.tiktok.com/@paitonix"
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-slate-100 hover:bg-slate-700 transition-colors duration-200"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800/80 text-slate-100 backdrop-blur-xl border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(236,72,153,0.3)] transition-all duration-300 hover:bg-slate-700/90 hover:-translate-y-0.5"
               aria-label="TikTok"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -247,7 +247,7 @@ export default function FooterNew({
               href="https://x.com/paitonix"
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-slate-100 hover:bg-slate-700 transition-colors duration-200"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-800/80 text-slate-100 backdrop-blur-xl border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(14,165,233,0.3)] transition-all duration-300 hover:bg-slate-700/90 hover:-translate-y-0.5"
               aria-label="X"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

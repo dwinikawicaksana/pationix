@@ -8,6 +8,7 @@ import ChatbotPanel from "@/components/ChatbotPanel";
 import StorySection from "@/components/StorySection";
 import FeatureReveal from "@/components/FeatureReveal";
 import CaseStudy from "@/components/CaseStudy";
+import BlogSection from "@/components/BlogSection";
 import CTASection from "@/components/CTASection";
 import FooterNew from "@/components/FooterNew";
 import PhilosophyCard from "@/components/PhilosophyCard";
@@ -27,9 +28,10 @@ export default async function Home() {
         <Testimonials />
         <ChatbotPanel />
         <StorySection stories={data.stories} />
-        <div id="services" className="block pt-24 -mt-24" />
+        <div id="services" className="block scroll-mt-24 pt-24 -mt-24" />
         <FeatureReveal features={data.features} />
         <CaseStudy caseStudies={data.caseStudies} />
+        <BlogSection blogs={data.blogs} />
         <CTASection data={data.cta} />
       </main>
       <FooterNew footer={data.footer} navbar={data.navbar} />
