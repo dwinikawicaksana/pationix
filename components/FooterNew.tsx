@@ -9,19 +9,19 @@ const footerLinks = [
   {
     column: 1,
     links: [
-      { label: "Robot", href: "/robot" },
-      { label: "Tools", href: "/tools" },
-      { label: "Software", href: "/software" },
-      { label: "Ecosystem", href: "/ecosystem" },
+      { label: "Robot", href: "/robot", disabled: true },
+      { label: "Tools", href: "/tools", disabled: true },
+      { label: "Software", href: "/software", disabled: true },
+      { label: "Ecosystem", href: "/ecosystem", disabled: true },
     ],
   },
   {
     column: 2,
     links: [
-      { label: "Customers", href: "/customers" },
-      { label: "Self-Driving Labs", href: "/labs" },
-      { label: "Blog", href: "/blog" },
-      { label: "Company", href: "/company" },
+      { label: "Customers", href: "/customers", disabled: true },
+      { label: "Self-Driving Labs", href: "/labs", disabled: true },
+      { label: "Blog", href: "/blog", disabled: false },
+      { label: "Company", href: "/company", disabled: true },
     ],
   },
 ];
@@ -118,15 +118,25 @@ export default function FooterNew({
           >
             {footerLinks.map((col, idx) => (
               <div key={idx} className="space-y-6">
-                {col.links.map((link) => (
-                  <a
-                    key={link.href + link.label}
-                    href={link.href}
-                    className="text-sm text-slate-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 block"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {col.links.map((link) =>
+                  link.disabled ? (
+                    <span
+                      key={link.href + link.label}
+                      className="text-sm text-slate-500 dark:text-slate-600 block cursor-not-allowed select-none"
+                      title="Coming soon"
+                    >
+                      {link.label}
+                    </span>
+                  ) : (
+                    <a
+                      key={link.href + link.label}
+                      href={link.href}
+                      className="text-sm text-slate-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 block"
+                    >
+                      {link.label}
+                    </a>
+                  ),
+                )}
               </div>
             ))}
           </motion.div>

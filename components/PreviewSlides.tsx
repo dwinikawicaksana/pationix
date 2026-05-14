@@ -158,40 +158,11 @@ export default function PreviewSlides() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="hidden lg:block">
           {/* Light mode orbs */}
-          <motion.div
-            className="absolute top-40 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
-            animate={{
-              y: [0, 40, 0],
-              x: [0, 20, 0],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-40 right-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, -30, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-
+          <div className="absolute top-40 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-40 right-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl" />
           {/* Dark mode orbs */}
-          <motion.div
-            className="absolute top-40 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, 40, 0],
-              x: [0, 20, 0],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-40 right-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
-            animate={{
-              y: [0, -30, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
+          <div className="absolute top-40 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl" />
+          <div className="absolute bottom-40 right-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl" />
         </div>
       </div>
       <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-sky-100/50 dark:from-sky-500/10 to-transparent" />

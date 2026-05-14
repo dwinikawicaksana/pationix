@@ -55,7 +55,10 @@ export function useLiveBlogArticles({
         if (!response.ok) {
           errorCountRef.current += 1;
           // Exponential backoff: double interval up to 5 min on repeated errors
-          const backoff = Math.min(intervalMs * 2 ** errorCountRef.current, 300000);
+          const backoff = Math.min(
+            intervalMs * 2 ** errorCountRef.current,
+            300000,
+          );
           scheduleNext(backoff);
           return;
         }
@@ -80,7 +83,8 @@ export function useLiveBlogArticles({
 
     const handleFocus = () => fetchArticles({ silent: true });
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") fetchArticles({ silent: true });
+      if (document.visibilityState === "visible")
+        fetchArticles({ silent: true });
     };
 
     window.addEventListener("focus", handleFocus);

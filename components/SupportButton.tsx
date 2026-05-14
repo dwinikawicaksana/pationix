@@ -166,8 +166,8 @@ export default function SupportButton() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "100%" }}
             transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-          className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-3xl border-t border-slate-700/80 bg-slate-900 shadow-2xl shadow-slate-950/60 overflow-hidden md:inset-x-auto md:top-auto md:bottom-40 md:right-6 md:left-auto md:rounded-[2rem] md:border md:w-96 md:max-h-[32rem]"
-          style={{ maxHeight: "85dvh" }}
+            className="fixed inset-x-0 bottom-0 z-50 flex flex-col rounded-t-3xl border-t border-slate-700/80 bg-slate-900 shadow-2xl shadow-slate-950/60 overflow-hidden md:inset-x-auto md:top-auto md:bottom-40 md:right-6 md:left-auto md:rounded-[2rem] md:border md:w-96 md:max-h-[32rem]"
+            style={{ maxHeight: "85dvh" }}
           >
             {/* Header */}
             <div className="border-b border-slate-800/80 bg-gradient-to-r from-sky-500/10 to-cyan-500/10 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-3 sm:gap-4 backdrop-blur-xl">
@@ -292,7 +292,9 @@ export default function SupportButton() {
             {/* Footer */}
             <div
               className="border-t border-slate-800/80 px-4 sm:px-6 py-2 sm:py-3 text-center"
-              style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+              style={{
+                paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
+              }}
             >
               <p className="text-xs text-slate-400">
                 {language === "id"

@@ -74,9 +74,7 @@ export async function generateBlogArticle(
 
   if (!apiKey) {
     console.error("API key not found in environment variables");
-    throw new Error(
-      "API key not configured. Please set GOOGLE_API_KEY",
-    );
+    throw new Error("API key not configured. Please set GOOGLE_API_KEY");
   }
 
   return retryWithBackoff(

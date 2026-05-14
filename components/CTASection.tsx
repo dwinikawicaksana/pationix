@@ -39,68 +39,20 @@ export default function CTASection({ data }: { data: CTAData }) {
       <div className="absolute inset-0 pointer-events-none">
         <div className="hidden lg:block">
           {/* Light mode orbs */}
-          <motion.div
-            className="absolute top-10 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
-            animate={{
-              y: [0, 40, 0],
-              x: [0, 30, 0],
-            }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-10 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, -40, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-1/2 right-10 w-72 h-72 opacity-100 dark:opacity-0 bg-indigo-400/12 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.4, 0.7, 0.4],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-
+          <div className="absolute top-10 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 right-10 w-72 h-72 opacity-40 dark:opacity-0 bg-indigo-400/12 rounded-full blur-3xl" />
           {/* Dark mode orbs */}
-          <motion.div
-            className="absolute top-10 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, 40, 0],
-              x: [0, 30, 0],
-            }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-10 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
-            animate={{
-              y: [0, -40, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-1/2 right-10 w-72 h-72 opacity-0 dark:opacity-100 bg-purple-500/10 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.6, 0.3],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          {/* Animated grid for dark mode */}
-          <motion.div
+          <div className="absolute top-10 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl" />
+          <div className="absolute top-1/2 right-10 w-72 h-72 opacity-0 dark:opacity-30 bg-purple-500/10 rounded-full blur-3xl" />
+          {/* Static grid for dark mode */}
+          <div
             className="absolute inset-0 opacity-0 dark:opacity-5"
             style={{
               backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
               backgroundSize: "50px 50px",
             }}
-            animate={{
-              backgroundPosition: ["0px 0px", "50px 50px"],
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
           />
         </div>
       </div>
