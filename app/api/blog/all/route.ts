@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllArticles } from "@/lib/blogService";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Get all articles (published and drafts) for admin dashboard
  * Requires admin authentication in production
  */
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = request.nextUrl;
     const language = searchParams.get("language") as "id" | "en" | null;
 
     // First try to get articles in the requested language
