@@ -92,3 +92,47 @@ body {
 .dark .gradient-text {
   @apply bg-gradient-to-r from-sky-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent;
 }
+
+/* Animation performance optimizations for production */
+/* Enable GPU acceleration for smoother animations */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    --tw-enter-opacity: initial;
+    --tw-enter-scale: initial;
+  }
+  
+  /* GPU acceleration for animated elements */
+  [data-framer-motion] {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  /* Optimize motion for mobile */
+  @media (max-width: 768px) {
+    /* Reduce animation duration on mobile for better performance */
+    [data-motion-reduce] {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    
+    /* Will-change optimization */
+    .motion-safe {
+      will-change: transform, opacity;
+    }
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

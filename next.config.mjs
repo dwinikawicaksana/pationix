@@ -8,5 +8,12 @@ const nextConfig = {
       },
     ],
   },
+  swcMinify: true,
+  compress: true,
+  poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  experimental: {
+    optimizeCss: true,
+  },
 };
 export default nextConfig;
