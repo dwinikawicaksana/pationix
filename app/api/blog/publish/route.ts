@@ -38,6 +38,8 @@ export async function POST(request: NextRequest) {
 
     console.error("[Blog Publish Error]", errorMessage, error);
 
+    const statusCode = errorMessage.includes("not found") ? 404 : 500;
+
     return NextResponse.json(
       {
         error: errorMessage,
@@ -46,7 +48,7 @@ export async function POST(request: NextRequest) {
             ? String(error)
             : "An error occurred while publishing",
       },
-      { status: 500 },
+      { status: statusCode },
     );
   }
 }

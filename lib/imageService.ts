@@ -17,6 +17,7 @@ interface BlogArticleImage {
  * Fetch images from Unsplash API based on search query
  * Free tier: 50 requests/hour without authentication
  * For production, get an Unsplash API key at unsplash.com/oauth/applications
+ * Fetches multiple images and randomly selects to avoid duplicates
  */
 export async function fetchUnsplashImages(
   searchQuery: string,
@@ -26,10 +27,13 @@ export async function fetchUnsplashImages(
     // If you have an Unsplash API key, use it for higher rate limits
     const accessKey = process.env.UNSPLASH_ACCESS_KEY;
 
+    // Fetch more results to randomly pick from, increasing variation
+    const fetchCount = Math.min(count * 3, 30);
+
     const response = await fetch(
       `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
         searchQuery,
-      )}&per_page=${count}&order_by=relevant${
+      )}&per_page=${fetchCount}&order_by=relevant${
         accessKey ? `&client_id=${accessKey}` : ""
       }`,
     );
@@ -40,7 +44,14 @@ export async function fetchUnsplashImages(
 
     const data: any = await response.json();
 
-    return data.results.map((photo: any) => ({
+    if (!data.results || data.results.length === 0) {
+      return [];
+    }
+
+    // Randomly select images from results to avoid duplicates
+    const shuffled = [...data.results].sort(() => Math.random() - 0.5);
+
+    return shuffled.slice(0, count).map((photo: any) => ({
       url: photo.urls.regular,
       alt: photo.alt_description || searchQuery,
       source: "unsplash",
@@ -55,6 +66,7 @@ export async function fetchUnsplashImages(
 /**
  * Generate image prompts for blog article sections
  * Used with AI image generation or stock photo search
+ * Adds randomization to ensure different articles get different images
  */
 export function generateImagePrompts(
   title: string,
@@ -64,11 +76,30 @@ export function generateImagePrompts(
   // Extract main topics from title and content
   const keywords = extractKeywords(title, content);
 
-  return keywords.slice(0, 3).map((keyword) => {
-    if (language === "id") {
-      return `${keyword} profesional modern minimalis clean`;
-    }
-    return `${keyword} professional modern minimalist clean`;
+  // Add randomization variations to avoid duplicate images across articles
+  const variations = [
+    "professional modern minimalist clean",
+    "creative abstract artistic",
+    "modern technology digital",
+    "professional design innovation",
+    "contemporary elegant modern",
+  ];
+
+  const variationsId = [
+    "profesional modern minimalis clean",
+    "kreatif abstrak artistik",
+    "modern teknologi digital",
+    "desain profesional inovasi",
+    "kontemporer elegan modern",
+  ];
+
+  // Use consistent but different variation for each keyword position
+  // This ensures same article topic + position gets same image, but different topics get different images
+  const selectedVariations = language === "id" ? variationsId : variations;
+
+  return keywords.slice(0, 3).map((keyword, idx) => {
+    const variation = selectedVariations[idx % selectedVariations.length];
+    return `${keyword} ${variation}`;
   });
 }
 

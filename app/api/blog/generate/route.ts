@@ -69,15 +69,27 @@ export async function POST(request: NextRequest) {
       error instanceof Error ? error.message : "Failed to generate blog";
     console.error("[Blog Generation Error]", errorMessage);
 
+    // Check if it's a retryable error
+    const isRetryableError =
+      errorMessage.includes("503") ||
+      errorMessage.includes("429") ||
+      errorMessage.includes("Service Unavailable") ||
+      errorMessage.includes("Too Many Requests");
+
+    const statusCode = isRetryableError ? 503 : 500;
+
     return NextResponse.json(
       {
         error: errorMessage,
+        retryable: isRetryableError,
         details:
           process.env.NODE_ENV === "development"
             ? String(error)
-            : "An error occurred while generating the blog",
+            : isRetryableError
+              ? "Service temporarily unavailable. Please try again in a moment."
+              : "An error occurred while generating the blog",
       },
-      { status: 500 },
+      { status: statusCode },
     );
   }
 }

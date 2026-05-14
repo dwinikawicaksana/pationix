@@ -1,23 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useLanguage } from "@/components/LanguageProvider";
 import { localize } from "@/lib/i18n";
-
-interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  category: string;
-  readTime: number;
-  language: string;
-  published: boolean;
-  createdAt: Date | string;
-  featuredImage?: string;
-}
+import { useEffect } from "react";
+import { useLiveBlogArticles } from "@/hooks/useLiveBlogArticles";
+import { useMotionPreferences } from "@/hooks/useMotionPreferences";
 
 const uiText = {
   title: { id: "Blog Kami", en: "Our Blog" },
@@ -41,21 +30,14 @@ const uiText = {
 
 export default function BlogPage() {
   const { language } = useLanguage();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { shouldReduceMotion } = useMotionPreferences();
+  const { articles, isLoading } = useLiveBlogArticles({
+    language,
+    intervalMs: 30000,
+  });
 
   useEffect(() => {
-    // Scroll to top on page load
     window.scrollTo(0, 0);
-
-    // Fetch published articles via API
-    fetch("/api/blog/articles")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setArticles(data);
-      })
-      .catch((err) => console.error("Failed to load articles:", err))
-      .finally(() => setIsLoading(false));
   }, []);
 
   if (isLoading) {
@@ -82,9 +64,23 @@ export default function BlogPage() {
 
         <div className="max-w-4xl mx-auto relative z-10">
           <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.5 }}
+            className="mb-8 flex justify-center"
+          >
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700 text-slate-300 hover:text-white hover:border-slate-500 transition text-sm font-medium"
+            >
+              ← {localize(uiText.backHome, language)}
+            </Link>
+          </motion.div>
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
             className="text-center"
           >
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6">
@@ -105,7 +101,7 @@ export default function BlogPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
             >
               {/* Illustration */}
               <div className="mb-8 flex justify-center">
@@ -153,7 +149,10 @@ export default function BlogPage() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  transition={{
+                    duration: shouldReduceMotion ? 0 : 0.5,
+                    delay: shouldReduceMotion ? 0 : index * 0.08,
+                  }}
                   className="group rounded-2xl border border-slate-700 bg-slate-900/50 overflow-hidden hover:border-slate-500 transition h-full flex flex-col"
                 >
                   {/* Featured Image */}
@@ -224,7 +223,7 @@ export default function BlogPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
             className="max-w-2xl mx-auto text-center"
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">

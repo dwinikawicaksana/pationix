@@ -4,155 +4,130 @@ import { CaseStudyData } from "@/types/landing";
 import { AnimateIn } from "./AnimateIn";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
-import { useEffect, useState } from "react";
+import { useMotionPreferences } from "@/hooks/useMotionPreferences";
 
 function AnimatedCounter({ value }: { value: string }) {
-  const numValue = parseFloat(value);
-  const isPercentage = value.includes("%");
-
   return (
-    <motion.div
+    <motion.span
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8 }}
     >
-      <motion.span
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
-        {value}
-      </motion.span>
-    </motion.div>
+      {value}
+    </motion.span>
   );
 }
 
 function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
   const { language } = useLanguage();
-  const [isMobile, setIsMobile] = useState(false);
-  const neonColors = [
-    "from-sky-500 to-cyan-400",
-    "from-cyan-400 to-blue-500",
-    "from-blue-500 to-purple-500",
+  const { shouldReduceMotion } = useMotionPreferences();
+  const accentThemes = [
+    {
+      glow: "bg-cyan-400/12 dark:bg-cyan-400/16",
+      line: "from-cyan-400 via-sky-500 to-transparent",
+      badge:
+        "text-cyan-700 bg-cyan-100/80 border-cyan-200 dark:text-cyan-200 dark:bg-cyan-500/10 dark:border-cyan-400/15",
+      panel:
+        "from-cyan-500/12 to-sky-500/8 dark:from-cyan-400/14 dark:to-sky-500/10",
+    },
+    {
+      glow: "bg-blue-400/12 dark:bg-blue-400/16",
+      line: "from-blue-400 via-indigo-500 to-transparent",
+      badge:
+        "text-blue-700 bg-blue-100/80 border-blue-200 dark:text-blue-200 dark:bg-blue-500/10 dark:border-blue-400/15",
+      panel:
+        "from-blue-500/12 to-indigo-500/8 dark:from-blue-400/14 dark:to-indigo-500/10",
+    },
+    {
+      glow: "bg-violet-400/12 dark:bg-violet-400/16",
+      line: "from-violet-400 via-fuchsia-500 to-transparent",
+      badge:
+        "text-violet-700 bg-violet-100/80 border-violet-200 dark:text-violet-200 dark:bg-violet-500/10 dark:border-violet-400/15",
+      panel:
+        "from-violet-500/12 to-fuchsia-500/8 dark:from-violet-400/14 dark:to-fuchsia-500/10",
+    },
   ];
-  const colorClass = neonColors[index % 3];
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  const theme = accentThemes[index % accentThemes.length];
+  const detailLabels = [
+    localize({ id: "Dampak", en: "Impact" }, language),
+    localize({ id: "Ruang lingkup", en: "Scope" }, language),
+    localize({ id: "Hasil utama", en: "Key result" }, language),
+  ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 28, scale: 0.92 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+    <motion.article
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.6, delay: index * 0.12, ease: "easeOut" }}
+      transition={{
+        duration: shouldReduceMotion ? 0 : 0.6,
+        delay: shouldReduceMotion ? 0 : index * 0.12,
+        ease: "easeOut",
+      }}
       whileHover={
-        isMobile
+        shouldReduceMotion
           ? {}
           : {
-              y: -8,
+              y: -6,
               transition: { duration: 0.3 },
-              boxShadow: `0 25px 50px -12px rgba(14, 165, 233, 0.3)`,
+              boxShadow: "0 28px 70px -32px rgba(15, 23, 42, 0.38)",
             }
       }
-      className="group relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800/50 hover:border-sky-400/50 dark:hover:border-cyan-500/50 transition-all duration-300 hover:shadow-2xl backdrop-blur-lg"
+      className="group relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white/92 shadow-[0_22px_60px_rgba(148,163,184,0.16)] transition-all duration-300 backdrop-blur-xl dark:border-slate-800/80 dark:bg-slate-950/82 dark:shadow-[0_28px_80px_rgba(2,6,23,0.45)]"
     >
-      {/* Animated neon glow border on hover - desktop only */}
-      {!isMobile && (
-        <motion.div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          style={{
-            background: `linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.2), transparent)`,
-            backgroundSize: "200% 100%",
-          }}
-          animate={{ backgroundPosition: ["-200% 0", "200% 0"] }}
-        />
-      )}
+      <div
+        className={`absolute left-8 top-8 h-28 w-28 rounded-full blur-3xl ${theme.glow}`}
+      />
 
-      <div className="relative h-52 overflow-hidden bg-gradient-to-br from-zinc-100 to-zinc-50 dark:from-zinc-800 dark:to-zinc-900">
+      <div className="relative h-64 overflow-hidden bg-slate-100 dark:bg-slate-900">
         <motion.img
           src={cs.image}
           alt={localize(cs.title, language)}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
           loading="lazy"
           initial={{ scale: 1 }}
-          whileHover={isMobile ? {} : { scale: 1.08 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          whileHover={shouldReduceMotion ? {} : { scale: 1.06 }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 0.55,
+            ease: "easeOut",
+          }}
         />
-
-        {/* Gradient overlay with animation */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent group-hover:from-black/85"
-          transition={{ duration: 0.3 }}
+        <div
+          className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${theme.line}`}
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/96 via-slate-950/52 to-transparent dark:from-slate-950/90 dark:via-slate-950/48 dark:to-transparent" />
 
-        {/* Neon accent bar */}
-        <motion.div
-          className={`absolute top-0 left-0 h-1 bg-gradient-to-r ${colorClass}`}
-          initial={{ width: "0%" }}
-          whileInView={{ width: "100%" }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: index * 0.1 }}
-        />
+        <div className="absolute inset-x-5 bottom-5 z-10 flex items-end justify-between gap-4">
+          <div className="max-w-[68%]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/72">
+              {cs.client}
+            </p>
+            <h3
+              className="mt-3 text-2xl font-black leading-tight tracking-[-0.03em] text-white"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              {localize(cs.title, language)}
+            </h3>
+          </div>
 
-        <div className="absolute bottom-4 left-5 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: index * 0.12 + 0.2 }}
-          >
+          <div className="rounded-[1.4rem] border border-white/10 bg-white/10 px-4 py-3 text-right backdrop-blur-md">
             <div
-              className="text-[2.8rem] font-black text-white leading-none tracking-tighter drop-shadow-lg"
+              className="text-[2.35rem] font-black leading-none tracking-[-0.05em] text-white"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               <AnimatedCounter value={cs.metric} />
             </div>
-            <motion.div
-              className="text-[10px] text-white/85 font-semibold tracking-[0.16em] uppercase mt-1 drop-shadow-md"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.12 + 0.4 }}
-            >
+            <div className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/68">
               {localize(cs.metricLabel, language)}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="p-6 relative z-10">
-        <motion.span
-          className="text-[10px] font-bold tracking-[0.18em] uppercase bg-gradient-to-r from-sky-600 to-cyan-600 dark:from-sky-400 dark:to-cyan-400 bg-clip-text text-transparent"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: index * 0.12 + 0.1 }}
-        >
-          {cs.client}
-        </motion.span>
-
-        <motion.h3
-          className="mt-3 text-[17px] font-bold bg-gradient-to-r from-zinc-900 to-zinc-800 dark:from-white dark:to-zinc-200 bg-clip-text text-transparent mb-3 tracking-tight leading-snug group-hover:from-sky-600 dark:group-hover:from-cyan-400 transition-all"
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: index * 0.12 + 0.15 }}
-        >
-          {localize(cs.title, language)}
-        </motion.h3>
-
+      <div className="relative z-10 grid gap-5 p-6 lg:grid-cols-[1.1fr_0.9fr]">
         <motion.p
-          className="text-[13px] text-zinc-600 dark:text-zinc-300 leading-relaxed mb-5 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors"
+          className="text-sm leading-7 text-slate-600 transition-colors group-hover:text-slate-900 dark:text-slate-300 dark:group-hover:text-white"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -162,28 +137,33 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
         </motion.p>
 
         <motion.div
-          className="flex flex-wrap gap-2"
+          className={`rounded-[1.6rem] border border-slate-200/80 bg-gradient-to-br ${theme.panel} p-4 dark:border-slate-800`}
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: index * 0.12 + 0.25 }}
         >
-          {cs.tags.map((tag, tagIndex) => (
-            <motion.span
-              key={localize(tag, language)}
-              className="px-3 py-1.5 text-[11px] font-medium rounded-full bg-gradient-to-r from-sky-500/10 to-cyan-500/10 dark:from-sky-500/20 dark:to-cyan-500/20 text-sky-700 dark:text-cyan-300 border border-sky-200/50 dark:border-cyan-500/30 hover:border-sky-400 dark:hover:border-cyan-400 transition-all cursor-default"
-              whileHover={{ scale: 1.05, y: -2 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              initial={{ opacity: 0, y: 4 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              {localize(tag, language)}
-            </motion.span>
-          ))}
+          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">
+            {detailLabels[index % detailLabels.length]}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2.5">
+            {cs.tags.map((tag) => (
+              <motion.span
+                key={localize(tag, language)}
+                className={`rounded-full border px-3 py-1.5 text-[11px] font-medium ${theme.badge}`}
+                whileHover={shouldReduceMotion ? {} : { scale: 1.04, y: -1 }}
+                transition={{ type: "spring", stiffness: 420, damping: 18 }}
+                initial={{ opacity: 0, y: 4 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                {localize(tag, language)}
+              </motion.span>
+            ))}
+          </div>
         </motion.div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }
 
@@ -205,97 +185,56 @@ export default function CaseStudy({
   caseStudies: CaseStudyData[];
 }) {
   const { language } = useLanguage();
+  const { shouldReduceMotion } = useMotionPreferences();
+  const spotlightText = localize(
+    {
+      id: "Tampilan yang lebih editorial untuk menunjukkan kualitas kerja, bukan sekadar kartu galeri.",
+      en: "A more editorial layout to signal quality of work, not just a gallery of cards.",
+    },
+    language,
+  );
 
   return (
     <section
       id="case-studies"
-      className="py-24 lg:py-32 relative overflow-hidden bg-gradient-to-b from-white via-zinc-50/50 to-white dark:from-slate-950 dark:via-slate-900/40 dark:to-slate-950"
+      className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.12),_transparent_24%),linear-gradient(180deg,_#f8fbff_0%,_#eef4fb_42%,_#ffffff_100%)] py-24 dark:bg-[radial-gradient(circle_at_top_left,_rgba(34,211,238,0.12),_transparent_22%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.12),_transparent_22%),linear-gradient(180deg,_#030712_0%,_#0f172a_48%,_#030712_100%)] lg:py-32"
     >
-      {/* Animated background elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="hidden lg:block">
-          {/* Light mode orbs */}
-          <motion.div
-            className="absolute top-20 right-1/3 w-96 h-96 opacity-100 dark:opacity-0 bg-sky-400/20 rounded-full blur-3xl"
-            animate={{
-              y: [0, 50, 0],
-              x: [0, 30, 0],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-20 left-1/4 w-96 h-96 opacity-100 dark:opacity-0 bg-pink-400/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, -50, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-1/3 left-20 w-80 h-80 opacity-100 dark:opacity-0 bg-indigo-400/12 rounded-full blur-3xl"
-            animate={{
-              y: [0, -30, 0],
-              x: [0, 20, 0],
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-          />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.46)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.46)_1px,transparent_1px)] bg-[size:84px_84px] opacity-30 dark:bg-[linear-gradient(rgba(148,163,184,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.06)_1px,transparent_1px)] dark:opacity-100" />
 
-          {/* Dark mode orbs */}
-          <motion.div
-            className="absolute top-20 right-1/3 w-96 h-96 opacity-0 dark:opacity-100 bg-sky-500/15 rounded-full blur-3xl"
-            animate={{
-              y: [0, 50, 0],
-              x: [0, 30, 0],
-            }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-20 left-1/4 w-96 h-96 opacity-0 dark:opacity-100 bg-cyan-500/12 rounded-full blur-3xl"
-            animate={{
-              y: [0, -50, 0],
-              x: [0, -30, 0],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute top-1/3 left-20 w-80 h-80 opacity-0 dark:opacity-100 bg-purple-500/8 rounded-full blur-3xl"
-            animate={{
-              y: [0, -30, 0],
-              x: [0, 20, 0],
-            }}
-            transition={{
-              duration: 12,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-          />
-
-          {/* Animated grid for dark mode */}
-          <motion.div
-            className="absolute inset-0 opacity-0 dark:opacity-5"
-            style={{
-              backgroundImage: `linear-gradient(0deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(14, 165, 233, 0.05) 25%, rgba(14, 165, 233, 0.05) 26%, transparent 27%, transparent 74%, rgba(14, 165, 233, 0.05) 75%, rgba(14, 165, 233, 0.05) 76%, transparent 77%, transparent)`,
-              backgroundSize: "50px 50px",
-            }}
-            animate={{
-              backgroundPosition: ["0px 0px", "50px 50px"],
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute left-[-8rem] top-16 h-80 w-80 rounded-full bg-sky-300/25 blur-3xl dark:bg-cyan-400/12"
+          animate={
+            shouldReduceMotion
+              ? { opacity: 0.2 }
+              : { y: [0, 28, 0], x: [0, 20, 0] }
+          }
+          transition={{
+            duration: 12,
+            repeat: shouldReduceMotion ? 0 : Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute right-[-5rem] top-1/4 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl dark:bg-blue-500/10"
+          animate={
+            shouldReduceMotion
+              ? { opacity: 0.16 }
+              : { y: [0, -22, 0], x: [0, -18, 0] }
+          }
+          transition={{
+            duration: 14,
+            repeat: shouldReduceMotion ? 0 : Infinity,
+            ease: "easeInOut",
+          }}
+        />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <AnimateIn className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
+        <AnimateIn className="mb-16 grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
             <motion.span
-              className="inline-block text-[10px] font-bold tracking-[0.22em] uppercase bg-gradient-to-r from-sky-600 to-cyan-600 dark:from-sky-400 dark:to-cyan-400 bg-clip-text text-transparent mb-4 animate-pulse"
+              className="mb-4 inline-flex rounded-full border border-sky-200/70 bg-white/70 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-sky-700 shadow-sm backdrop-blur-xl dark:border-cyan-400/15 dark:bg-slate-950/60 dark:text-cyan-200"
               initial={{ opacity: 0, y: -10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -304,7 +243,7 @@ export default function CaseStudy({
               {localize(uiText.sectionLabel, language)}
             </motion.span>
             <motion.h2
-              className="text-4xl md:text-5xl lg:text-[3.25rem] font-black tracking-tighter bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900 dark:from-white dark:via-cyan-200 dark:to-sky-400 bg-clip-text text-transparent leading-[1.1] max-w-lg"
+              className="max-w-2xl text-4xl font-black leading-[1.02] tracking-[-0.05em] text-slate-950 dark:text-white md:text-5xl lg:text-[3.75rem]"
               style={{ fontFamily: "'Playfair Display', serif" }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -314,19 +253,30 @@ export default function CaseStudy({
               {localize(uiText.sectionHeading, language)}
             </motion.h2>
           </div>
-          <motion.p
-            className="text-zinc-600 dark:text-zinc-400 max-w-[280px] text-sm leading-relaxed"
+
+          <motion.div
+            className="rounded-[1.8rem] border border-white/70 bg-white/75 p-6 shadow-[0_24px_60px_rgba(148,163,184,0.14)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/65 dark:shadow-[0_28px_80px_rgba(2,6,23,0.35)]"
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {localize(uiText.sectionDescription, language)}
-          </motion.p>
+            <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">
+              {localize(uiText.sectionDescription, language)}
+            </p>
+            <div className="mt-6 rounded-[1.4rem] bg-slate-950 px-4 py-4 text-white dark:bg-[linear-gradient(180deg,rgba(8,15,32,0.98),rgba(4,10,20,0.94))]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/50 dark:text-cyan-100/55">
+                {localize({ id: "Sudut pandang", en: "Perspective" }, language)}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/88 dark:text-slate-100/92">
+                {spotlightText}
+              </p>
+            </div>
+          </motion.div>
         </AnimateIn>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 gap-6 lg:grid-cols-3"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

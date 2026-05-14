@@ -439,7 +439,7 @@ export const projects = {
           id: "Kelola jadwal appointment dengan mudah. Pasien dapat booking melalui portal online, dan sistem akan mengirim reminder otomatis sebelum appointment.",
           en: "Manage appointment schedules easily. Patients can book through the online portal, and the system sends automatic reminders before appointments.",
         },
-        image: "/assets/images/noura-management.svg",
+        image: "/assets/images/aksara-prototype.svg",
         align: "left",
       },
       {
@@ -528,7 +528,7 @@ export const projects = {
           id: "Kelola jadwal stylist, booking client, dan riwayat layanan dengan sistem yang user-friendly dan efisien.",
           en: "Manage stylist schedules, client bookings, and service history with a user-friendly and efficient system.",
         },
-        image: "/assets/images/beaute-booking.svg",
+        image: "/assets/images/aksara-prototype.svg",
         align: "left",
       },
       {

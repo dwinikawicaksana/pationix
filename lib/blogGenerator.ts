@@ -25,6 +25,48 @@ interface GeneratedArticle {
   images?: Array<{ url: string; alt: string; source: string }>;
 }
 
+/**
+ * Retry a function with exponential backoff
+ * Useful for handling transient API failures (503, rate limits, etc.)
+ */
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  initialDelayMs: number = 1000,
+): Promise<T> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error as Error;
+      const errorMessage = lastError.message || String(error);
+
+      // Check if it's a transient error worth retrying
+      const isTransient =
+        errorMessage.includes("503") ||
+        errorMessage.includes("429") ||
+        errorMessage.includes("Service Unavailable") ||
+        errorMessage.includes("Too Many Requests");
+
+      if (!isTransient || attempt === maxRetries - 1) {
+        throw error;
+      }
+
+      // Exponential backoff: 1s, 2s, 4s
+      const delayMs = initialDelayMs * Math.pow(2, attempt);
+      console.warn(
+        `[Retry] Attempt ${attempt + 1}/${maxRetries} failed. Retrying in ${delayMs}ms...`,
+        errorMessage,
+      );
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+
+  throw lastError || new Error("Failed after retries");
+}
+
 export async function generateBlogArticle(
   config: BlogArticleConfig,
 ): Promise<GeneratedArticle> {
@@ -39,18 +81,19 @@ export async function generateBlogArticle(
     );
   }
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  return retryWithBackoff(
+    async () => {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-    const systemPrompt =
-      config.language === "id"
-        ? `Anda adalah penulis blog profesional untuk Paitonix Labs. Tulis artikel blog berkualitas tinggi, SEO-friendly, dan menarik dalam format JSON yang valid.`
-        : `You are a professional blog writer for Paitonix Labs. Write high-quality, SEO-friendly, and engaging blog articles in valid JSON format.`;
+      const systemPrompt =
+        config.language === "id"
+          ? `Anda adalah penulis blog profesional untuk Paitonix Labs. Tulis artikel blog berkualitas tinggi, SEO-friendly, dan menarik dalam format JSON yang valid.`
+          : `You are a professional blog writer for Paitonix Labs. Write high-quality, SEO-friendly, and engaging blog articles in valid JSON format.`;
 
-    const userPrompt =
-      config.language === "id"
-        ? `Buatkan artikel blog tentang: "${config.topic}"
+      const userPrompt =
+        config.language === "id"
+          ? `Buatkan artikel blog tentang: "${config.topic}"
          
 Respond ONLY with valid JSON, no other text:
 {
@@ -62,7 +105,7 @@ Respond ONLY with valid JSON, no other text:
   "category": "Teknologi",
   "readTime": 8
 }`
-        : `Create a blog article about: "${config.topic}"
+          : `Create a blog article about: "${config.topic}"
 
 Respond ONLY with valid JSON, no other text:
 {
@@ -75,75 +118,74 @@ Respond ONLY with valid JSON, no other text:
   "readTime": 8
 }`;
 
-    console.log("Generating blog article:", config.topic);
-    const response = await model.generateContent({
-      contents: [
-        {
+      console.log("Generating blog article:", config.topic);
+      const response = await model.generateContent({
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: userPrompt }],
+          },
+        ],
+        systemInstruction: {
           role: "user",
-          parts: [{ text: userPrompt }],
+          parts: [{ text: systemPrompt }],
         },
-      ],
-      systemInstruction: {
-        role: "user",
-        parts: [{ text: systemPrompt }],
-      },
-    });
+      });
 
-    const text = response.response.text();
-    console.log("Raw response:", text.substring(0, 200));
+      const text = response.response.text();
+      console.log("Raw response:", text.substring(0, 200));
 
-    // Extract JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error("Could not extract JSON from response:", text);
-      throw new Error("Invalid response format from AI");
-    }
-
-    const article = JSON.parse(jsonMatch[0]) as GeneratedArticle;
-    article.language = config.language;
-
-    // Fetch images if requested
-    if (config.includeImages) {
-      console.log("Fetching images for article...");
-      try {
-        // Generate image search prompts
-        const imagePrompts = generateImagePrompts(
-          article.title,
-          article.content,
-          config.language,
-        );
-
-        // Fetch images for each prompt
-        const allImages = [];
-        for (const prompt of imagePrompts) {
-          const images = await fetchUnsplashImages(prompt, 1);
-          allImages.push(...images);
-        }
-
-        if (allImages.length > 0) {
-          article.featuredImage = allImages[0]?.url;
-          article.images = allImages;
-
-          // Embed featured image in content
-          article.content = embedImagesInContent(article.content, allImages);
-          console.log(`Added ${allImages.length} images to article`);
-        }
-      } catch (imageError) {
-        console.warn(
-          "Failed to fetch images, continuing without images:",
-          imageError,
-        );
-        // Continue without images - don't fail the entire generation
+      // Extract JSON from response
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        console.error("Could not extract JSON from response:", text);
+        throw new Error("Invalid response format from AI");
       }
-    }
 
-    console.log("Article generated successfully:", article.title);
-    return article;
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("Blog generation error:", errorMessage);
-    throw new Error(`Failed to generate article: ${errorMessage}`);
-  }
+      const article = JSON.parse(jsonMatch[0]) as GeneratedArticle;
+      article.language = config.language;
+
+      // Fetch images if requested
+      if (config.includeImages) {
+        console.log("Fetching images for article...");
+        try {
+          // Generate image search prompts
+          const imagePrompts = generateImagePrompts(
+            article.title,
+            article.content,
+            config.language,
+          );
+
+          // Fetch images for each prompt
+          const allImages = [];
+          for (const prompt of imagePrompts) {
+            const images = await fetchUnsplashImages(prompt, 1);
+            allImages.push(...images);
+          }
+
+          if (allImages.length > 0) {
+            article.featuredImage = allImages[0]?.url;
+            article.images = allImages;
+
+            // Embed featured image in content
+            article.content = embedImagesInContent(article.content, allImages);
+            console.log(`Added ${allImages.length} images to article`);
+          }
+        } catch (imageError) {
+          console.warn(
+            "Failed to fetch images, continuing without images:",
+            imageError,
+          );
+          // Continue without images - don't fail the entire generation
+        }
+      }
+
+      console.log("Article generated successfully:", article.title);
+      return article;
+    },
+    3, // maxRetries
+    1000, // initialDelayMs
+  );
 }
 
 export async function generateMultipleArticles(

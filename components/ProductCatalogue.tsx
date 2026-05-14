@@ -16,9 +16,31 @@ const uiText = {
     en: "Four design prototypes: Aksara, Nexfit, Noura Care, and Bare Beaute Studio.",
   },
   exploreProject: { id: "Lihat Proyek", en: "View Project" },
+  startFrom: { id: "Mulai dari", en: "Start from" },
+  prototype: { id: "Prototype", en: "Prototype" },
 };
 
-const projects = [
+interface TextObject {
+  id: string;
+  en: string;
+}
+
+interface ProjectItem {
+  id: string;
+  title: TextObject;
+  subtitle: TextObject;
+  description: TextObject;
+  framework: string;
+  estimate: TextObject;
+  discountBadge?: TextObject;
+  prototypeUrl?: string;
+  logo: string;
+  image: string;
+  gradient: string;
+  accent: string;
+}
+
+const projects: ProjectItem[] = [
   {
     id: "aksara",
     title: { id: "Aksara", en: "Aksara" },
@@ -31,8 +53,11 @@ const projects = [
       en: "A comprehensive system for managing MVPs, meeting schedules, archived documents, project evaluation, and account settings in one unified dashboard.",
     },
     framework: "Next.js / React",
-    estimate: "90 - 100 juta",
-    discountBadge: "Book before Dec • 10% off",
+    estimate: { id: "IDR 90 - 100 Juta", en: "IDR 90 - 100 Million" },
+    discountBadge: {
+      id: "Pesan sebelum Des • diskon 10%",
+      en: "Book before Dec • 10% off",
+    },
     prototypeUrl: "https://aksara-web-nine.vercel.app",
     logo: "/assets/images/project-logo/aksara-logo.png",
     image: "/assets/images/aksara-card.png",
@@ -51,9 +76,12 @@ const projects = [
       en: "A sleek gym owner panel for managing member check-ins, class bookings, member overview, trainer tools, and real-time health insights.",
     },
     framework: "Next.js / React",
-    estimate: "30 - 50 juta",
+    estimate: { id: "IDR 30 - 50 Juta", en: "IDR 30 - 50 Million" },
     prototypeUrl: "https://gym-prototype-fawn.vercel.app/",
-    discountBadge: "Book before Dec • 10% off",
+    discountBadge: {
+      id: "Pesan sebelum Des • diskon 10%",
+      en: "Book before Dec • 10% off",
+    },
     logo: "/assets/images/project-logo/nexfit-logo.png",
     image: "/assets/images/fitnex-card.png",
     gradient: "from-purple-600 via-pink-600 to-slate-800",
@@ -71,9 +99,8 @@ const projects = [
       en: "Booking platform for small clinics and home services, complete with appointment scheduling, patient profiles, and automatic reminders.",
     },
     framework: "Vue 3 / Vite / Pinia",
-    estimate: "10 - 20 juta",
-    discountBadge: "Book before Dec • 10% off",
-    prototypeUrl: "https://noura-nurture-care.vercel.app",
+    estimate: { id: "IDR 10 - 20 Juta", en: "IDR 10 - 20 Million" },
+    discountBadge: undefined,
     logo: "/assets/images/project-logo/noura-logo.png",
     image: "/assets/images/project-noura.png",
     gradient: "from-emerald-500 via-teal-600 to-slate-800",
@@ -91,9 +118,8 @@ const projects = [
       en: "An SMB system for salons and nail art, focused on appointments, daily cash, cosmetic stock, and monthly reports.",
     },
     framework: "Vue 3 / Vite / Tailwind",
-    estimate: "10 - 20 juta",
-    discountBadge: "Book before Dec • 10% off",
-    prototypeUrl: "#",
+    estimate: { id: "IDR 10 - 20 Juta", en: "IDR 10 - 20 Million" },
+    discountBadge: undefined,
     logo: "/assets/images/project-logo/bare-beaute-logo.png.jpg",
     image: "/assets/images/project-bare.png",
     gradient: "from-pink-500 via-rose-600 to-slate-800",
@@ -197,7 +223,9 @@ export default function ProductCatalogue() {
                         />
                         {project.discountBadge && (
                           <div className="absolute right-6 top-6 rounded-full bg-rose-500/95 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-rose-500/20">
-                            {project.discountBadge}
+                            {typeof project.discountBadge === "string"
+                              ? project.discountBadge
+                              : localize(project.discountBadge, language)}
                           </div>
                         )}
                       </div>
@@ -257,25 +285,32 @@ export default function ProductCatalogue() {
                               <div
                                 className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
                               >
-                                Start from {project.estimate}
+                                {localize(uiText.startFrom, language)}{" "}
+                                {localize(project.estimate, language)}
                               </div>
                             </div>
                             <div
                               className={`text-sm ${isDark ? "text-slate-300" : "text-slate-600"} leading-relaxed mt-4`}
                             >
-                              <span className="font-semibold">Prototype:</span>{" "}
-                              {project.prototypeUrl === "#" ? (
+                              <span className="font-semibold">
+                                {localize(uiText.prototype, language)}:
+                              </span>{" "}
+                              {!project.prototypeUrl ||
+                              project.prototypeUrl === "#" ? (
                                 <span>TBC</span>
                               ) : (
                                 <button
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    window.open(project.prototypeUrl, "_blank");
+                                    window.open(
+                                      project.prototypeUrl!,
+                                      "_blank",
+                                    );
                                   }}
                                   className={`underline transition cursor-pointer border-0 bg-transparent p-0 text-left ${isDark ? "text-sky-300 hover:text-sky-200" : "text-sky-700 hover:text-slate-900"}`}
                                 >
-                                  {project.prototypeUrl.replace(
+                                  {project.prototypeUrl!.replace(
                                     /^https?:\/\//,
                                     "",
                                   )}

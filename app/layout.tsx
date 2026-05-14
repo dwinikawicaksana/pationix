@@ -6,13 +6,39 @@ import ScrollToTop from "@/components/ScrollToTop";
 import SupportButton from "@/components/SupportButton";
 
 export const metadata: Metadata = {
-  title: "Paitonix — Landing page untuk startup web dan app",
+  metadataBase: new URL("https://paitonix.com"),
+  title: "Paitonix — Digital Product Studio",
   description:
-    "Paitonix merancang landing page modern, UI aplikasi, dan chatbot cerdas untuk startup yang siap tumbuh.",
+    "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
   icons: {
     icon: "/assets/images/favicon.png",
     shortcut: "/assets/images/favicon.png",
     apple: "/assets/images/favicon.png",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://paitonix.com",
+    siteName: "Paitonix",
+    title: "Paitonix — Digital Product Studio",
+    description:
+      "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
+    images: [
+      {
+        url: "/assets/images/hero-paitonix.png",
+        width: 1200,
+        height: 630,
+        alt: "Paitonix — Digital Product Studio",
+      },
+    ],
+    locale: "id_ID",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@paitonix",
+    title: "Paitonix — Digital Product Studio",
+    description:
+      "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
+    images: ["/assets/images/hero-paitonix.png"],
   },
 };
 
@@ -52,7 +78,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className="antialiased bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300"
+        className="antialiased overflow-x-hidden bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300"
         style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
       >
         {/* Global audio element for welcome voice */}

@@ -18,6 +18,46 @@ interface Article {
   images?: Array<{ url: string; alt: string; source: string }>;
 }
 
+const uiText = {
+  title: { id: "Dashboard Blog", en: "Blog Dashboard" },
+  generate: { id: "Buat Artikel", en: "Generate Article" },
+  generateBulk: { id: "Buat Bulk", en: "Generate Bulk" },
+  topic: { id: "Topik", en: "Topic" },
+  enterTopic: { id: "Masukkan topik artikel...", en: "Enter article topic..." },
+  bulkTopics: {
+    id: "Topik Bulk (satu per baris)",
+    en: "Bulk Topics (one per line)",
+  },
+  style: { id: "Gaya", en: "Style" },
+  technical: { id: "Teknis", en: "Technical" },
+  business: { id: "Bisnis", en: "Business" },
+  casual: { id: "Santai", en: "Casual" },
+  includeImages: {
+    id: "Sertakan gambar dari Unsplash",
+    en: "Include images from Unsplash",
+  },
+  generating: { id: "Membuat...", en: "Generating..." },
+  articles: { id: "Artikel", en: "Articles" },
+  draft: { id: "Draft", en: "Draft" },
+  published: { id: "Dipublikasikan", en: "Published" },
+  publish: { id: "Publikasikan", en: "Publish" },
+  readTime: { id: "menit baca", en: "min read" },
+  loading: { id: "Memuat...", en: "Loading..." },
+  enterTopicError: { id: "Masukkan topik", en: "Enter a topic" },
+  enterBulkError: {
+    id: "Masukkan minimal satu topik",
+    en: "Enter at least one topic",
+  },
+  generatedSuccess: {
+    id: "Artikel berhasil dibuat",
+    en: "Article generated successfully",
+  },
+  generatedBulkSuccess: {
+    id: "artikel berhasil dibuat",
+    en: "articles generated successfully",
+  },
+};
+
 export default function AdminBlogPage() {
   const { language } = useLanguage();
   const [topics, setTopics] = useState<string>("");
@@ -26,10 +66,31 @@ export default function AdminBlogPage() {
     "business",
   );
   const [includeImages, setIncludeImages] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Load all articles on component mount
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch("/api/blog/all");
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            setArticles(data);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load articles:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   // Scroll to top when articles are updated
   useEffect(() => {
@@ -40,7 +101,7 @@ export default function AdminBlogPage() {
 
   const handleGenerateSingle = async () => {
     if (!topics.trim()) {
-      setError(language === "id" ? "Masukkan topik" : "Enter a topic");
+      setError(uiText.enterTopicError[language]);
       return;
     }
 
@@ -78,11 +139,7 @@ export default function AdminBlogPage() {
         ...articles,
       ]);
       setTopics("");
-      setSuccess(
-        language === "id"
-          ? "Artikel berhasil dibuat"
-          : "Article generated successfully",
-      );
+      setSuccess(uiText.generatedSuccess[language]);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to generate article",
@@ -99,11 +156,7 @@ export default function AdminBlogPage() {
       .filter((t) => t.length > 0);
 
     if (topicList.length === 0) {
-      setError(
-        language === "id"
-          ? "Masukkan minimal satu topik"
-          : "Enter at least one topic",
-      );
+      setError(uiText.enterBulkError[language]);
       return;
     }
 
@@ -140,9 +193,7 @@ export default function AdminBlogPage() {
       setArticles([...withMeta, ...articles]);
       setBulkTopics("");
       setSuccess(
-        language === "id"
-          ? `${newArticles.length} artikel berhasil dibuat`
-          : `${newArticles.length} articles generated successfully`,
+        `${newArticles.length} ${uiText.generatedBulkSuccess[language]}`,
       );
     } catch (err) {
       setError(
