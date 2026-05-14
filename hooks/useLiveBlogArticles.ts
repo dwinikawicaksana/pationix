@@ -23,48 +23,28 @@ interface UseLiveBlogArticlesOptions {
 
 export function useLiveBlogArticles({
   language,
-  intervalMs = 60000,
   limit,
 }: UseLiveBlogArticlesOptions) {
   const [articles, setArticles] = useState<LiveBlogArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const errorCountRef = useRef(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const fetchedKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
+    // Single fetch per language change. No polling, no focus refetch.
+    // (Polling was burning Hostinger entry-process quota → 503 throttling.)
+    const key = `${language}:${limit ?? "all"}`;
+    if (fetchedKeyRef.current === key) return;
+    fetchedKeyRef.current = key;
+
     let cancelled = false;
 
-    const scheduleNext = (delay: number) => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => {
-        fetchArticles({ silent: true });
-      }, delay);
-    };
-
-    const fetchArticles = async ({
-      silent = false,
-    }: { silent?: boolean } = {}) => {
-      if (!silent) setIsLoading(true);
-
+    (async () => {
       try {
         const response = await fetch(
           `/api/blog/articles?language=${language}`,
-          { cache: "no-store" },
+          { cache: "force-cache" },
         );
-
-        if (!response.ok) {
-          errorCountRef.current += 1;
-          // Exponential backoff: double interval up to 5 min on repeated errors
-          const backoff = Math.min(
-            intervalMs * 2 ** errorCountRef.current,
-            300000,
-          );
-          scheduleNext(backoff);
-          return;
-        }
-
-        errorCountRef.current = 0;
-        scheduleNext(intervalMs);
+        if (!response.ok) return;
 
         const data = (await response.json()) as LiveBlogArticle[];
         if (cancelled || !Array.isArray(data)) return;
@@ -72,31 +52,15 @@ export function useLiveBlogArticles({
         setArticles(typeof limit === "number" ? data.slice(0, limit) : data);
       } catch (error) {
         if (!cancelled) console.error("Failed to load articles:", error);
-        errorCountRef.current += 1;
       } finally {
         if (!cancelled) setIsLoading(false);
       }
-    };
-
-    fetchArticles();
-    scheduleNext(intervalMs);
-
-    const handleFocus = () => fetchArticles({ silent: true });
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible")
-        fetchArticles({ silent: true });
-    };
-
-    window.addEventListener("focus", handleFocus);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    })();
 
     return () => {
       cancelled = true;
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      window.removeEventListener("focus", handleFocus);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [intervalMs, language, limit]);
+  }, [language, limit]);
 
   return { articles, isLoading };
 }
