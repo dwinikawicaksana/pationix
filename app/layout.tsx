@@ -22,14 +22,6 @@ export const metadata: Metadata = {
     title: "Paitonix — Digital Product Studio",
     description:
       "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
-    images: [
-      {
-        url: "https://paitonix.com/assets/images/logo-long.png",
-        width: 1200,
-        height: 630,
-        alt: "Paitonix — Digital Product Studio",
-      },
-    ],
     locale: "id_ID",
   },
   twitter: {
@@ -38,7 +30,6 @@ export const metadata: Metadata = {
     title: "Paitonix — Digital Product Studio",
     description:
       "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
-    images: ["https://paitonix.com/assets/images/logo-long.png"],
   },
 };
 
