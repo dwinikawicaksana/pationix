@@ -100,14 +100,14 @@ body {
     --tw-enter-opacity: initial;
     --tw-enter-scale: initial;
   }
-  
+
   /* GPU acceleration for animated elements */
   [data-framer-motion] {
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     perspective: 1000px;
   }
-  
+
   /* Optimize motion for mobile */
   @media (max-width: 768px) {
     /* Reduce animation duration on mobile for better performance */
@@ -116,7 +116,7 @@ body {
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
-    
+
     /* Will-change optimization */
     .motion-safe {
       will-change: transform, opacity;
@@ -135,4 +135,3 @@ body {
     scroll-behavior: auto !important;
   }
 }
-

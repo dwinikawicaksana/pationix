@@ -4,7 +4,7 @@ export const motionConfig = {
   initial: "hidden",
   animate: "visible",
   exit: "hidden",
-  
+
   // Enable GPU acceleration with transform
   transition: {
     type: "spring",
@@ -12,13 +12,13 @@ export const motionConfig = {
     damping: 20,
     mass: 1,
   },
-  
+
   // Mobile-optimized variants
   mobileVariants: {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
   },
-  
+
   // Desktop variants
   desktopVariants: {
     hidden: { opacity: 0, y: 20 },
