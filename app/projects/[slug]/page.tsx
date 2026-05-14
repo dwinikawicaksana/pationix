@@ -1,15 +1,22 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/LanguageProvider";
 import { localize } from "@/lib/i18n";
 import { projects } from "@/lib/data";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function ProjectDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
   const { language } = useLanguage();
+  const router = useRouter();
+
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   const project = projects[slug as keyof typeof projects];
 
@@ -59,11 +66,7 @@ export default function ProjectDetailPage() {
             <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/10 bg-slate-900/90 shadow-xl shadow-slate-950/40 overflow-hidden">
                 <img
-                  src={
-                    slug === "aksara"
-                      ? "/assets/images/aksara-card.png"
-                      : "/assets/images/fitnex-card.png"
-                  }
+                  src={project.logo}
                   alt={`${localize(project.title, language)} icon`}
                   className="h-full w-full object-cover"
                 />
@@ -78,9 +81,14 @@ export default function ProjectDetailPage() {
               </div>
             </div>
             <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-3 rounded-full bg-sky-500 text-white font-semibold hover:bg-sky-600 transition">
+              <a
+                href="https://api.whatsapp.com/send?phone=6287891541475&text=Halo%20saya%20ingin%20konsultasi%20dalam%20pembuatan%20jasa%20website"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-sky-500 text-white font-semibold hover:bg-sky-600 transition"
+              >
                 {language === "id" ? "Minta Demo" : "Request Demo"}
-              </button>
+              </a>
               <Link
                 href="/"
                 className="px-8 py-3 rounded-full border border-slate-600 text-white font-semibold hover:border-slate-400 transition"

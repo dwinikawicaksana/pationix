@@ -7,6 +7,7 @@ export function getLandingData(): LandingData {
       links: [
         { label: { id: "Produk Kami", en: "Our Product" }, href: "#projects" },
         { label: { id: "Layanan", en: "Services" }, href: "#services" },
+        { label: { id: "Blog", en: "Blog" }, href: "/blog" },
         { label: { id: "Tentang Kami", en: "About Us" }, href: "#story" },
         { label: { id: "Kontak", en: "Contact" }, href: "#cta" },
       ],
@@ -216,102 +217,7 @@ export function getLandingData(): LandingData {
       },
     ],
 
-    blogs: [
-      {
-        id: "blog-1",
-        title: {
-          id: "7 Prinsip Design System yang Mengubah Cara Kerja Tim",
-          en: "7 Design System Principles That Transform Team Workflow",
-        },
-        excerpt: {
-          id: "Bagaimana design system yang terstruktur dapat meningkatkan kolaborasi dan mempercepat development.",
-          en: "How a structured design system can improve collaboration and accelerate development.",
-        },
-        category: { id: "Design", en: "Design" },
-        date: "2024-01-15",
-        thumbnail:
-          "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=800&fit=crop",
-        slug: "design-system-principles",
-      },
-      {
-        id: "blog-2",
-        title: {
-          id: "Membangun API yang Scalable dengan Arsitektur Modern",
-          en: "Building Scalable APIs with Modern Architecture",
-        },
-        excerpt: {
-          id: "Best practices dalam mendesain API yang dapat menangani jutaan request per hari.",
-          en: "Best practices in designing APIs that can handle millions of requests daily.",
-        },
-        category: { id: "Backend", en: "Backend" },
-        date: "2024-01-10",
-        thumbnail:
-          "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=800&fit=crop",
-        slug: "scalable-api-architecture",
-      },
-      {
-        id: "blog-3",
-        title: {
-          id: "User Experience dalam Era AI: Apa yang Berubah?",
-          en: "User Experience in the AI Era: What's Changing?",
-        },
-        excerpt: {
-          id: "Eksplorasi bagaimana AI mengubah cara kita merancang pengalaman pengguna yang lebih personal.",
-          en: "Exploring how AI is reshaping the way we design more personalized user experiences.",
-        },
-        category: { id: "AI/UX", en: "AI/UX" },
-        date: "2024-01-05",
-        thumbnail: "/assets/images/era-ai.png",
-        slug: "ai-user-experience",
-      },
-      {
-        id: "blog-4",
-        title: {
-          id: "Optimasi Performance: Dari Konsep hingga Production",
-          en: "Performance Optimization: From Concept to Production",
-        },
-        excerpt: {
-          id: "Strategi mengoptimalkan performa aplikasi tanpa mengorbankan fitur dan user experience.",
-          en: "Strategies to optimize app performance without compromising features and user experience.",
-        },
-        category: { id: "Performance", en: "Performance" },
-        date: "2023-12-28",
-        thumbnail:
-          "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=800&fit=crop",
-        slug: "performance-optimization",
-      },
-      {
-        id: "blog-5",
-        title: {
-          id: "Mobile-First Development: Trend atau Keharusan?",
-          en: "Mobile-First Development: Trend or Necessity?",
-        },
-        excerpt: {
-          id: "Mengapa pendekatan mobile-first bukan lagi pilihan, tetapi kebutuhan dalam development modern.",
-          en: "Why mobile-first approach is no longer optional but essential in modern development.",
-        },
-        category: { id: "Mobile", en: "Mobile" },
-        date: "2023-12-20",
-        thumbnail: "/assets/images/test-blog.png",
-        slug: "mobile-first-development",
-      },
-      {
-        id: "blog-6",
-        title: {
-          id: "Team Collaboration Tools yang Mengubah Produktivitas",
-          en: "Collaboration Tools That Transform Team Productivity",
-        },
-        excerpt: {
-          id: "Evaluasi tools terbaik untuk meningkatkan kolaborasi tim dalam proyek digital modern.",
-          en: "Evaluating the best tools to enhance team collaboration in modern digital projects.",
-        },
-        category: { id: "Workflow", en: "Workflow" },
-        date: "2023-12-15",
-        thumbnail:
-          "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=800&fit=crop",
-        slug: "collaboration-tools",
-      },
-    ],
+    blogs: [],
 
     cta: {
       title: {
@@ -350,6 +256,7 @@ export const projects = {
   aksara: {
     id: "aksara",
     title: { id: "Aksara", en: "Aksara" },
+    logo: "/assets/images/project-logo/aksara-logo.png",
     tagline: {
       id: "Platform Kolaborasi & Monitoring Proyek",
       en: "Collaboration & Project Monitoring Platform",
@@ -429,9 +336,10 @@ export const projects = {
       },
     },
   },
-  fitnex: {
-    id: "fitnex",
-    title: { id: "Fitnex", en: "Fitnex" },
+  nexfit: {
+    id: "nexfit",
+    title: { id: "Nexfit", en: "Nexfit" },
+    logo: "/assets/images/project-logo/nexfit-logo.png",
     tagline: {
       id: "Platform Manajemen Kesehatan & Gym Modern",
       en: "Modern Health & Gym Management Platform",
@@ -508,6 +416,181 @@ export const projects = {
       description: {
         id: "Bergabunglah dengan puluhan gym yang telah meningkatkan efisiensi operasional mereka dengan Fitnex. Hubungi kami hari ini untuk penawaran khusus.",
         en: "Join dozens of gyms that have improved their operational efficiency with Fitnex. Contact us today for a special offer.",
+      },
+    },
+  },
+  noura: {
+    id: "noura",
+    title: { id: "Noura Care", en: "Noura Care" },
+    logo: "/assets/images/project-logo/noura-logo.png",
+    tagline: {
+      id: "Platform Booking Healthcare & Appointment Modern",
+      en: "Modern Healthcare & Appointment Booking Platform",
+    },
+    heroDescription: {
+      id: "Solusi lengkap untuk klinik kecil dan layanan home service: kelola jadwal appointment, profil pasien, reminder otomatis, dan insights yang actionable.",
+      en: "A complete solution for small clinics and home services: manage appointment schedules, patient profiles, automatic reminders, and actionable insights.",
+    },
+    sections: [
+      {
+        type: "text-image",
+        title: { id: "Manajemen Appointment", en: "Appointment Management" },
+        description: {
+          id: "Kelola jadwal appointment dengan mudah. Pasien dapat booking melalui portal online, dan sistem akan mengirim reminder otomatis sebelum appointment.",
+          en: "Manage appointment schedules easily. Patients can book through the online portal, and the system sends automatic reminders before appointments.",
+        },
+        image: "/assets/images/noura-management.svg",
+        align: "left",
+      },
+      {
+        type: "features-grid",
+        title: { id: "Fitur Unggulan", en: "Premium Features" },
+        features: [
+          {
+            title: { id: "Online Booking", en: "Online Booking" },
+            description: {
+              id: "Portal booking untuk pasien dengan kalender yang intuitif dan real-time availability.",
+              en: "Patient booking portal with intuitive calendar and real-time availability.",
+            },
+          },
+          {
+            title: { id: "Patient Profiles", en: "Patient Profiles" },
+            description: {
+              id: "Kelola data lengkap pasien: riwayat medis, kontak, dan preferensi treatment.",
+              en: "Manage complete patient data: medical history, contact info, and treatment preferences.",
+            },
+          },
+          {
+            title: { id: "Automatic Reminders", en: "Automatic Reminders" },
+            description: {
+              id: "Sistem reminder otomatis via SMS atau email untuk mengurangi no-show.",
+              en: "Automatic reminder system via SMS or email to reduce no-shows.",
+            },
+          },
+          {
+            title: {
+              id: "Multi-Provider Support",
+              en: "Multi-Provider Support",
+            },
+            description: {
+              id: "Support untuk multiple dokter/praktisi dengan calendar management individual.",
+              en: "Support for multiple doctors/practitioners with individual calendar management.",
+            },
+          },
+          {
+            title: { id: "Notes & Records", en: "Notes & Records" },
+            description: {
+              id: "Dokumentasi lengkap setiap appointment dan treatment history pasien.",
+              en: "Complete documentation of each appointment and patient treatment history.",
+            },
+          },
+          {
+            title: { id: "Mobile Friendly", en: "Mobile Friendly" },
+            description: {
+              id: "Aplikasi mobile dan web yang responsive untuk kemudahan akses kapan saja.",
+              en: "Mobile app and responsive web for easy access anytime, anywhere.",
+            },
+          },
+        ],
+      },
+    ],
+    cta: {
+      title: {
+        id: "Tingkatkan Efisiensi Klinik Anda dengan Noura Care",
+        en: "Elevate Your Clinic Efficiency with Noura Care",
+      },
+      description: {
+        id: "Optimalkan manajemen appointment dan tingkatkan kepuasan pasien dengan Noura Care. Hubungi kami untuk demo dan penawaran khusus.",
+        en: "Optimize appointment management and improve patient satisfaction with Noura Care. Contact us for a demo and special offer.",
+      },
+    },
+  },
+  "bare-beaute": {
+    id: "bare-beaute",
+    title: { id: "Bare Beaute Studio", en: "Bare Beaute Studio" },
+    logo: "/assets/images/project-logo/bare-beaute-logo.png.jpg",
+    tagline: {
+      id: "Sistem UMKM Beauty & Salon Management",
+      en: "SMB Beauty & Salon Management System",
+    },
+    heroDescription: {
+      id: "Solusi khusus untuk salon dan nail art: kelola appointment, kas harian, stok kosmetik, staff management, dan laporan bulanan dalam satu sistem terintegrasi.",
+      en: "A specialized solution for salons and nail art: manage appointments, daily cash, cosmetic stock, staff management, and monthly reports in one integrated system.",
+    },
+    sections: [
+      {
+        type: "text-image",
+        title: {
+          id: "Manajemen Appointment & Booking",
+          en: "Appointment & Booking Management",
+        },
+        description: {
+          id: "Kelola jadwal stylist, booking client, dan riwayat layanan dengan sistem yang user-friendly dan efisien.",
+          en: "Manage stylist schedules, client bookings, and service history with a user-friendly and efficient system.",
+        },
+        image: "/assets/images/beaute-booking.svg",
+        align: "left",
+      },
+      {
+        type: "features-grid",
+        title: { id: "Fitur Unggulan", en: "Premium Features" },
+        features: [
+          {
+            title: {
+              id: "Appointment Scheduling",
+              en: "Appointment Scheduling",
+            },
+            description: {
+              id: "Calendar management yang intuitif untuk multiple stylist dan treatment types.",
+              en: "Intuitive calendar management for multiple stylists and treatment types.",
+            },
+          },
+          {
+            title: { id: "Stock Management", en: "Stock Management" },
+            description: {
+              id: "Tracking stok kosmetik dan supplies dengan automatic reorder alerts.",
+              en: "Track cosmetic and supply stock with automatic reorder alerts.",
+            },
+          },
+          {
+            title: { id: "Daily Cash Management", en: "Daily Cash Management" },
+            description: {
+              id: "Pencatatan kas harian, payment methods, dan daily settlement reporting.",
+              en: "Daily cash recording, payment method tracking, and settlement reporting.",
+            },
+          },
+          {
+            title: { id: "Staff Management", en: "Staff Management" },
+            description: {
+              id: "Kelola data staff, komisi, attendance, dan performance tracking.",
+              en: "Manage staff data, commissions, attendance, and performance tracking.",
+            },
+          },
+          {
+            title: { id: "Client Database", en: "Client Database" },
+            description: {
+              id: "Simpan preferensi client, service history, dan contact information.",
+              en: "Store client preferences, service history, and contact information.",
+            },
+          },
+          {
+            title: { id: "Monthly Reports", en: "Monthly Reports" },
+            description: {
+              id: "Generate laporan bulanan untuk revenue, staff performance, dan stock analysis.",
+              en: "Generate monthly reports for revenue, staff performance, and stock analysis.",
+            },
+          },
+        ],
+      },
+    ],
+    cta: {
+      title: {
+        id: "Kelola Salon Anda dengan Bare Beaute",
+        en: "Manage Your Salon with Bare Beaute",
+      },
+      description: {
+        id: "Tingkatkan efisiensi operasional salon Anda dengan sistem manajemen yang komprehensif. Hubungi kami untuk demo dan konsultasi implementasi.",
+        en: "Increase your salon's operational efficiency with a comprehensive management system. Contact us for a demo and implementation consultation.",
       },
     },
   },

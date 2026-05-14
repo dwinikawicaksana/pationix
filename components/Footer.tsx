@@ -51,41 +51,49 @@ export default function Footer({
             )}
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <a
-              href="https://instagram.com/paitonix"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+            <button
+              type="button"
+              className="group relative inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition cursor-not-allowed"
+              aria-label="Instagram coming soon"
             >
               <span className="text-lg">📷</span>
               Instagram
-            </a>
-            <a
-              href="https://facebook.com/paitonix"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+              <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-full bg-slate-950 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-slate-100 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                Coming soon
+              </span>
+            </button>
+            <button
+              type="button"
+              className="group relative inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition cursor-not-allowed"
+              aria-label="Facebook coming soon"
             >
               <span className="text-lg">📘</span>
               Facebook
-            </a>
-            <a
-              href="https://www.tiktok.com/@paitonix"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+              <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-full bg-slate-950 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-slate-100 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                Coming soon
+              </span>
+            </button>
+            <button
+              type="button"
+              className="group relative inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition cursor-not-allowed"
+              aria-label="TikTok coming soon"
             >
               <span className="text-lg">🎵</span>
               TikTok
-            </a>
-            <a
-              href="https://x.com/paitonix"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+              <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-full bg-slate-950 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-slate-100 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                Coming soon
+              </span>
+            </button>
+            <button
+              type="button"
+              className="group relative inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900 px-4 py-2 text-sm text-slate-100 transition cursor-not-allowed"
+              aria-label="X coming soon"
             >
               <span className="text-lg">✕</span>X
-            </a>
+              <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 rounded-full bg-slate-950 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-slate-100 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                Coming soon
+              </span>
+            </button>
           </div>
         </div>
       </div>

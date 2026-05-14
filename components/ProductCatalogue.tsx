@@ -12,8 +12,8 @@ const uiText = {
     en: "Digital products designed with care.",
   },
   description: {
-    id: "Dua konsep produk inovatif: Aksara untuk kolaborasi dan monitoring proyek, Fitnex untuk manajemen kesehatan dan gym.",
-    en: "Two innovative product concepts: Aksara for collaboration and project monitoring, Fitnex for health and gym management.",
+    id: "Empat prototype desain: Aksara, Nexfit, Noura Care, dan Bare Beaute Studio.",
+    en: "Four design prototypes: Aksara, Nexfit, Noura Care, and Bare Beaute Studio.",
   },
   exploreProject: { id: "Lihat Proyek", en: "View Project" },
 };
@@ -30,13 +30,18 @@ const projects = [
       id: "Sistem komprehensif untuk mengelola MVP, jadwal meeting, dokumen arsip, evaluasi proyek, dan pengaturan akun dalam satu dashboard terpadu.",
       en: "A comprehensive system for managing MVPs, meeting schedules, archived documents, project evaluation, and account settings in one unified dashboard.",
     },
+    framework: "Next.js / React",
+    estimate: "90 - 100 juta",
+    discountBadge: "Book before Dec • 10% off",
+    prototypeUrl: "https://aksara-web-nine.vercel.app",
+    logo: "/assets/images/project-logo/aksara-logo.png",
+    image: "/assets/images/aksara-card.png",
     gradient: "from-sky-600 via-blue-600 to-slate-800",
     accent: "sky",
-    image: "/assets/images/aksara-card.png",
   },
   {
-    id: "fitnex",
-    title: { id: "Fitnex", en: "Fitnex" },
+    id: "nexfit",
+    title: { id: "Nexfit", en: "Nexfit" },
     subtitle: {
       id: "Platform Manajemen Kesehatan & Gym",
       en: "Health & Gym Management Platform",
@@ -45,16 +50,60 @@ const projects = [
       id: "Panel pemilik gym yang elegan untuk mengelola check-in member, booking kelas, overview member, tools trainer, dan insight kesehatan yang real-time.",
       en: "A sleek gym owner panel for managing member check-ins, class bookings, member overview, trainer tools, and real-time health insights.",
     },
+    framework: "Next.js / React",
+    estimate: "30 - 50 juta",
+    prototypeUrl: "https://gym-prototype-fawn.vercel.app/",
+    discountBadge: "Book before Dec • 10% off",
+    logo: "/assets/images/project-logo/nexfit-logo.png",
+    image: "/assets/images/fitnex-card.png",
     gradient: "from-purple-600 via-pink-600 to-slate-800",
     accent: "purple",
-    image: "/assets/images/fitnex-card.png",
+  },
+  {
+    id: "noura",
+    title: { id: "Noura Care", en: "Noura Care" },
+    subtitle: {
+      id: "Healthcare / Appointment",
+      en: "Healthcare / Appointment",
+    },
+    description: {
+      id: "Platform booking untuk klinik kecil dan home service, lengkap dengan jadwal appointment, profil pasien, dan reminder otomatis.",
+      en: "Booking platform for small clinics and home services, complete with appointment scheduling, patient profiles, and automatic reminders.",
+    },
+    framework: "Vue 3 / Vite / Pinia",
+    estimate: "10 - 20 juta",
+    discountBadge: "Book before Dec • 10% off",
+    prototypeUrl: "https://noura-nurture-care.vercel.app",
+    logo: "/assets/images/project-logo/noura-logo.png",
+    image: "/assets/images/project-noura.png",
+    gradient: "from-emerald-500 via-teal-600 to-slate-800",
+    accent: "emerald",
+  },
+  {
+    id: "bare-beaute",
+    title: { id: "Bare Beaute Studio", en: "Bare Beaute Studio" },
+    subtitle: {
+      id: "UMKM / Beauty",
+      en: "SMB / Beauty",
+    },
+    description: {
+      id: "Sistem UMKM untuk salon dan nail art yang fokus pada appointment, kas harian, stok kosmetik, dan laporan monthly.",
+      en: "An SMB system for salons and nail art, focused on appointments, daily cash, cosmetic stock, and monthly reports.",
+    },
+    framework: "Vue 3 / Vite / Tailwind",
+    estimate: "10 - 20 juta",
+    discountBadge: "Book before Dec • 10% off",
+    prototypeUrl: "#",
+    logo: "/assets/images/project-logo/bare-beaute-logo.png.jpg",
+    image: "/assets/images/project-bare.png",
+    gradient: "from-pink-500 via-rose-600 to-slate-800",
+    accent: "pink",
   },
 ];
 
 export default function ProductCatalogue() {
   const { language } = useLanguage();
   const [isDark, setIsDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("theme");
@@ -72,8 +121,6 @@ export default function ProductCatalogue() {
       attributeFilter: ["class"],
     });
 
-    setMounted(true);
-
     return () => {
       observer.disconnect();
     };
@@ -82,21 +129,14 @@ export default function ProductCatalogue() {
   return (
     <section
       id="projects"
+      suppressHydrationWarning
       className="scroll-mt-24 relative py-24 lg:py-32 bg-white dark:bg-slate-950 text-slate-950 dark:text-white overflow-hidden transition-colors duration-300"
     >
-      {/* Video background */}
-      <video
-        className={`absolute inset-0 w-full h-full object-cover ${isDark ? "opacity-25" : "opacity-10"}`}
-        src="/assets/videos/electrical.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
-      {/* Adaptive overlay */}
+      {/* Soft gradient background for stable rendering */}
       <div
-        className={`absolute inset-0 ${isDark ? "bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/85" : "bg-gradient-to-b from-white/90 via-white/70 to-white/85"} pointer-events-none`}
+        className={`absolute inset-0 pointer-events-none ${isDark ? "bg-gradient-to-b from-slate-950/85 via-slate-900/60 to-slate-950/90" : "bg-gradient-to-b from-slate-50 via-white to-slate-50"}`}
       />
+      <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,_rgba(56,189,248,0.18),_transparent_18%),radial-gradient(circle_at_bottom_right,_rgba(168,85,247,0.16),_transparent_20%)]" />
       <div className="absolute inset-0 pointer-events-none">
         <div className="hidden lg:block absolute top-20 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-2xl dark:bg-sky-500/10" />
         <div className="hidden lg:block absolute bottom-0 left-20 w-96 h-96 bg-purple-500/10 rounded-full blur-2xl dark:bg-purple-500/10" />
@@ -126,16 +166,16 @@ export default function ProductCatalogue() {
           </p>
         </motion.div>
 
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid gap-6 lg:grid-cols-2">
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{
-                duration: 0.55,
-                delay: index * 0.08,
+                duration: 0.45,
+                delay: index * 0.06,
                 ease: "easeOut",
               }}
               style={{ willChange: "opacity, transform" }}
@@ -143,94 +183,145 @@ export default function ProductCatalogue() {
               <Link href={`/projects/${project.id}`}>
                 <div className="group block h-full cursor-pointer">
                   <div
-                    className={`relative overflow-hidden rounded-[2.5rem] border transition-all duration-300 hover:-translate-y-1 ${isDark ? "border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/70 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/90" : "border-slate-200/50 bg-slate-50 shadow-lg shadow-slate-200/30 hover:border-slate-300/70 hover:shadow-xl hover:shadow-slate-300/40"}`}
+                    className={`relative overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-0.5 ${isDark ? "border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/50 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/40" : "border-slate-200/50 bg-slate-50 shadow-lg shadow-slate-200/20 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-300/30"}`}
                   >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={project.image}
-                        alt={`${localize(project.title, language)} preview`}
-                        className="h-72 w-full object-cover"
-                      />
-                      <div
-                        className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${isDark ? "opacity-35" : "opacity-20"}`}
-                      />
-                    </div>
-
-                    <div
-                      className={`relative p-8 flex flex-col justify-between min-h-[420px] ${isDark ? "bg-slate-950/95" : "bg-white/95"} backdrop-blur-sm`}
-                    >
-                      <div className="space-y-6">
-                        <div className="flex flex-wrap items-center justify-between gap-4">
-                          <span
-                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ring-1 ${
-                              project.accent === "sky"
-                                ? isDark
-                                  ? "bg-sky-500/25 text-sky-100 ring-sky-400/40"
-                                  : "bg-sky-100/70 text-sky-700 ring-sky-300/50"
-                                : isDark
-                                  ? "bg-purple-500/25 text-purple-100 ring-purple-400/40"
-                                  : "bg-purple-100/70 text-purple-700 ring-purple-300/50"
-                            }`}
-                          >
-                            {localize(project.subtitle, language)}
-                          </span>
-                          <span
-                            className={`text-xs uppercase tracking-[0.3em] ${isDark ? "text-slate-400" : "text-slate-600"}`}
-                          >
-                            {project.id.toUpperCase()}
-                          </span>
-                        </div>
-
-                        <div className="space-y-4">
-                          <h3
-                            className={`text-4xl sm:text-5xl font-black uppercase tracking-[0.14em] ${isDark ? "text-white" : "text-slate-950"}`}
-                          >
-                            {localize(project.title, language)}
-                          </h3>
-                          <p
-                            className={`text-sm sm:text-base ${isDark ? "text-slate-300" : "text-slate-700"} leading-relaxed`}
-                          >
-                            {localize(project.description, language)}
-                          </p>
-                        </div>
+                    <div className="overflow-hidden">
+                      <div className="relative overflow-hidden">
+                        <img
+                          src={project.image}
+                          alt={`${localize(project.title, language)} preview`}
+                          className="h-48 w-full object-cover sm:h-56"
+                        />
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${isDark ? "opacity-35" : "opacity-20"}`}
+                        />
+                        {project.discountBadge && (
+                          <div className="absolute right-6 top-6 rounded-full bg-rose-500/95 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-rose-500/20">
+                            {project.discountBadge}
+                          </div>
+                        )}
                       </div>
 
-                      <div className="flex flex-col gap-4">
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div
-                            className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
-                          >
-                            {localize(
-                              {
-                                id: "UI yang intuitif dan siap scaling.",
-                                en: "Intuitive UI ready for scaling.",
-                              },
-                              language,
-                            )}
+                      <div
+                        className={`relative px-6 pb-6 pt-8 sm:px-8 sm:pb-8 space-y-5 ${isDark ? "bg-slate-950/95" : "bg-white/95"} backdrop-blur-sm`}
+                      >
+                        <div className="space-y-6">
+                          <div className="flex flex-wrap items-center justify-between gap-4">
+                            <span
+                              className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ring-1 ${
+                                project.accent === "sky"
+                                  ? isDark
+                                    ? "bg-sky-500/25 text-sky-100 ring-sky-400/40"
+                                    : "bg-sky-100/70 text-sky-700 ring-sky-300/50"
+                                  : isDark
+                                    ? "bg-purple-500/25 text-purple-100 ring-purple-400/40"
+                                    : "bg-purple-100/70 text-purple-700 ring-purple-300/50"
+                              }`}
+                            >
+                              {localize(project.subtitle, language)}
+                            </span>
+                            <span
+                              className={`text-xs uppercase tracking-[0.3em] ${isDark ? "text-slate-400" : "text-slate-600"}`}
+                            >
+                              {project.id.toUpperCase()}
+                            </span>
                           </div>
-                          <div
-                            className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
-                          >
-                            {localize(
-                              {
-                                id: "Kolaborasi real-time dan insight produk.",
-                                en: "Real-time collaboration and product insight.",
-                              },
-                              language,
-                            )}
+
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-3 rounded-3xl bg-slate-100/70 px-3 py-2 text-sm font-semibold text-slate-800 ring-1 ring-slate-200 sm:w-fit sm:px-4 sm:py-3 dark:bg-slate-900/80 dark:text-slate-100 dark:ring-slate-700">
+                              <img
+                                src={project.logo}
+                                alt={`${localize(project.title, language)} logo`}
+                                className="h-8 w-8 object-contain"
+                              />
+                              <span className="uppercase tracking-[0.2em]">
+                                {project.id.toUpperCase()}
+                              </span>
+                            </div>
+                            <h3
+                              className={`text-3xl sm:text-4xl font-black uppercase tracking-[0.1em] ${isDark ? "text-white" : "text-slate-950"}`}
+                            >
+                              {localize(project.title, language)}
+                            </h3>
+                            <p
+                              className={`text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-700"}`}
+                            >
+                              {localize(project.description, language)}
+                            </p>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                              <div
+                                className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                              >
+                                {project.framework}
+                              </div>
+                              <div
+                                className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                              >
+                                Start from {project.estimate}
+                              </div>
+                            </div>
+                            <div
+                              className={`text-sm ${isDark ? "text-slate-300" : "text-slate-600"} leading-relaxed mt-4`}
+                            >
+                              <span className="font-semibold">Prototype:</span>{" "}
+                              {project.prototypeUrl === "#" ? (
+                                <span>TBC</span>
+                              ) : (
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    window.open(project.prototypeUrl, "_blank");
+                                  }}
+                                  className={`underline transition cursor-pointer border-0 bg-transparent p-0 text-left ${isDark ? "text-sky-300 hover:text-sky-200" : "text-sky-700 hover:text-slate-900"}`}
+                                >
+                                  {project.prototypeUrl.replace(
+                                    /^https?:\/\//,
+                                    "",
+                                  )}
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </div>
-                        <div
-                          className={`flex items-center gap-3 text-sm font-semibold ${isDark ? "text-slate-300 group-hover:text-white" : "text-slate-700 group-hover:text-slate-950"} transition-colors`}
-                        >
-                          <span>
-                            {localize(uiText.exploreProject, language)}
-                          </span>
-                          <span
-                            className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors ${isDark ? "bg-white/15 group-hover:bg-white/25 text-white" : "bg-slate-300/30 group-hover:bg-slate-300/50 text-slate-800"}`}
+
+                        <div className="flex flex-col gap-3">
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <div
+                              className={`rounded-[1.5rem] border p-3 text-xs ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                            >
+                              {localize(
+                                {
+                                  id: "UI yang intuitif dan siap scaling.",
+                                  en: "Intuitive UI ready for scaling.",
+                                },
+                                language,
+                              )}
+                            </div>
+                            <div
+                              className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                            >
+                              {localize(
+                                {
+                                  id: "Kolaborasi real-time dan insight produk.",
+                                  en: "Real-time collaboration and product insight.",
+                                },
+                                language,
+                              )}
+                            </div>
+                          </div>
+                          <div
+                            className={`flex items-center gap-3 text-sm font-semibold ${isDark ? "text-slate-300 group-hover:text-white" : "text-slate-700 group-hover:text-slate-950"} transition-colors`}
                           >
-                            →
-                          </span>
+                            <span>
+                              {localize(uiText.exploreProject, language)}
+                            </span>
+                            <span
+                              className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors ${isDark ? "bg-white/15 group-hover:bg-white/25 text-white" : "bg-slate-300/30 group-hover:bg-slate-300/50 text-slate-800"}`}
+                            >
+                              →
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>

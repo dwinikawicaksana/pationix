@@ -113,17 +113,6 @@ function FeatureCard({
           </p>
         </div>
       </div>
-
-      {/* Index watermark */}
-      <span
-        className={`absolute bottom-4 right-5 text-[40px] font-black leading-none select-none pointer-events-none ${
-          isHighlight
-            ? "text-white/5"
-            : "text-slate-950/[0.04] dark:text-white/[0.04]"
-        }`}
-      >
-        {String(index + 1).padStart(2, "0")}
-      </span>
     </motion.div>
   );
 }

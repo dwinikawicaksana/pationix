@@ -193,7 +193,7 @@ export default function CTASection({ data }: { data: CTAData }) {
             className="flex flex-col sm:flex-row gap-3 justify-center items-center"
           >
             <motion.a
-              href="mailto:halo@paitonix.id"
+              href="mailto:hello@paitonix.com"
               whileHover={{
                 y: -4,
                 boxShadow:

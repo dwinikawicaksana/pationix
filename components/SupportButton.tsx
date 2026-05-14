@@ -1,13 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
 
 const uiText = {
-  title: { id: "Paitonix Support", en: "Paitonix Support" },
-  subtitle: { id: "Kami siap membantu Anda", en: "We're here to help" },
+  title: { id: "OniX Support", en: "OniX Support" },
+  subtitle: {
+    id: "Asisten AI untuk perencanaan website bisnis.",
+    en: "AI assistant for business website planning.",
+  },
   message: {
     id: "Ada yang bisa kami bantu? Tanyakan tentang layanan kami atau pesan demo sekarang.",
     en: "How can we help? Ask about our services or book a demo.",
@@ -23,11 +32,68 @@ const uiText = {
 export default function SupportButton() {
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [apiReady, setApiReady] = useState(false);
+  const chatRef = useRef<InstanceType<typeof GoogleGenerativeAI> | null>(null);
+  const conversationRef = useRef<any>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+    if (!apiKey) {
+      setError(
+        language === "id"
+          ? "Maaf, API key tidak ditemukan."
+          : "Sorry, API key not found.",
+      );
+      return;
+    }
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      chatRef.current = genAI;
+      conversationRef.current = genAI
+        .getGenerativeModel({ model: "gemini-2.5-flash" })
+        .startChat({
+          history: [],
+          systemInstruction: {
+            role: "user",
+            parts: [
+              {
+                text: `You are OniX, a professional website planning assistant. OniX helps businesses understand how custom websites can improve their operations and growth.
+
+Ask about the client's industry, business goals, existing website, mobile needs, admin/dashboard needs, and launch timeline.
+
+Recommend MVP features, estimated timeline, and budget.
+
+Explain that prices start from 10 million IDR, that the solution can be a super app, and that payment can be made via transfer methods.
+
+Offer online meetings or direct meetings to discuss the project.
+
+Support both Indonesian and English. Keep explanations clear, consultative, and business-focused.
+
+If the user asks for a demo or consultation, encourage them to contact hello@paitonix.com or WhatsApp 087891541475.
+
+Keep responses professional, friendly, and focused on helping the visitor plan their website.`,
+              },
+            ],
+          },
+        });
+      setApiReady(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to initialize AI");
+    }
+  }, [language]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleOpen = () => {
     setIsOpen(true);
-    // Play audio
     const audio =
       ((window as any).__welcomeAudio as HTMLAudioElement | undefined) ||
       (document.getElementById("welcome-audio") as HTMLAudioElement | null) ||
@@ -41,14 +107,39 @@ export default function SupportButton() {
       });
     }
 
-    // Trigger say hi animation
     window.dispatchEvent(new CustomEvent("showSayHi", { detail: true }));
   };
 
-  const handleSend = () => {
-    if (!message.trim()) return;
-    // Handle message sending
-    setMessage("");
+  const handleSend = async () => {
+    if (!inputMessage.trim() || !apiReady || isLoading) return;
+
+    const userMessage = inputMessage.trim();
+    setInputMessage("");
+    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      if (!conversationRef.current) throw new Error("Chat not initialized");
+
+      const response = await conversationRef.current.sendMessage(userMessage);
+      const assistantMessage = response.response.text();
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: assistantMessage },
+      ]);
+    } catch (err) {
+      const errorMsg =
+        err instanceof Error ? err.message : "Failed to get response";
+      setError(errorMsg);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: `Error: ${errorMsg}` },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -159,16 +250,44 @@ export default function SupportButton() {
                 {localize(uiText.message, language)}
               </p>
 
+              <div className="space-y-3 mb-4 max-h-56 overflow-y-auto pr-1">
+                {messages.length === 0 ? (
+                  <div className="rounded-2xl border border-slate-700/80 bg-slate-950 p-4 text-slate-300 text-sm">
+                    {language === "id"
+                      ? "Halo! Saya OniX, asisten AI Anda untuk merencanakan website bisnis. Apa yang ingin Anda diskusikan?"
+                      : "Hi! I'm OniX, your AI assistant for planning business websites. What would you like to discuss?"}
+                  </div>
+                ) : (
+                  messages.map((msg, index) => (
+                    <div
+                      key={index}
+                      className={`rounded-2xl p-4 text-sm ${
+                        msg.role === "assistant"
+                          ? "bg-slate-900 border border-slate-700 text-slate-200"
+                          : "bg-slate-800/70 border border-slate-700 text-slate-100 self-end"
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
+                  ))
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {error && <p className="text-xs text-rose-300 mb-3">{error}</p>}
+
               {/* Quick Actions */}
               <div className="grid gap-2 mb-4 sm:mb-5">
                 <a
-                  href="mailto:halo@paitonix.id"
+                  href="mailto:hello@paitonix.com"
                   className="inline-flex items-center justify-center px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-sky-500/15 text-sky-200 text-xs sm:text-sm font-medium border border-sky-400/30 hover:bg-sky-500/25 transition-all duration-300"
                 >
                   {language === "id" ? "💌 Email Kami" : "💌 Email Us"}
                 </a>
                 <a
-                  href="#cta"
+                  href="https://api.whatsapp.com/send?phone=6287891541475&text=Halo%20saya%20ingin%20konsultasi%20dalam%20pembuatan%20jasa%20website"
+                  target="_blank"
+                  rel="noreferrer"
                   onClick={() => setIsOpen(false)}
                   className="inline-flex items-center justify-center px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg bg-cyan-500/15 text-cyan-200 text-xs sm:text-sm font-medium border border-cyan-400/30 hover:bg-cyan-500/25 transition-all duration-300"
                 >
@@ -180,19 +299,23 @@ export default function SupportButton() {
               <div className="flex flex-col gap-2 sm:gap-3 rounded-lg border border-slate-700/80 bg-slate-950 px-3 py-2 sm:py-3">
                 <input
                   type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleSend()}
                   placeholder={localize(uiText.placeholder, language)}
                   className="w-full bg-transparent text-xs sm:text-sm text-slate-100 outline-none placeholder:text-slate-500"
                 />
-                <div className="flex items-center justify-end">
+                <div className="flex items-center justify-between gap-2">
                   <button
                     type="button"
                     onClick={handleSend}
                     className="inline-flex items-center justify-center rounded-full bg-sky-500/90 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-sky-500/30 backdrop-blur-xl border border-white/15 transition-all duration-300 hover:bg-sky-500 hover:shadow-sky-500/50"
                   >
-                    {localize(uiText.sendButton, language)}
+                    {isLoading
+                      ? language === "id"
+                        ? "Mengirim..."
+                        : "Sending..."
+                      : localize(uiText.sendButton, language)}
                   </button>
                 </div>
               </div>
