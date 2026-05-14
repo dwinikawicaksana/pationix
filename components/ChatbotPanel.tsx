@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface Message {
   role: "user" | "assistant";
@@ -40,10 +39,6 @@ const uiText = {
     en: "What's your industry?",
   },
   button: { id: "Kirim", en: "Send" },
-  errorMessage: {
-    id: "Maaf, API key tidak ditemukan. Silakan set NEXT_PUBLIC_GOOGLE_API_KEY di environment.",
-    en: "Sorry, API key not found. Please set NEXT_PUBLIC_GOOGLE_API_KEY in your environment.",
-  },
 };
 
 export default function ChatbotPanel() {
@@ -52,99 +47,11 @@ export default function ChatbotPanel() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [apiReady, setApiReady] = useState(false);
-  const chatRef = useRef<InstanceType<typeof GoogleGenerativeAI> | null>(null);
-  const conversationRef = useRef<any>(null);
+  const historyRef = useRef<Array<{ role: "user" | "model"; parts: Array<{ text: string }> }>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-    if (!apiKey) {
-      setError(localize(uiText.errorMessage, language));
-      return;
-    }
 
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      chatRef.current = genAI;
-      conversationRef.current = genAI
-        .getGenerativeModel({ model: "gemini-2.5-flash" })
-        .startChat({
-          history: [],
-          systemInstruction: {
-            role: "user",
-            parts: [
-              {
-                text: `You are OniX, a professional website planning assistant. OniX helps businesses understand how custom websites can improve their operations and growth.
-
-## Your Role
-Help potential clients by:
-1. Understanding their industry and business goals
-2. Asking discovery questions about their needs
-3. Recommending MVP (Minimum Viable Product) features
-4. Estimating timeline and budget
-5. Encouraging project consultations
-
-## Discovery Flow
-Ask about:
-- What industry are they in?
-- What does their business do?
-- Do they already have a website?
-- Main goals: Get leads, Sell products, Build branding, Automate operations, Increase bookings?
-- Need mobile support?
-- Need admin/dashboard access?
-- Target launch timeline?
-
-## Industries & MVPs You Can Recommend
-
-**Healthcare/Clinic**: Landing page, Doctor profiles, Appointment booking, Contact form, WhatsApp integration, Mobile responsive
-**Restaurant/Cafe**: Digital menu, Reservation system, Gallery, Google Maps, Promo banners, Food ordering
-**Real Estate**: Property listings, Search/filter, Detail pages, Agent contact forms, Location maps
-**E-Commerce**: Product catalog, Shopping cart, Checkout, Payment gateway, User auth, Order tracking
-**Education**: Course listing, Student registration, Video lessons, Quiz system, Certificate generation
-**Corporate**: Modern landing, Portfolio, Services page, Team section, Contact form, SEO
-**Construction**: Project showcase, Service pages, Quote requests, Testimonials, Gallery
-**Hotel/Hospitality**: Room showcase, Booking system, Availability calendar, Gallery, Payment
-
-## Pricing & Timeline
-- **Starting from 10 million IDR** for basic MVP website development
-- Timeline for a basic project: **2 weeks or up to 3 months**, depending on scope
-- Future scaling: Add loyalty programs, dashboards, automation, AI features
-
-## Payment and Meetings
-- Mention payment via bank transfer methods as a convenient option
-- Offer online meetings or direct meetings to discuss project details
-- Encourage scheduling a consultation or discovery call
-
-## Call to Action
-Encourage users to:
-- Request a free MVP roadmap
-- Book a consultation call
-- See UI prototype examples
-- Discuss scalable solutions
-
-## Important Guidelines
-- Sound professional but friendly
-- Explain technical concepts simply
-- Focus on business value
-- Be consultative, not pushy
-- Support both Indonesian and English and answer in the user’s preferred language
-- When ready, direct to: hello@paitonix.com or WhatsApp 087891541475
-- Location: Denpasar, Bali, Indonesia
-- Mention: We build super apps and scalable solutions
-
-Keep responses conversational, clear, and focused on helping them understand their website needs.`,
-              },
-            ],
-          },
-        });
-      setApiReady(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to initialize AI");
-    }
-  }, [language]);
-
-  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     // Scroll to chatbot section when loading finishes
     if (!isLoading && messages.length > 0) {
@@ -154,7 +61,7 @@ Keep responses conversational, clear, and focused on helping them understand the
   }, [messages, isLoading]);
 
   const handleSend = async () => {
-    if (!inputValue.trim() || !apiReady || isLoading) return;
+    if (!inputValue.trim() || isLoading) return;
 
     const userMessage = inputValue.trim();
     setInputValue("");
@@ -163,10 +70,24 @@ Keep responses conversational, clear, and focused on helping them understand the
     setError(null);
 
     try {
-      if (!conversationRef.current) throw new Error("Chat not initialized");
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMessage,
+          history: historyRef.current,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Chat request failed");
 
-      const response = await conversationRef.current.sendMessage(userMessage);
-      const assistantMessage = response.response.text();
+      const assistantMessage = data.text as string;
+
+      historyRef.current = [
+        ...historyRef.current,
+        { role: "user", parts: [{ text: userMessage }] },
+        { role: "model", parts: [{ text: assistantMessage }] },
+      ];
 
       setMessages((prev) => [
         ...prev,
@@ -326,14 +247,14 @@ Keep responses conversational, clear, and focused on helping them understand the
                   value={inputValue}
                   onChange={(event) => setInputValue(event.target.value)}
                   onKeyPress={handleKeyPress}
-                  disabled={!apiReady || isLoading}
+                  disabled={isLoading}
                   placeholder={localize(uiText.placeholder, language)}
                   className="w-full bg-transparent text-sm text-slate-100 outline-none placeholder:text-slate-500 disabled:opacity-50"
                 />
                 <button
                   type="button"
                   onClick={handleSend}
-                  disabled={!apiReady || isLoading || !inputValue.trim()}
+                  disabled={isLoading || !inputValue.trim()}
                   className="inline-flex items-center justify-center rounded-full bg-sky-500/85 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(14,165,233,0.35)] hover:shadow-[0_12px_36px_rgba(14,165,233,0.5)] backdrop-blur-xl border border-white/20 transition-all duration-300 hover:bg-sky-500/95 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? "..." : localize(uiText.button, language)}

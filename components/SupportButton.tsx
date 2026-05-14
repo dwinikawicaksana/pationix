@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 interface Message {
   role: "user" | "assistant";
@@ -36,57 +35,9 @@ export default function SupportButton() {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [apiReady, setApiReady] = useState(false);
-  const chatRef = useRef<InstanceType<typeof GoogleGenerativeAI> | null>(null);
-  const conversationRef = useRef<any>(null);
+  const [apiReady] = useState(true);
+  const historyRef = useRef<Array<{ role: "user" | "model"; parts: Array<{ text: string }> }>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-    if (!apiKey) {
-      setError(
-        language === "id"
-          ? "Maaf, API key tidak ditemukan."
-          : "Sorry, API key not found.",
-      );
-      return;
-    }
-
-    try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      chatRef.current = genAI;
-      conversationRef.current = genAI
-        .getGenerativeModel({ model: "gemini-2.5-flash" })
-        .startChat({
-          history: [],
-          systemInstruction: {
-            role: "user",
-            parts: [
-              {
-                text: `You are OniX, a professional website planning assistant. OniX helps businesses understand how custom websites can improve their operations and growth.
-
-Ask about the client's industry, business goals, existing website, mobile needs, admin/dashboard needs, and launch timeline.
-
-Recommend MVP features, estimated timeline, and budget.
-
-Explain that prices start from 10 million IDR, that the solution can be a super app, and that payment can be made via transfer methods.
-
-Offer online meetings or direct meetings to discuss the project.
-
-Support both Indonesian and English. Keep explanations clear, consultative, and business-focused.
-
-If the user asks for a demo or consultation, encourage them to contact hello@paitonix.com or WhatsApp 087891541475.
-
-Keep responses professional, friendly, and focused on helping the visitor plan their website.`,
-              },
-            ],
-          },
-        });
-      setApiReady(true);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to initialize AI");
-    }
-  }, [language]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -120,10 +71,24 @@ Keep responses professional, friendly, and focused on helping the visitor plan t
     setError(null);
 
     try {
-      if (!conversationRef.current) throw new Error("Chat not initialized");
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: userMessage,
+          history: historyRef.current,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Chat request failed");
 
-      const response = await conversationRef.current.sendMessage(userMessage);
-      const assistantMessage = response.response.text();
+      const assistantMessage = data.text as string;
+
+      historyRef.current = [
+        ...historyRef.current,
+        { role: "user", parts: [{ text: userMessage }] },
+        { role: "model", parts: [{ text: assistantMessage }] },
+      ];
 
       setMessages((prev) => [
         ...prev,
