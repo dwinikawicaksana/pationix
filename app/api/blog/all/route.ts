@@ -10,7 +10,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const language = searchParams.get("language") as "id" | "en" | null;
 
-    const allArticles = getAllArticles(language ?? undefined);
+    // First try to get articles in the requested language
+    let allArticles = getAllArticles(language ?? undefined);
+
+    // If no articles in the requested language, fallback to all articles
+    if (allArticles.length === 0 && language) {
+      allArticles = getAllArticles();
+    }
 
     return NextResponse.json(allArticles);
   } catch (error) {

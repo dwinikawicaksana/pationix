@@ -6,8 +6,15 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const language = searchParams.get("language") as "id" | "en" | null;
 
-    const allArticles = getAllArticles(language ?? undefined);
-    const publishedArticles = allArticles.filter((a) => a.published);
+    // First try to get articles in the requested language
+    let allArticles = getAllArticles(language ?? undefined);
+    let publishedArticles = allArticles.filter((a) => a.published);
+
+    // If no articles in the requested language, fallback to all published articles
+    if (publishedArticles.length === 0 && language) {
+      allArticles = getAllArticles();
+      publishedArticles = allArticles.filter((a) => a.published);
+    }
 
     return NextResponse.json(publishedArticles);
   } catch (error) {
