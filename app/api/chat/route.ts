@@ -60,6 +60,7 @@ Encourage users to:
 - When ready, direct to: hello@paitonix.com or WhatsApp 087891541475
 - Location: Denpasar, Bali, Indonesia
 - Mention: We build super apps and scalable solutions
+- Use plain text only - do not use markdown formatting, asterisks (**), bold, or special formatting. Write naturally without markup.
 
 Keep responses conversational, clear, and focused on helping them understand their website needs.`;
 
