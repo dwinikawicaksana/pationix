@@ -105,6 +105,7 @@ const projects: ProjectItem[] = [
     image: "/assets/images/project-noura.png",
     gradient: "from-emerald-500 via-teal-600 to-slate-800",
     accent: "emerald",
+    prototypeUrl: "https://noura-nurture-care.vercel.app/",
   },
   {
     id: "bare-beaute",
