@@ -13,16 +13,34 @@ export const motionConfig = {
     mass: 1,
   },
 
-  // Mobile-optimized variants
+  // Mobile-optimized variants - faster, simpler animations
   mobileVariants: {
     hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.3, type: "spring", stiffness: 80 },
+    },
   },
 
-  // Desktop variants
+  // Desktop variants - more elaborate
   desktopVariants: {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.4, type: "spring", stiffness: 60 },
+    },
+  },
+
+  // Mobile animation durations (shorter = smoother on low-end devices)
+  mobileDuration: 0.3,
+  desktopDuration: 0.5,
+
+  // Reduced motion config
+  reducedMotionTransition: {
+    duration: 0.01,
+    type: "linear",
   },
 };
 
@@ -31,4 +49,16 @@ export const optimizedAnimationClasses = {
   willChange: "will-change-transform will-change-opacity",
   gpu: "transform gpu",
   backfaceHidden: "backface-hidden",
+};
+
+// Mobile-specific animation config to disable heavy animations
+export const mobileAnimationConfig = {
+  // Disable background orb animations on mobile
+  disableBackgroundOrbsOnMobile: true,
+  // Reduce parallax on mobile
+  mobileParallaxFactor: 0.3,
+  desktopParallaxFactor: 1,
+  // Simpler blur effects on mobile
+  mobileBlurRadius: "blur-2xl",
+  desktopBlurRadius: "blur-3xl",
 };
