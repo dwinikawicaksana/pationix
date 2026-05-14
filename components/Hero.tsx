@@ -241,7 +241,11 @@ export default function Hero({ data }: { data: HeroData }) {
         />
         <motion.div
           className="absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-cyan-200/40 blur-3xl dark:bg-cyan-400/10"
-          animate={shouldReduceMotion || isMobile ? { opacity: 0.14 } : { y: [0, -24, 0] }}
+          animate={
+            shouldReduceMotion || isMobile
+              ? { opacity: 0.14 }
+              : { y: [0, -24, 0] }
+          }
           transition={{
             duration: 10,
             repeat: shouldReduceMotion || isMobile ? 0 : Infinity,

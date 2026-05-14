@@ -60,7 +60,10 @@ export const responsiveAnimationConfig = {
   },
 
   // Get animation duration based on device
-  getDuration: (isMobile: boolean, speed: "fast" | "normal" | "slow" = "normal") => {
+  getDuration: (
+    isMobile: boolean,
+    speed: "fast" | "normal" | "slow" = "normal",
+  ) => {
     if (isMobile) {
       return speed === "fast" ? 0.2 : speed === "slow" ? 0.3 : 0.25;
     }
