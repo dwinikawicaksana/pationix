@@ -79,9 +79,21 @@ export default function ChatbotPanel() {
           history: historyRef.current,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Chat request failed");
 
+      // Server down (503) or any HTTP error → friendly fallback
+      if (!res.ok) {
+        const fallback =
+          language === "id"
+            ? "Maaf, asisten AI sedang tidak tersedia. Silakan hubungi kami langsung di WhatsApp 087891541475 atau email hello@paitonix.com — tim kami siap membantu."
+            : "Sorry, the AI assistant is temporarily unavailable. Please reach us directly on WhatsApp 087891541475 or email hello@paitonix.com — our team is ready to help.";
+        setMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: fallback },
+        ]);
+        return;
+      }
+
+      const data = await res.json();
       const assistantMessage = data.text as string;
 
       historyRef.current = [
@@ -95,15 +107,13 @@ export default function ChatbotPanel() {
         { role: "assistant", content: assistantMessage },
       ]);
     } catch (err) {
-      const errorMsg =
-        err instanceof Error ? err.message : "Failed to get response";
-      setError(errorMsg);
+      const fallback =
+        language === "id"
+          ? "Koneksi sedang bermasalah. Hubungi kami di WhatsApp 087891541475 atau hello@paitonix.com."
+          : "Connection issue. Reach us on WhatsApp 087891541475 or hello@paitonix.com.";
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: `Error: ${errorMsg}`,
-        },
+        { role: "assistant", content: fallback },
       ]);
     } finally {
       setIsLoading(false);
