@@ -15,16 +15,14 @@ function useMobile() {
 }
 
 const desktopVariants: Variants = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 20 },
   visible: (delay: number = 0) => ({
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
-      damping: 22,
-      stiffness: 110,
-      mass: 0.8,
+      duration: 0.45,
       delay,
+      ease: [0.25, 0.46, 0.45, 0.94],
     },
   }),
 };
@@ -56,10 +54,9 @@ export function AnimateIn({ children, delay = 0, className }: AnimateInProps) {
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: "-40px" }}
       custom={delay}
       variants={variants}
-      style={{ willChange: "transform, opacity" }}
     >
       {children}
     </motion.div>
@@ -76,13 +73,13 @@ export function AnimateInGroup({
   stagger?: number;
 }) {
   const mobile = useMobile();
-  const effectiveStagger = mobile ? stagger * 0.5 : stagger;
+  const effectiveStagger = mobile ? stagger * 0.5 : stagger * 0.7;
   return (
     <motion.div
       className={className}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: "-40px" }}
       variants={{
         hidden: {},
         visible: { transition: { staggerChildren: effectiveStagger } },
@@ -103,13 +100,12 @@ export function AnimateInChild({
   return (
     <motion.div
       className={className}
-      style={{ willChange: "transform, opacity" }}
       variants={{
-        hidden: { opacity: 0, y: 16 },
+        hidden: { opacity: 0, y: 14 },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.3, ease: "easeOut" },
+          transition: { duration: 0.35, ease: "easeOut" },
         },
       }}
     >

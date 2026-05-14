@@ -80,7 +80,7 @@ export default function BlogSection({
   const { shouldReduceMotion } = useMotionPreferences();
   const { articles, isLoading } = useLiveBlogArticles({
     language,
-    intervalMs: 30000,
+    intervalMs: 60000,
     limit: 3,
   });
 

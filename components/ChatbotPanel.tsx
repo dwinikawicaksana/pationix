@@ -47,11 +47,12 @@ export default function ChatbotPanel() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const historyRef = useRef<Array<{ role: "user" | "model"; parts: Array<{ text: string }> }>>([]);
+  const historyRef = useRef<
+    Array<{ role: "user" | "model"; parts: Array<{ text: string }> }>
+  >([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     // Scroll to chatbot section when loading finishes
     if (!isLoading && messages.length > 0) {

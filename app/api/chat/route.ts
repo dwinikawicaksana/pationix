@@ -76,7 +76,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { message, history } = body as {
       message: string;
-      history: Array<{ role: "user" | "model"; parts: Array<{ text: string }> }>;
+      history: Array<{
+        role: "user" | "model";
+        parts: Array<{ text: string }>;
+      }>;
     };
 
     if (!message || typeof message !== "string") {

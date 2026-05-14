@@ -70,14 +70,12 @@ async function retryWithBackoff<T>(
 export async function generateBlogArticle(
   config: BlogArticleConfig,
 ): Promise<GeneratedArticle> {
-  // Try both NEXT_PUBLIC and private key
-  const apiKey =
-    process.env.NEXT_PUBLIC_GOOGLE_API_KEY || process.env.GOOGLE_API_KEY;
+  const apiKey = process.env.GOOGLE_API_KEY;
 
   if (!apiKey) {
     console.error("API key not found in environment variables");
     throw new Error(
-      "API key not configured. Please set NEXT_PUBLIC_GOOGLE_API_KEY or GOOGLE_API_KEY",
+      "API key not configured. Please set GOOGLE_API_KEY",
     );
   }
 
