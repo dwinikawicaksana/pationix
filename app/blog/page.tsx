@@ -128,13 +128,6 @@ export default function BlogPage() {
               <p className="text-lg text-slate-400 mb-8">
                 {localize(uiText.emptyDescription, language)}
               </p>
-
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-sky-500 text-white font-semibold hover:bg-sky-600 transition"
-              >
-                ← {localize(uiText.backHome, language)}
-              </Link>
             </motion.div>
           </div>
         </section>

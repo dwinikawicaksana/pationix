@@ -9,6 +9,7 @@ import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
 import { useLiveBlogArticles } from "@/hooks/useLiveBlogArticles";
 import { useMotionPreferences } from "@/hooks/useMotionPreferences";
+import { ScrollableContainer } from "./ScrollableContainer";
 
 const uiText = {
   label: { id: "Insights Kami", en: "Our Insights" },
@@ -36,38 +37,103 @@ const categoryColors: Record<
 > = {
   Design: {
     bg: "bg-purple-500/10",
-    text: "text-purple-300",
+    text: "text-purple-700 dark:text-purple-300",
     border: "border-purple-400/30",
   },
   Backend: {
     bg: "bg-blue-500/10",
-    text: "text-blue-300",
+    text: "text-blue-700 dark:text-blue-300",
     border: "border-blue-400/30",
   },
   "AI/UX": {
     bg: "bg-cyan-500/10",
-    text: "text-cyan-300",
+    text: "text-cyan-700 dark:text-cyan-300",
     border: "border-cyan-400/30",
   },
   Performance: {
     bg: "bg-orange-500/10",
-    text: "text-orange-300",
+    text: "text-orange-700 dark:text-orange-300",
     border: "border-orange-400/30",
   },
   Mobile: {
     bg: "bg-green-500/10",
-    text: "text-green-300",
+    text: "text-green-700 dark:text-green-300",
     border: "border-green-400/30",
   },
   Workflow: {
     bg: "bg-pink-500/10",
-    text: "text-pink-300",
+    text: "text-pink-700 dark:text-pink-300",
     border: "border-pink-400/30",
   },
   Technology: {
     bg: "bg-slate-900/8 dark:bg-white/10",
     text: "text-slate-700 dark:text-slate-200",
     border: "border-slate-900/10 dark:border-white/15",
+  },
+  Business: {
+    bg: "bg-amber-500/10",
+    text: "text-amber-700 dark:text-amber-300",
+    border: "border-amber-400/30",
+  },
+  Development: {
+    bg: "bg-indigo-500/10",
+    text: "text-indigo-700 dark:text-indigo-300",
+    border: "border-indigo-400/30",
+  },
+  "AI & Automation": {
+    bg: "bg-cyan-500/10",
+    text: "text-cyan-700 dark:text-cyan-300",
+    border: "border-cyan-400/30",
+  },
+  "Product Strategy": {
+    bg: "bg-amber-500/10",
+    text: "text-amber-700 dark:text-amber-300",
+    border: "border-amber-400/30",
+  },
+  Marketing: {
+    bg: "bg-rose-500/10",
+    text: "text-rose-700 dark:text-rose-300",
+    border: "border-rose-400/30",
+  },
+  "Mobile Apps": {
+    bg: "bg-green-500/10",
+    text: "text-green-700 dark:text-green-300",
+    border: "border-green-400/30",
+  },
+  "E-Commerce": {
+    bg: "bg-emerald-500/10",
+    text: "text-emerald-700 dark:text-emerald-300",
+    border: "border-emerald-400/30",
+  },
+  SaaS: {
+    bg: "bg-violet-500/10",
+    text: "text-violet-700 dark:text-violet-300",
+    border: "border-violet-400/30",
+  },
+  Branding: {
+    bg: "bg-fuchsia-500/10",
+    text: "text-fuchsia-700 dark:text-fuchsia-300",
+    border: "border-fuchsia-400/30",
+  },
+  "UI/UX": {
+    bg: "bg-sky-500/10",
+    text: "text-sky-700 dark:text-sky-300",
+    border: "border-sky-400/30",
+  },
+  "Data & Analytics": {
+    bg: "bg-blue-500/10",
+    text: "text-blue-700 dark:text-blue-300",
+    border: "border-blue-400/30",
+  },
+  Cybersecurity: {
+    bg: "bg-red-500/10",
+    text: "text-red-700 dark:text-red-300",
+    border: "border-red-400/30",
+  },
+  Operations: {
+    bg: "bg-slate-500/10",
+    text: "text-slate-700 dark:text-slate-300",
+    border: "border-slate-400/30",
   },
 };
 
@@ -105,9 +171,6 @@ export default function BlogSection({
     return initialBlogs || [];
   }, [articles, initialBlogs]);
 
-  const featuredBlog = blogs[0];
-  const secondaryBlogs = blogs.slice(1, 3);
-
   const getColors = (category: string) => {
     return categoryColors[category] || categoryColors["Technology"];
   };
@@ -121,10 +184,81 @@ export default function BlogSection({
     }).format(d);
   };
 
+  const BlogArticleCard = ({
+    blog,
+    index,
+  }: {
+    blog: BlogData;
+    index: number;
+  }) => {
+    const colors = getColors(localize(blog.category, language));
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{
+          duration: shouldReduceMotion ? 0 : 0.5,
+          delay: shouldReduceMotion ? 0 : index * 0.05,
+        }}
+        className="h-full"
+      >
+        <Link
+          href={`/blog/${blog.slug}`}
+          className="group flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-black/10 bg-white/90 backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:border-black/25 hover:shadow-[0_24px_50px_rgba(17,17,17,0.10)] dark:border-white/12 dark:bg-slate-900/60 dark:shadow-[0_18px_50px_rgba(2,6,23,0.45)] dark:hover:border-cyan-300/40 dark:hover:shadow-[0_30px_70px_rgba(34,211,238,0.18)]"
+        >
+          <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-900">
+            <motion.img
+              src={blog.thumbnail}
+              alt={localize(blog.title, language)}
+              className="h-full w-full object-cover"
+              whileHover={shouldReduceMotion ? {} : { scale: 1.04 }}
+              transition={{ duration: 0.45 }}
+              loading="lazy"
+            />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="absolute left-4 top-4">
+              <span
+                className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md ${colors.bg} ${colors.text} ${colors.border}`}
+              >
+                {localize(blog.category, language)}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+            <time className="text-[11px] font-medium uppercase tracking-[0.18em] text-black/55 dark:text-slate-400">
+              {formatDate(blog.date)}
+            </time>
+            <h3 className="line-clamp-2 text-xl font-black leading-tight tracking-[-0.03em] text-[#111111] transition-colors group-hover:text-black/70 dark:text-white dark:group-hover:text-cyan-200 sm:text-2xl">
+              {localize(blog.title, language)}
+            </h3>
+            <p className="line-clamp-3 flex-1 text-sm leading-6 text-black/65 dark:text-slate-300">
+              {localize(blog.excerpt, language)}
+            </p>
+            <div className="mt-2 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#111111] dark:text-white">
+              <span>{localize(uiText.viewMore, language)}</span>
+              <motion.span
+                animate={shouldReduceMotion ? undefined : { x: [0, 4, 0] }}
+                transition={{
+                  duration: 1.8,
+                  repeat: shouldReduceMotion ? 0 : Infinity,
+                }}
+              >
+                →
+              </motion.span>
+            </div>
+          </div>
+        </Link>
+      </motion.div>
+    );
+  };
+
   return (
     <section
       id="blog"
-      className="relative overflow-hidden bg-[#f5f5f5] py-16 text-[#111111] dark:bg-[#0a0a0a] dark:text-white sm:py-20 md:py-24 lg:py-28"
+      className="relative overflow-hidden bg-[#f5f5f5] py-16 text-[#111111] dark:bg-slate-950 dark:text-white sm:py-20 md:py-24 lg:py-28"
     >
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div
@@ -184,128 +318,17 @@ export default function BlogSection({
           <div className="rounded-[2rem] border border-black/10 bg-white/60 px-6 py-12 text-center text-sm text-black/55 backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-white/55">
             {localize(uiText.empty, language)}
           </div>
-        ) : featuredBlog ? (
-          <div className="grid gap-5 lg:grid-cols-[1.4fr_0.8fr] lg:gap-6">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: shouldReduceMotion ? 0 : 0.6 }}
-            >
-              <Link
-                href={`/blog/${featuredBlog.slug}`}
-                className="group block overflow-hidden rounded-[2rem] bg-[#111111] text-white"
+        ) : blogs.length > 0 ? (
+          <ScrollableContainer showIndicators={true}>
+            {blogs.map((blog, index) => (
+              <div
+                key={blog.id}
+                className="snap-start flex-shrink-0 w-[85vw] sm:w-[420px] lg:w-[460px] xl:w-[480px]"
               >
-                <div className="relative h-[18rem] overflow-hidden sm:h-[30rem]">
-                  <motion.img
-                    src={featuredBlog.thumbnail}
-                    alt={localize(featuredBlog.title, language)}
-                    className="h-full w-full object-cover"
-                    whileHover={shouldReduceMotion ? {} : { scale: 1.03 }}
-                    transition={{ duration: 0.45 }}
-                  />
-                  <div className="absolute inset-0 hidden bg-gradient-to-t from-black via-black/20 to-transparent sm:block" />
-                  <div className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#111111]">
-                    {localize(uiText.featured, language)}
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 hidden p-6 sm:block sm:p-8">
-                    <div className="mb-4 flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/62">
-                      <span>{localize(featuredBlog.category, language)}</span>
-                      <span>{formatDate(featuredBlog.date)}</span>
-                    </div>
-                    <h3 className="max-w-2xl text-3xl font-black leading-[0.98] tracking-[-0.04em] text-white sm:text-4xl lg:text-[3rem]">
-                      {localize(featuredBlog.title, language)}
-                    </h3>
-                    <p className="mt-4 max-w-2xl text-sm leading-7 text-white/72 sm:text-base">
-                      {localize(featuredBlog.excerpt, language)}
-                    </p>
-                  </div>
-                </div>
-                <div className="block border-t border-white/10 bg-[#111111] px-5 py-5 sm:hidden">
-                  <div className="mb-3 flex items-center justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/65">
-                    <span>{localize(featuredBlog.category, language)}</span>
-                    <span>{formatDate(featuredBlog.date)}</span>
-                  </div>
-                  <h3 className="text-2xl font-black leading-tight tracking-[-0.04em] text-white">
-                    {localize(featuredBlog.title, language)}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-white/72">
-                    {localize(featuredBlog.excerpt, language)}
-                  </p>
-                </div>
-              </Link>
-            </motion.div>
-
-            <div className="grid gap-5">
-              {secondaryBlogs.map((blog, index) => {
-                const colors = getColors(localize(blog.category, language));
-
-                return (
-                  <motion.div
-                    key={blog.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{
-                      duration: shouldReduceMotion ? 0 : 0.55,
-                      delay: shouldReduceMotion ? 0 : index * 0.08,
-                    }}
-                  >
-                    <Link
-                      href={`/blog/${blog.slug}`}
-                      className="group grid gap-4 rounded-[2rem] border border-black/10 bg-white p-4 transition duration-300 hover:border-black/25 hover:shadow-[0_24px_50px_rgba(17,17,17,0.08)] dark:border-white/10 dark:bg-[#151515] dark:hover:border-white/20 dark:hover:shadow-[0_24px_50px_rgba(0,0,0,0.28)] sm:grid-cols-[10rem_1fr]"
-                    >
-                      <div className="relative h-44 overflow-hidden rounded-[1.35rem] sm:h-full">
-                        <motion.img
-                          src={blog.thumbnail}
-                          alt={localize(blog.title, language)}
-                          className="h-full w-full object-cover"
-                          whileHover={shouldReduceMotion ? {} : { scale: 1.04 }}
-                          transition={{ duration: 0.35 }}
-                        />
-                      </div>
-
-                      <div className="flex flex-col justify-between gap-4 py-1">
-                        <div>
-                          <div className="mb-3 flex items-center justify-between gap-3">
-                            <span
-                              className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] ${colors.bg} ${colors.text} ${colors.border}`}
-                            >
-                              {localize(blog.category, language)}
-                            </span>
-                            <time className="text-[11px] font-medium uppercase tracking-[0.18em] text-black/45 dark:text-white/45">
-                              {formatDate(blog.date)}
-                            </time>
-                          </div>
-                          <h3 className="text-2xl font-black leading-[1] tracking-[-0.04em] text-[#111111] transition-colors group-hover:text-black/75 dark:text-white dark:group-hover:text-white/80">
-                            {localize(blog.title, language)}
-                          </h3>
-                          <p className="mt-3 line-clamp-3 text-sm leading-7 text-black/60 dark:text-white/60">
-                            {localize(blog.excerpt, language)}
-                          </p>
-                        </div>
-
-                        <div className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#111111] dark:text-white">
-                          <span>{localize(uiText.viewMore, language)}</span>
-                          <motion.span
-                            animate={
-                              shouldReduceMotion ? undefined : { x: [0, 4, 0] }
-                            }
-                            transition={{
-                              duration: 1.8,
-                              repeat: shouldReduceMotion ? 0 : Infinity,
-                            }}
-                          >
-                            →
-                          </motion.span>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
+                <BlogArticleCard blog={blog} index={index} />
+              </div>
+            ))}
+          </ScrollableContainer>
         ) : (
           <div className="rounded-[2rem] border border-black/10 bg-white/60 px-6 py-12 text-center text-sm text-black/55 backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:text-white/55">
             {localize(uiText.empty, language)}

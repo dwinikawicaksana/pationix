@@ -168,14 +168,14 @@ function CaseStudyCard({ cs, index }: { cs: CaseStudyData; index: number }) {
 }
 
 const uiText = {
-  sectionLabel: { id: "Bukti Kerja", en: "Proof of Work" },
+  sectionLabel: { id: "Karya Terbaik Kami", en: "Our Portfolio" },
   sectionHeading: {
-    id: "Hasil yang berbicara sendiri.",
-    en: "Results that speak for themselves.",
+    id: "Hasil yang menggerakkan bisnis.",
+    en: "Results that move business forward.",
   },
   sectionDescription: {
-    id: "Proyek nyata. Angka nyata. Dampak nyata bagi bisnis yang memilih membangun dengan benar.",
-    en: "Real projects. Real numbers. Real impact for businesses choosing to build right.",
+    id: "Dari konsep hingga skala — kami telah membantu brand terkemuka mentransformasi operasi dengan teknologi yang dibangun dengan benar.",
+    en: "From concept to scale, we've helped leading brands transform operations with technology built to last.",
   },
 };
 

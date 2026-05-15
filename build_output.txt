@@ -1,0 +1,62 @@
+
+> paitonix@0.1.0 build /Users/dwinikawicaksana/Documents/GitHub/new-project/paitonix
+> next build
+
+  ▲ Next.js 14.2.3
+  - Environments: .env.local
+  - Experiments (use with caution):
+    · optimizeCss
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/16) ...
+Generating blog article: How to Build a Successful Digital Product
+   Generating static pages (4/16) 
+Raw response: ```json
+{
+  "title": "The Blueprint: How to Build a Truly Successful Digital Product",
+  "slug": "how-to-build-successful-digital-product",
+  "excerpt": "Building a digital product that truly resonate
+   Generating static pages (8/16) 
+   Generating static pages (12/16) 
+Time 2.335042
+Time 2.32275
+ ✓ Generating static pages (16/16)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    35 kB           169 kB
+├ ○ /_not-found                          871 B          87.9 kB
+├ ○ /admin/blog                          3.82 kB         131 kB
+├ ƒ /api/blog/all                        0 B                0 B
+├ ƒ /api/blog/article/[slug]             0 B                0 B
+├ ƒ /api/blog/articles                   0 B                0 B
+├ ○ /api/blog/categories                 0 B                0 B
+├ ƒ /api/blog/cron                       0 B                0 B
+├ ○ /api/blog/debug                      0 B                0 B
+├ ƒ /api/blog/generate                   0 B                0 B
+├ ƒ /api/blog/publish                    0 B                0 B
+├ ƒ /api/blog/search                     0 B                0 B
+├ ƒ /api/blog/tags                       0 B                0 B
+├ ƒ /api/blog/test                       0 B                0 B
+├ ƒ /api/chat                            0 B                0 B
+├ ○ /api/landing                         0 B                0 B
+├ ƒ /api/preview                         0 B                0 B
+├ ƒ /api/upload                          0 B                0 B
+├ ○ /blog                                3.45 kB         138 kB
+├ ƒ /blog/[slug]                         3.43 kB         138 kB
+├ ƒ /projects/[slug]                     5.89 kB         140 kB
+├ ○ /robots.txt                          0 B                0 B
+└ ○ /sitemap.xml                         0 B                0 B
++ First Load JS shared by all            87 kB
+  ├ chunks/23-509d2c9a3fbd8547.js        31.5 kB
+  ├ chunks/fd9d1056-00bb33a35b5f8051.js  53.6 kB
+  └ other shared chunks (total)          1.95 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

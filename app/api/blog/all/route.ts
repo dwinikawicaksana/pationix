@@ -11,13 +11,17 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
     const language = searchParams.get("language") as "id" | "en" | null;
+    const category = searchParams.get("category");
 
     // First try to get articles in the requested language
-    let allArticles = getAllArticles(language ?? undefined);
+    let allArticles = getAllArticles(
+      language ?? undefined,
+      category ?? undefined,
+    );
 
     // If no articles in the requested language, fallback to all articles
     if (allArticles.length === 0 && language) {
-      allArticles = getAllArticles();
+      allArticles = getAllArticles(undefined, category ?? undefined);
     }
 
     return NextResponse.json(allArticles);

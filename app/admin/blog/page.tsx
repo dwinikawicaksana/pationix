@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/components/LanguageProvider";
+import { getCategoryOptions } from "@/lib/blogCategories";
 
 interface Article {
   id: string;
@@ -56,16 +57,22 @@ const uiText = {
     id: "artikel berhasil dibuat",
     en: "articles generated successfully",
   },
+  category: { id: "Kategori", en: "Category" },
+  allCategories: { id: "Semua kategori", en: "All categories" },
 };
 
 export default function AdminBlogPage() {
   const { language } = useLanguage();
+  const categoryOptions = getCategoryOptions(language);
   const [topics, setTopics] = useState<string>("");
   const [bulkTopics, setBulkTopics] = useState<string>("");
   const [style, setStyle] = useState<"technical" | "business" | "casual">(
     "business",
   );
   const [includeImages, setIncludeImages] = useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("Technology");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +82,11 @@ export default function AdminBlogPage() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await fetch("/api/blog/all");
+        const query =
+          categoryFilter === "all"
+            ? ""
+            : `?category=${encodeURIComponent(categoryFilter)}`;
+        const response = await fetch(`/api/blog/all${query}`);
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -90,7 +101,7 @@ export default function AdminBlogPage() {
     };
 
     fetchArticles();
-  }, []);
+  }, [categoryFilter]);
 
   // Scroll to top when articles are updated
   useEffect(() => {
@@ -119,6 +130,7 @@ export default function AdminBlogPage() {
           language,
           style,
           includeImages,
+          category: selectedCategory,
         }),
       });
 
@@ -174,6 +186,7 @@ export default function AdminBlogPage() {
           language,
           style,
           includeImages,
+          category: selectedCategory,
         }),
       });
 
@@ -294,6 +307,18 @@ export default function AdminBlogPage() {
                     </option>
                   </select>
 
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="px-4 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  >
+                    {categoryOptions.map((option) => (
+                      <option key={option.id} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+
                   <label className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-950 border border-slate-700 cursor-pointer hover:border-sky-500 transition">
                     <input
                       type="checkbox"
@@ -389,6 +414,24 @@ export default function AdminBlogPage() {
 
             <div className="space-y-4">
               <div>
+                <p className="mb-2 text-sm text-slate-400">
+                  {uiText.category[language]}
+                </p>
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-2 text-white"
+                >
+                  <option value="all">{uiText.allCategories[language]}</option>
+                  {categoryOptions.map((option) => (
+                    <option key={option.id} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <p className="text-slate-400 text-sm">
                   {language === "id" ? "Total Artikel" : "Total Articles"}
                 </p>
@@ -461,6 +504,9 @@ export default function AdminBlogPage() {
                     <h3 className="font-bold text-white mb-1">
                       {article.title}
                     </h3>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-sky-300">
+                      {article.category}
+                    </p>
                     <p className="text-sm text-slate-400">
                       {article.excerpt.substring(0, 100)}...
                     </p>

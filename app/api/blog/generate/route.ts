@@ -3,6 +3,7 @@ import {
   generateMultipleArticles,
 } from "@/lib/blogGenerator";
 import { saveBlogArticle } from "@/lib/blogService";
+import { normalizeCategory } from "@/lib/blogCategories";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -13,6 +14,7 @@ export async function POST(request: NextRequest) {
       language = "en",
       style = "business",
       includeImages = false,
+      category,
     } = await request.json();
 
     if (action === "generate-single") {
@@ -28,9 +30,14 @@ export async function POST(request: NextRequest) {
         language: language as "id" | "en",
         style: style as "technical" | "business" | "casual",
         includeImages,
+        category,
       });
 
-      const saved = await saveBlogArticle(article);
+      const saved = await saveBlogArticle(
+        article,
+        normalizeCategory(category),
+        article.tags,
+      );
       return NextResponse.json(saved);
     }
 
@@ -46,11 +53,16 @@ export async function POST(request: NextRequest) {
         language: language as "id" | "en",
         style: style as "technical" | "business" | "casual",
         includeImages,
+        category,
       });
 
       const saved = [];
       for (const article of articles) {
-        const result = await saveBlogArticle(article);
+        const result = await saveBlogArticle(
+          article,
+          normalizeCategory(category),
+          article.tags,
+        );
         saved.push(result);
       }
 

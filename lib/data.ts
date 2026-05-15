@@ -155,13 +155,13 @@ export function getLandingData(): LandingData {
           en: "Logistics Operations Platform",
         },
         result: {
-          id: "Mengurangi proses manual dan mempercepat distribusi melalui sistem operasional yang terintegrasi penuh.",
-          en: "Reduced manual steps and accelerated delivery through a fully integrated operations system.",
+          id: "Kurangi beban operasional 40% dengan otomasi alur kerja yang cerdas dan sistem terintegrasi penuh.",
+          en: "Cut operational overhead 40% with intelligent workflow automation and a fully integrated system.",
         },
         metric: "40%",
         metricLabel: {
-          id: "Efisiensi Operasional",
-          en: "Operational Efficiency",
+          id: "Penghematan Operasional",
+          en: "Operational Savings",
         },
         tags: [
           { id: "Logistik", en: "Logistics" },
@@ -180,14 +180,14 @@ export function getLandingData(): LandingData {
           en: "Real-Time Finance Dashboard",
         },
         result: {
-          id: "Menyatukan data transaksi dari berbagai sumber menjadi satu pengalaman monitoring yang cepat dan presisi.",
-          en: "Consolidated transaction data from multiple sources into one fast, precise monitoring experience.",
+          id: "Proses 2 juta+ transaksi harian dengan akurasi real-time dan insight yang mendalam untuk setiap keputusan.",
+          en: "Process 2M+ daily transactions with real-time accuracy and deep insights for every decision.",
         },
         metric: "2 Juta+",
-        metricLabel: { id: "Transaksi per Hari", en: "Transactions per Day" },
+        metricLabel: { id: "Transaksi per Hari", en: "Transactions Daily" },
         tags: [
           { id: "Fintech", en: "Fintech" },
-          { id: "Realtime", en: "Realtime" },
+          { id: "Real-time", en: "Real-time" },
           { id: "Analytics", en: "Analytics" },
         ],
         image:
@@ -202,14 +202,17 @@ export function getLandingData(): LandingData {
           en: "Digital Patient Care System",
         },
         result: {
-          id: "Membantu tenaga medis bekerja lebih efisien dengan alur pelayanan yang lebih sederhana dan terotomasi.",
-          en: "Helped medical staff work more efficiently with simpler, automated care workflows.",
+          id: "Percepat alur perawatan pasien hingga 62% dengan otomasi cerdas yang membebaskan tenaga medis fokus pada pasien.",
+          en: "Accelerate patient care workflows by 62% with smart automation that frees medical teams to focus on patients.",
         },
         metric: "62%",
-        metricLabel: { id: "Peningkatan Efisiensi", en: "Efficiency Gain" },
+        metricLabel: {
+          id: "Peningkatan Kecepatan",
+          en: "Workflow Acceleration",
+        },
         tags: [
           { id: "Healthcare", en: "Healthcare" },
-          { id: "Automation", en: "Automation" },
+          { id: "Otomasi", en: "Automation" },
           { id: "UX", en: "UX" },
         ],
         image:

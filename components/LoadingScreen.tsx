@@ -4,15 +4,29 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
   const playedRef = useRef(false);
 
   useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
+    // Determinate progress that always reaches 100% before unmount.
+    const TOTAL = 2200; // ms to reach 100%
+    const TICK = 40;
+    const STEPS = TOTAL / TICK;
+    let current = 0;
+    const id = window.setInterval(() => {
+      current += 100 / STEPS;
+      if (current >= 100) {
+        current = 100;
+        window.clearInterval(id);
+        setProgress(100);
+        // Hold at 100% for a beat so the user sees completion, then exit.
+        window.setTimeout(() => setIsLoading(false), 320);
+      } else {
+        setProgress(current);
+      }
+    }, TICK);
 
-    return () => clearTimeout(timer);
+    return () => window.clearInterval(id);
   }, []);
 
   useEffect(() => {
@@ -85,19 +99,18 @@ export default function LoadingScreen() {
             <div className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80 p-5 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.9)] backdrop-blur-xl">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),transparent_35%)]" />
               <div className="relative">
-                <div className="mb-3 text-center text-xs uppercase tracking-[0.32em] text-slate-400 sm:text-sm">
-                  Loading
+                <div className="mb-3 flex items-center justify-between text-xs uppercase tracking-[0.32em] text-slate-400 sm:text-sm">
+                  <span>Loading</span>
+                  <span className="font-semibold text-slate-200 tabular-nums">
+                    {Math.round(progress)}%
+                  </span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800/80">
                   <motion.div
-                    className="h-full w-[35%] rounded-full bg-gradient-to-r from-sky-400 via-cyan-400 to-fuchsia-500"
-                    initial={{ x: "-35%" }}
-                    animate={{ x: ["-35%", "100%"] }}
-                    transition={{
-                      duration: 1.9,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
+                    className="h-full rounded-full bg-gradient-to-r from-sky-400 via-cyan-400 to-fuchsia-500"
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
                   />
                 </div>
               </div>

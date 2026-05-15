@@ -3,13 +3,17 @@ import {
   fetchUnsplashImages,
   embedImagesInContent,
   generateImagePrompts,
+  getSmartImage,
 } from "./imageService";
+import { BLOG_CATEGORIES, normalizeCategory } from "./blogCategories";
 
 interface BlogArticleConfig {
   topic: string;
   language: "id" | "en";
   style?: "technical" | "business" | "casual";
   includeImages?: boolean;
+  useAIImages?: boolean;
+  category?: string;
 }
 
 interface GeneratedArticle {
@@ -18,6 +22,7 @@ interface GeneratedArticle {
   excerpt: string;
   content: string;
   keywords: string[];
+  tags: string[];
   category: string;
   readTime: number;
   language: string;
@@ -27,7 +32,6 @@ interface GeneratedArticle {
 
 /**
  * Retry a function with exponential backoff
- * Useful for handling transient API failures (503, rate limits, etc.)
  */
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
@@ -43,7 +47,6 @@ async function retryWithBackoff<T>(
       lastError = error as Error;
       const errorMessage = lastError.message || String(error);
 
-      // Check if it's a transient error worth retrying
       const isTransient =
         errorMessage.includes("503") ||
         errorMessage.includes("429") ||
@@ -54,7 +57,6 @@ async function retryWithBackoff<T>(
         throw error;
       }
 
-      // Exponential backoff: 1s, 2s, 4s
       const delayMs = initialDelayMs * Math.pow(2, attempt);
       console.warn(
         `[Retry] Attempt ${attempt + 1}/${maxRetries} failed. Retrying in ${delayMs}ms...`,
@@ -84,12 +86,21 @@ export async function generateBlogArticle(
 
       const systemPrompt =
         config.language === "id"
-          ? `Anda adalah penulis blog profesional untuk Paitonix Labs. Tulis artikel blog berkualitas tinggi, SEO-friendly, dan menarik dalam format JSON yang valid.`
-          : `You are a professional blog writer for Paitonix Labs. Write high-quality, SEO-friendly, and engaging blog articles in valid JSON format.`;
+          ? `Anda adalah penulis blog profesional untuk Paitonix Labs. Tulis artikel blog berkualitas tinggi, SEO-friendly, dan menarik dalam format JSON yang valid. Sertakan kata kunci SEO dan 6-10 hashtag relevan (mulai dengan #, tanpa spasi, contoh: #DesainWeb) di field "tags" untuk meningkatkan jangkauan media sosial dan SEO.`
+          : `You are a professional blog writer for Paitonix Labs. Write high-quality, SEO-friendly, and engaging blog articles in valid JSON format. Include SEO keywords and 6-10 relevant social-media hashtags (starting with #, no spaces, e.g. #WebDesign) in the "tags" field to improve SEO and social reach.`;
+
+      const categoryList = BLOG_CATEGORIES.map(
+        (category) => category.label[config.language],
+      ).join(", ");
+      const requestedCategory = config.category
+        ? normalizeCategory(config.category)
+        : undefined;
 
       const userPrompt =
         config.language === "id"
           ? `Buatkan artikel blog tentang: "${config.topic}"
+Kategori yang harus dipakai: "${requestedCategory ? requestedCategory : "pilih yang paling relevan dari daftar kategori berikut"}"
+Daftar kategori yang valid: ${categoryList}
          
 Respond ONLY with valid JSON, no other text:
 {
@@ -97,11 +108,15 @@ Respond ONLY with valid JSON, no other text:
   "slug": "judul-artikel",
   "excerpt": "Ringkasan singkat artikel (50-100 kata) dalam bahasa Indonesia",
   "content": "# Judul\n\nIsi artikel lengkap dengan markdown formatting (800-1000 kata) dalam bahasa Indonesia",
-  "keywords": ["keyword1", "keyword2", "keyword3"],
-  "category": "Teknologi",
+  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
+  "tags": ["#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5", "#hashtag6", "#hashtag7", "#hashtag8"],
+  "category": "${requestedCategory || "Teknologi"}",
   "readTime": 8
 }`
           : `Create a blog article about: "${config.topic}"
+
+Use this category: "${requestedCategory ? requestedCategory : "choose the most relevant valid category from the list below"}"
+Valid categories: ${categoryList}
 
 Respond ONLY with valid JSON, no other text:
 {
@@ -109,8 +124,9 @@ Respond ONLY with valid JSON, no other text:
   "slug": "article-title",
   "excerpt": "Brief summary of the article (50-100 words) in English",
   "content": "# Title\n\nFull article content with markdown formatting (800-1000 words) in English",
-  "keywords": ["keyword1", "keyword2", "keyword3"],
-  "category": "Technology",
+  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
+  "tags": ["#hashtag1", "#hashtag2", "#hashtag3", "#hashtag4", "#hashtag5", "#hashtag6", "#hashtag7", "#hashtag8"],
+  "category": "${requestedCategory || "Technology"}",
   "readTime": 8
 }`;
 
@@ -140,30 +156,80 @@ Respond ONLY with valid JSON, no other text:
 
       const article = JSON.parse(jsonMatch[0]) as GeneratedArticle;
       article.language = config.language;
+      article.category = normalizeCategory(config.category || article.category);
+
+      // Ensure tags exist; derive from keywords if model omitted them.
+      if (!Array.isArray(article.tags) || article.tags.length === 0) {
+        article.tags = (article.keywords || [])
+          .slice(0, 8)
+          .map(
+            (k) =>
+              "#" +
+              String(k)
+                .replace(/[^a-zA-Z0-9]+/g, "")
+                .replace(/^./, (c) => c.toUpperCase()),
+          )
+          .filter((t) => t.length > 1);
+      } else {
+        // Normalize: ensure each tag begins with '#' and has no spaces.
+        article.tags = article.tags
+          .map((t) => {
+            const cleaned = String(t).trim().replace(/\s+/g, "");
+            return cleaned.startsWith("#") ? cleaned : `#${cleaned}`;
+          })
+          .filter((t) => t.length > 1);
+      }
 
       // Fetch images if requested
       if (config.includeImages) {
         console.log("Fetching images for article...");
         try {
-          // Generate image search prompts
           const imagePrompts = generateImagePrompts(
             article.title,
             article.content,
             config.language,
+            article.category,
           );
 
-          // Fetch images for each prompt
           const allImages = [];
-          for (const prompt of imagePrompts) {
-            const images = await fetchUnsplashImages(prompt, 1);
-            allImages.push(...images);
+
+          // Try AI images first if enabled, then fallback to Unsplash
+          if (config.useAIImages) {
+            console.log("Generating images with AI...");
+            for (const prompt of imagePrompts) {
+              try {
+                const aiImage = await getSmartImage(prompt, {
+                  preferAI: true,
+                  style: config.style || "professional",
+                });
+                if (aiImage) {
+                  allImages.push(aiImage);
+                }
+              } catch (error) {
+                console.warn(
+                  "AI image generation failed, trying Unsplash:",
+                  error,
+                );
+                const unsplashImages = await fetchUnsplashImages(
+                  prompt,
+                  1,
+                  true,
+                );
+                allImages.push(...unsplashImages);
+              }
+            }
+          } else {
+            // Use only Unsplash
+            for (const prompt of imagePrompts) {
+              const images = await fetchUnsplashImages(prompt, 1, true);
+              allImages.push(...images);
+            }
           }
 
           if (allImages.length > 0) {
             article.featuredImage = allImages[0]?.url;
             article.images = allImages;
 
-            // Embed featured image in content
             article.content = embedImagesInContent(article.content, allImages);
             console.log(`Added ${allImages.length} images to article`);
           }
@@ -172,15 +238,14 @@ Respond ONLY with valid JSON, no other text:
             "Failed to fetch images, continuing without images:",
             imageError,
           );
-          // Continue without images - don't fail the entire generation
         }
       }
 
       console.log("Article generated successfully:", article.title);
       return article;
     },
-    3, // maxRetries
-    1000, // initialDelayMs
+    3,
+    1000,
   );
 }
 
@@ -202,51 +267,4 @@ export async function generateMultipleArticles(
   }
 
   return articles;
-}
-
-export function generateBloggerPostHTML(article: GeneratedArticle): string {
-  return `<!DOCTYPE html>
-<html>
-<head>
-  <title>${article.title}</title>
-  <meta name="description" content="${article.excerpt}">
-  <meta name="keywords" content="${article.keywords.join(", ")}">
-  <meta property="og:title" content="${article.title}">
-  <meta property="og:description" content="${article.excerpt}">
-</head>
-<body>
-  <article>
-    <h1>${article.title}</h1>
-    <div class="meta">
-      <span class="read-time">${article.readTime} min read</span>
-      <span class="category">${article.category}</span>
-      <span class="language">${article.language === "id" ? "Bahasa Indonesia" : "English"}</span>
-    </div>
-    <div class="content">
-      ${markdownToHtml(article.content)}
-    </div>
-  </article>
-</body>
-</html>`;
-}
-
-function markdownToHtml(markdown: string): string {
-  let html = markdown
-    // Headers
-    .replace(/^### (.*?)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.*?)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.*?)$/gm, "<h1>$1</h1>")
-    // Bold
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    // Italic
-    .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    // Line breaks
-    .replace(/\n\n/g, "</p><p>")
-    // Bullet points
-    .replace(/^\* (.*?)$/gm, "<li>$1</li>");
-
-  // Wrap in paragraphs
-  html = `<p>${html}</p>`;
-
-  return html;
 }

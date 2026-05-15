@@ -254,6 +254,7 @@ export default function ChatbotPanel() {
               )}
               <div className="flex flex-col gap-3 rounded-3xl border border-slate-700/80 bg-slate-950 px-4 py-3 sm:flex-row sm:items-center">
                 <input
+                  id="onix-chat-input"
                   type="text"
                   value={inputValue}
                   onChange={(event) => setInputValue(event.target.value)}

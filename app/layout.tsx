@@ -10,6 +10,24 @@ export const metadata: Metadata = {
   title: "Paitonix — Digital Product Studio",
   description:
     "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
+  alternates: {
+    canonical: "/",
+    languages: {
+      en: "/?lang=en",
+      id: "/?lang=id",
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   icons: {
     icon: "/assets/images/favicon.png",
     shortcut: "/assets/images/favicon.png",
@@ -74,6 +92,38 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(t?t==='dark':d)document.documentElement.classList.add('dark')}catch(e){}})()`,
+          }}
+        />
+        {/* Structured data: Organization + WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": "https://paitonix.com/#organization",
+                  name: "Paitonix",
+                  url: "https://paitonix.com",
+                  logo: "https://paitonix.com/assets/images/logo-black-transparent.png",
+                  sameAs: ["https://twitter.com/paitonix"],
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": "https://paitonix.com/#website",
+                  url: "https://paitonix.com",
+                  name: "Paitonix",
+                  publisher: { "@id": "https://paitonix.com/#organization" },
+                  inLanguage: ["en", "id"],
+                  potentialAction: {
+                    "@type": "SearchAction",
+                    target: "https://paitonix.com/blog?q={search_term_string}",
+                    "query-input": "required name=search_term_string",
+                  },
+                },
+              ],
+            }),
           }}
         />
       </head>

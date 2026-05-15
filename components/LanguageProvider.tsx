@@ -28,7 +28,21 @@ export default function LanguageProvider({
     const stored = window.localStorage.getItem("language") as Language | null;
     if (stored === "en" || stored === "id") {
       setLanguageState(stored);
+      return;
     }
+    // Auto-detect from browser/phone locale on first visit.
+    const nav = window.navigator;
+    const candidates: string[] = [
+      ...(Array.isArray(nav.languages) ? nav.languages : []),
+      nav.language,
+    ].filter(Boolean);
+    const detected = candidates.some((l) => l.toLowerCase().startsWith("id"))
+      ? "id"
+      : "en";
+    setLanguageState(detected as Language);
+    try {
+      window.localStorage.setItem("language", detected);
+    } catch {}
   }, []);
 
   const setLanguage = (nextLanguage: Language) => {

@@ -19,6 +19,7 @@ interface Article {
   createdAt: Date | string;
   featuredImage?: string;
   keywords?: string[];
+  tags?: string[];
 }
 
 export default function BlogPostPage() {
@@ -55,6 +56,56 @@ export default function BlogPostPage() {
 
     fetchArticle();
   }, [slug]);
+
+  // SEO: inject canonical link + Article JSON-LD for the current slug.
+  useEffect(() => {
+    if (!article) return;
+    const canonicalHref = `https://paitonix.com/blog/${article.slug}`;
+    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "canonical";
+      document.head.appendChild(link);
+    }
+    link.href = canonicalHref;
+
+    const ld = document.createElement("script");
+    ld.type = "application/ld+json";
+    ld.dataset.seo = "article-jsonld";
+    ld.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      mainEntityOfPage: { "@type": "WebPage", "@id": canonicalHref },
+      headline: article.title,
+      description: article.excerpt,
+      image: article.featuredImage
+        ? [article.featuredImage]
+        : ["https://paitonix.com/assets/images/meta-img.png"],
+      datePublished: new Date(article.createdAt).toISOString(),
+      dateModified: new Date(article.createdAt).toISOString(),
+      inLanguage: article.language,
+      keywords: (article.keywords || []).join(", "),
+      articleSection: article.category,
+      author: { "@type": "Organization", name: "Paitonix" },
+      publisher: {
+        "@type": "Organization",
+        name: "Paitonix",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://paitonix.com/assets/images/logo-black-transparent.png",
+        },
+      },
+    });
+    document.head.appendChild(ld);
+    document.title = `${article.title} — Paitonix Blog`;
+
+    return () => {
+      const stale = document.head.querySelector(
+        'script[data-seo="article-jsonld"]',
+      );
+      if (stale) stale.remove();
+    };
+  }, [article]);
 
   if (isLoading) {
     return (
@@ -168,7 +219,7 @@ export default function BlogPostPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="prose prose-invert max-w-none"
+            className="prose prose-invert max-w-none text-justify hyphens-auto [&_p]:!text-justify [&_li]:!text-justify [&_blockquote]:!text-justify"
             dangerouslySetInnerHTML={{
               __html: convertMarkdownToHTML(article.content),
             }}
@@ -187,6 +238,25 @@ export default function BlogPostPage() {
                     className="px-3 py-1 rounded-full bg-slate-900/50 border border-slate-700 text-sm text-slate-300"
                   >
                     {keyword}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SEO Hashtags */}
+          {article.tags && article.tags.length > 0 && (
+            <div className="mt-8 pt-8 border-t border-slate-800">
+              <h3 className="text-sm font-semibold text-slate-300 mb-4">
+                {language === "id" ? "Tagar SEO" : "SEO Hashtags"}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {article.tags.map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sm font-medium text-sky-300"
+                  >
+                    {tag}
                   </span>
                 ))}
               </div>
