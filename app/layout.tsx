@@ -148,12 +148,14 @@ export default function RootLayout({
           muted
           playsInline
         />
-        {/* Start audio muted as early as possible — bypasses autoplay policy */}
+        {/* Welcome audio is fully gated behind first user interaction to avoid LCP/TBT penalties. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){
   if(typeof window==='undefined')return;
+  var played=false;
   function init(){
+    if(played)return;played=true;
     var a=document.getElementById('welcome-audio');
     if(!a){a=new Audio('/assets/audio/welcome-voice.mp3');a.id='welcome-audio-js';document.body&&document.body.appendChild(a);}
     a.muted=true;a.volume=0;a.playbackRate=0.75;
@@ -161,8 +163,9 @@ export default function RootLayout({
     if(p)p.then(function(){window.__audioStarted=true;}).catch(function(){window.__audioStarted=false;});
     window.__welcomeAudio=a;
   }
-  if('requestIdleCallback' in window){requestIdleCallback(init,{timeout:2500});}
-  else{setTimeout(init,1500);}
+  ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
+    window.addEventListener(ev,init,{once:true,passive:true});
+  });
 })()`,
           }}
         />

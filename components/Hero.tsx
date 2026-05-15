@@ -11,6 +11,7 @@ export default function Hero({ data }: { data: HeroData }) {
   const { shouldReduceMotion, isMobile } = useMotionPreferences();
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [showSayHi, setShowSayHi] = useState(false);
   const [chatStep, setChatStep] = useState(0);
@@ -84,6 +85,20 @@ export default function Hero({ data }: { data: HeroData }) {
     updateSayHi();
     setMounted(true);
 
+    // Defer heavy video mount until the page is idle / interactive so it
+    // doesn't compete with LCP. Falls back to a short timeout on browsers
+    // that don't support requestIdleCallback (Safari).
+    let idleId: number | undefined;
+    let timeoutId: number | undefined;
+    const enableVideo = () => setVideoReady(true);
+    if (typeof (window as any).requestIdleCallback === "function") {
+      idleId = (window as any).requestIdleCallback(enableVideo, {
+        timeout: 2000,
+      });
+    } else {
+      timeoutId = window.setTimeout(enableVideo, 1500);
+    }
+
     // Listen for support button event
     const handleShowSayHi = () => {
       setShowSayHi(true);
@@ -93,6 +108,10 @@ export default function Hero({ data }: { data: HeroData }) {
     return () => {
       observer.disconnect();
       window.removeEventListener("showSayHi", handleShowSayHi);
+      if (idleId !== undefined && (window as any).cancelIdleCallback) {
+        (window as any).cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
       if (audio) {
         audio.removeEventListener("play", updateSayHi);
         audio.removeEventListener("pause", updateSayHi);
@@ -355,7 +374,7 @@ export default function Hero({ data }: { data: HeroData }) {
           <div className="grid gap-4 sm:grid-rows-[minmax(0,1.2fr)_auto]">
             <div className="relative overflow-hidden rounded-[2.25rem] bg-[#111111] text-white shadow-[0_36px_90px_rgba(17,17,17,0.16)] dark:shadow-[0_36px_90px_rgba(0,0,0,0.45)]">
               <div className="absolute inset-0 overflow-hidden">
-                {mounted && !shouldReduceMotion && (
+                {mounted && videoReady && !shouldReduceMotion && (
                   <video
                     key={isDark ? "dark" : "light"}
                     className={`h-full w-full object-cover transition-opacity duration-500 ${

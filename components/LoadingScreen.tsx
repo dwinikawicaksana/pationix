@@ -3,13 +3,22 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoadingScreen() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    if (typeof window === "undefined") return true;
+    // Show once per session only — Lighthouse/repeat visits skip it entirely.
+    try {
+      return !window.sessionStorage.getItem("paitonix-loaded");
+    } catch {
+      return true;
+    }
+  });
   const [progress, setProgress] = useState(0);
   const playedRef = useRef(false);
 
   useEffect(() => {
+    if (!isLoading) return;
     // Determinate progress that always reaches 100% before unmount.
-    const TOTAL = 2200; // ms to reach 100%
+    const TOTAL = 1100; // ms to reach 100% (cut from 2200ms)
     const TICK = 40;
     const STEPS = TOTAL / TICK;
     let current = 0;
@@ -19,15 +28,18 @@ export default function LoadingScreen() {
         current = 100;
         window.clearInterval(id);
         setProgress(100);
-        // Hold at 100% for a beat so the user sees completion, then exit.
-        window.setTimeout(() => setIsLoading(false), 320);
+        try {
+          window.sessionStorage.setItem("paitonix-loaded", "1");
+        } catch {}
+        // Hold at 100% briefly so the user sees completion, then exit.
+        window.setTimeout(() => setIsLoading(false), 180);
       } else {
         setProgress(current);
       }
     }, TICK);
 
     return () => window.clearInterval(id);
-  }, []);
+  }, [isLoading]);
 
   useEffect(() => {
     const getAudio = () => {
