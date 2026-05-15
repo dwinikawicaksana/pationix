@@ -98,6 +98,8 @@ export default function WebPreview({
           <img
             src="/assets/images/logo-long.png"
             alt={preview.title}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover transition group-hover:scale-105"
           />
         </div>

@@ -1,18 +1,25 @@
+import dynamic from "next/dynamic";
 import { fetchLandingData } from "@/lib/fetcher";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import PreviewSlides from "@/components/PreviewSlides";
-import ProductCatalogue from "@/components/ProductCatalogue";
-import Testimonials from "@/components/Testimonials";
-import ChatbotPanel from "@/components/ChatbotPanel";
-import StorySection from "@/components/StorySection";
-import FeatureReveal from "@/components/FeatureReveal";
-import CaseStudy from "@/components/CaseStudy";
-import BlogSection from "@/components/BlogSection";
-import CTASection from "@/components/CTASection";
-import FooterNew from "@/components/FooterNew";
-import PhilosophyCard from "@/components/PhilosophyCard";
-import WhatsAppButton from "@/components/WhatsAppButton";
+
+// Above-the-fold components are imported statically. Everything below the fold
+// is dynamically imported so it does not bloat the initial JS payload that
+// blocks LCP/TBT on the landing route.
+const PhilosophyCard = dynamic(() => import("@/components/PhilosophyCard"));
+const PreviewSlides = dynamic(() => import("@/components/PreviewSlides"));
+const ProductCatalogue = dynamic(() => import("@/components/ProductCatalogue"));
+const Testimonials = dynamic(() => import("@/components/Testimonials"));
+const ChatbotPanel = dynamic(() => import("@/components/ChatbotPanel"));
+const StorySection = dynamic(() => import("@/components/StorySection"));
+const FeatureReveal = dynamic(() => import("@/components/FeatureReveal"));
+const CaseStudy = dynamic(() => import("@/components/CaseStudy"));
+const BlogSection = dynamic(() => import("@/components/BlogSection"));
+const CTASection = dynamic(() => import("@/components/CTASection"));
+const FooterNew = dynamic(() => import("@/components/FooterNew"));
+const WhatsAppButton = dynamic(() => import("@/components/WhatsAppButton"), {
+  ssr: false,
+});
 
 export default async function Home() {
   const data = await fetchLandingData();

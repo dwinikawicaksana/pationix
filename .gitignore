@@ -62,4 +62,4 @@ logs
 /uploads
 
 # generated files
-dist/
+dist/public/assets/videos/_originals/

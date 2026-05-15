@@ -1,5 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
@@ -192,11 +193,14 @@ export default function PreviewSlides() {
               whileHover={{ y: -8, transition: { duration: 0.25 } }}
               className="group overflow-hidden rounded-[2rem] border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/60 shadow-2xl shadow-slate-200/50 dark:shadow-black/30 transition hover:-translate-y-1 hover:shadow-2xl backdrop-blur-lg text-left"
             >
-              <div className="relative overflow-hidden bg-slate-950/5">
-                <img
+              <div className="relative h-64 w-full overflow-hidden bg-slate-950/5">
+                <Image
                   src={slide.image}
                   alt={localize(slide.title, language)}
-                  className="h-64 w-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  loading="lazy"
+                  className="object-cover"
                 />
                 <div
                   className={`absolute inset-x-0 top-0 h-32 bg-gradient-to-br ${slide.accent} opacity-60`}

@@ -1,14 +1,24 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import LanguageProvider from "@/components/LanguageProvider";
-import LoadingScreen from "@/components/LoadingScreen";
-import ScrollToTop from "@/components/ScrollToTop";
-import SupportButton from "@/components/SupportButton";
+
+// Defer non-critical client-only UI so it doesn't bloat the initial JS bundle
+// and harm LCP / TBT scores.
+const LoadingScreen = dynamic(() => import("@/components/LoadingScreen"), {
+  ssr: false,
+});
+const ScrollToTop = dynamic(() => import("@/components/ScrollToTop"), {
+  ssr: false,
+});
+const SupportButton = dynamic(() => import("@/components/SupportButton"), {
+  ssr: false,
+});
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-inter",
   display: "swap",
   preload: true,
@@ -16,8 +26,7 @@ const inter = Inter({
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
-  style: ["normal", "italic"],
+  weight: ["700"],
   variable: "--font-playfair",
   display: "swap",
   preload: false,

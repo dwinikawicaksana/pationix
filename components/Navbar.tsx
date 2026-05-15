@@ -175,6 +175,11 @@ export default function Navbar({ data }: { data: NavbarData }) {
             <img
               src="/assets/images/logo-header.png"
               alt="Paitonix logo"
+              width={240}
+              height={96}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
               className="h-16 sm:h-20 md:h-24 w-auto dark:contrast-[0.5]"
             />
           </a>

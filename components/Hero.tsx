@@ -1,5 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { HeroData } from "@/types/landing";
 import { useLanguage } from "./LanguageProvider";
@@ -252,9 +253,13 @@ export default function Hero({ data }: { data: HeroData }) {
           <div className="mb-6 flex items-center justify-between gap-4 border-b border-black/10 pb-5 dark:border-white/10">
             <div className="inline-flex min-w-0 items-center gap-4 rounded-full border border-black/10 bg-white/80 px-4 py-3 shadow-[0_12px_30px_rgba(17,17,17,0.06)] backdrop-blur-xl dark:border-white/15 dark:bg-white/[0.06] dark:shadow-[0_18px_45px_rgba(2,6,23,0.45)]">
               <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-black/10 dark:bg-slate-900 dark:ring-white/15">
-                <img
+                <Image
                   src="/assets/images/logo-black-transparent.png"
                   alt="Paitonix"
+                  width={56}
+                  height={56}
+                  priority
+                  sizes="56px"
                   className="h-full w-full object-cover"
                 />
               </div>

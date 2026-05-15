@@ -184,6 +184,8 @@ export default function ChatbotPanel() {
                 <img
                   src="/assets/images/ai-assistant.png"
                   alt="AI assistant"
+                  loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover"
                 />
               </div>

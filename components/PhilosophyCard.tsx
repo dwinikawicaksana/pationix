@@ -116,6 +116,8 @@ export default function PhilosophyCard() {
                 <img
                   src="/assets/images/logo-2.png"
                   alt="Paitonix"
+                  loading="lazy"
+                  decoding="async"
                   className="h-8 w-8 rounded-xl object-cover shadow-md shadow-sky-500/20"
                 />
                 <div>

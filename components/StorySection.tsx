@@ -1,5 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { StoryData } from "@/types/landing";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
@@ -63,12 +64,16 @@ function StorySlide({
       <div className="order-1 lg:order-2">
         <div className="group relative overflow-hidden rounded-[2.25rem] border border-slate-200/60 bg-slate-100 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.35)] dark:border-slate-700/60 dark:bg-slate-900">
           <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-sky-100/20 opacity-100 pointer-events-none dark:from-white/5 dark:via-transparent dark:to-sky-900/20" />
-          <img
-            src={story.image}
-            alt={story.imageAlt}
-            className="relative w-full h-[360px] sm:h-[440px] lg:h-[520px] object-cover"
-            loading="lazy"
-          />
+          <div className="relative w-full h-[360px] sm:h-[440px] lg:h-[520px]">
+            <Image
+              src={story.image}
+              alt={story.imageAlt}
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              loading="lazy"
+              className="object-cover"
+            />
+          </div>
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
           <div className="absolute left-6 top-6 rounded-full bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-slate-900 shadow-lg shadow-slate-900/10 dark:bg-slate-800/90 dark:text-slate-100 dark:shadow-black/15">
             {localize({ id: "highlight", en: "Highlight" }, language)}

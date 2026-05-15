@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
@@ -155,11 +156,14 @@ function ProjectCard({ project, index, language, isDark }: ProjectCardProps) {
             className={`relative overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-0.5 ${isDark ? "border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/50 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/40" : "border-slate-200/50 bg-slate-50 shadow-lg shadow-slate-200/20 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-300/30"}`}
           >
             <div className="overflow-hidden">
-              <div className="relative overflow-hidden">
-                <img
+              <div className="relative h-48 sm:h-56 w-full overflow-hidden">
+                <Image
                   src={project.image}
                   alt={`${localize(project.title, language)} preview`}
-                  className="h-48 w-full object-cover sm:h-56"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  loading="lazy"
+                  className="object-cover"
                 />
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${isDark ? "opacity-35" : "opacity-20"}`}
@@ -203,6 +207,8 @@ function ProjectCard({ project, index, language, isDark }: ProjectCardProps) {
                       <img
                         src={project.logo}
                         alt={`${localize(project.title, language)} logo`}
+                        loading="lazy"
+                        decoding="async"
                         className="h-8 w-8 object-contain"
                       />
                       <span className="uppercase tracking-[0.2em]">

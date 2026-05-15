@@ -81,6 +81,8 @@ export default function FooterNew({
             <img
               src="/assets/images/logo-long-white.png"
               alt="Paitonix"
+              loading="lazy"
+              decoding="async"
               className="w-full max-w-[320px] sm:max-w-none sm:w-auto h-auto sm:h-[8em] rounded-2xl mb-6 contrast-150 dark:contrast-50 border border-sky-500/60 dark:border-sky-400/50 shadow-lg shadow-sky-500/20"
             />
             <p className="text-sm leading-relaxed text-slate-300 dark:text-gray-400 max-w-xs">

@@ -20,6 +20,8 @@ export default function Footer({
               <img
                 src="/assets/images/logo-long-white.png"
                 alt="Paitonix logo"
+                loading="lazy"
+                decoding="async"
                 className="h-12 w-auto rounded-2xl bg-white p-2 shadow-sm shadow-slate-900/10"
               />
               <span className="text-base font-black tracking-tight">
