@@ -2,9 +2,9 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "./LanguageProvider";
 import { localize } from "@/lib/i18n";
-import Link from "next/link";
 import { ScrollableContainer } from "./ScrollableContainer";
 
 const uiText = {
@@ -107,7 +107,7 @@ const projects: ProjectItem[] = [
     image: "/assets/images/project-noura.png",
     gradient: "from-emerald-500 via-teal-600 to-slate-800",
     accent: "emerald",
-    prototypeUrl: "https://noura-nurture-care.vercel.app/",
+    prototypeUrl: "https://nouracare-labs.paitonix.com/",
   },
   {
     id: "bare-beaute",
@@ -138,6 +138,8 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, index, language, isDark }: ProjectCardProps) {
+  const router = useRouter();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -150,159 +152,186 @@ function ProjectCard({ project, index, language, isDark }: ProjectCardProps) {
       }}
       style={{ willChange: "opacity, transform" }}
     >
-      <Link href={`/projects/${project.id}`}>
-        <div className="group block h-full cursor-pointer">
-          <div
-            className={`relative overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-0.5 ${isDark ? "border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/50 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/40" : "border-slate-200/50 bg-slate-50 shadow-lg shadow-slate-200/20 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-300/30"}`}
-          >
-            <div className="overflow-hidden">
-              <div className="relative h-48 sm:h-56 w-full overflow-hidden">
-                <Image
-                  src={project.image}
-                  alt={`${localize(project.title, language)} preview`}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  loading="lazy"
-                  className="object-cover"
-                />
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${isDark ? "opacity-35" : "opacity-20"}`}
-                />
-                {project.discountBadge && (
-                  <div className="absolute right-6 top-6 rounded-full bg-rose-500/95 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-rose-500/20">
-                    {typeof project.discountBadge === "string"
-                      ? project.discountBadge
-                      : localize(project.discountBadge, language)}
-                  </div>
-                )}
-              </div>
-
+      <div
+        role="link"
+        tabIndex={0}
+        onClick={() => router.push(`/projects/${project.id}`)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            router.push(`/projects/${project.id}`);
+          }
+        }}
+        className="group block h-full cursor-pointer outline-none"
+      >
+        <div
+          className={`relative overflow-hidden rounded-[2rem] border transition-all duration-300 hover:-translate-y-0.5 ${isDark ? "border-white/10 bg-slate-950 shadow-2xl shadow-slate-950/50 hover:border-white/20 hover:shadow-2xl hover:shadow-slate-900/40" : "border-slate-200/50 bg-slate-50 shadow-lg shadow-slate-200/20 hover:border-slate-300/60 hover:shadow-xl hover:shadow-slate-300/30"}`}
+        >
+          <div className="overflow-hidden">
+            <div className="relative h-48 sm:h-56 w-full overflow-hidden">
+              <Image
+                src={project.image}
+                alt={`${localize(project.title, language)} preview`}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
+                className="object-cover"
+              />
               <div
-                className={`relative px-6 pb-6 pt-8 sm:px-8 sm:pb-8 space-y-5 ${isDark ? "bg-slate-950/95" : "bg-white/95"} backdrop-blur-sm`}
-              >
-                <div className="space-y-6">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    <span
-                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ring-1 ${
-                        project.accent === "sky"
-                          ? isDark
-                            ? "bg-sky-500/25 text-sky-100 ring-sky-400/40"
-                            : "bg-sky-100/70 text-sky-700 ring-sky-300/50"
-                          : isDark
-                            ? "bg-purple-500/25 text-purple-100 ring-purple-400/40"
-                            : "bg-purple-100/70 text-purple-700 ring-purple-300/50"
-                      }`}
-                    >
-                      {localize(project.subtitle, language)}
-                    </span>
-                    <span
-                      className={`text-xs uppercase tracking-[0.3em] ${isDark ? "text-slate-400" : "text-slate-600"}`}
-                    >
+                className={`absolute inset-0 bg-gradient-to-br ${project.gradient} ${isDark ? "opacity-35" : "opacity-20"}`}
+              />
+              {project.discountBadge && (
+                <div className="absolute right-6 top-6 rounded-full bg-rose-500/95 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-rose-500/20">
+                  {typeof project.discountBadge === "string"
+                    ? project.discountBadge
+                    : localize(project.discountBadge, language)}
+                </div>
+              )}
+            </div>
+
+            <div
+              className={`relative px-6 pb-6 pt-8 sm:px-8 sm:pb-8 space-y-5 ${isDark ? "bg-slate-950/95" : "bg-white/95"} backdrop-blur-sm`}
+            >
+              <div className="space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <span
+                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] ring-1 ${
+                      project.accent === "sky"
+                        ? isDark
+                          ? "bg-sky-500/25 text-sky-100 ring-sky-400/40"
+                          : "bg-sky-100/70 text-sky-700 ring-sky-300/50"
+                        : isDark
+                          ? "bg-purple-500/25 text-purple-100 ring-purple-400/40"
+                          : "bg-purple-100/70 text-purple-700 ring-purple-300/50"
+                    }`}
+                  >
+                    {localize(project.subtitle, language)}
+                  </span>
+                  <span
+                    className={`text-xs uppercase tracking-[0.3em] ${isDark ? "text-slate-400" : "text-slate-600"}`}
+                  >
+                    {project.id.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 rounded-3xl bg-slate-100/70 px-3 py-2 text-sm font-semibold text-slate-800 ring-1 ring-slate-200 sm:w-fit sm:px-4 sm:py-3 dark:bg-slate-900/80 dark:text-slate-100 dark:ring-slate-700">
+                    <img
+                      src={project.logo}
+                      alt={`${localize(project.title, language)} logo`}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-8 w-8 object-contain"
+                    />
+                    <span className="uppercase tracking-[0.2em]">
                       {project.id.toUpperCase()}
                     </span>
                   </div>
-
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 rounded-3xl bg-slate-100/70 px-3 py-2 text-sm font-semibold text-slate-800 ring-1 ring-slate-200 sm:w-fit sm:px-4 sm:py-3 dark:bg-slate-900/80 dark:text-slate-100 dark:ring-slate-700">
-                      <img
-                        src={project.logo}
-                        alt={`${localize(project.title, language)} logo`}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-8 w-8 object-contain"
-                      />
-                      <span className="uppercase tracking-[0.2em]">
-                        {project.id.toUpperCase()}
-                      </span>
-                    </div>
-                    <h3
-                      className={`text-3xl sm:text-4xl font-black uppercase tracking-[0.1em] ${isDark ? "text-white" : "text-slate-950"}`}
-                    >
-                      {localize(project.title, language)}
-                    </h3>
-                    <p
-                      className={`text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-700"}`}
-                    >
-                      {localize(project.description, language)}
-                    </p>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div
-                        className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
-                      >
-                        {project.framework}
-                      </div>
-                      <div
-                        className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
-                      >
-                        {localize(uiText.startFrom, language)}{" "}
-                        {localize(project.estimate, language)}
-                      </div>
-                    </div>
-                    <div
-                      className={`text-sm ${isDark ? "text-slate-300" : "text-slate-600"} leading-relaxed mt-4`}
-                    >
-                      <span className="font-semibold">
-                        {localize(uiText.prototype, language)}:
-                      </span>{" "}
-                      {!project.prototypeUrl || project.prototypeUrl === "#" ? (
-                        <span>TBC</span>
-                      ) : (
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            window.open(project.prototypeUrl!, "_blank");
-                          }}
-                          className={`underline transition cursor-pointer border-0 bg-transparent p-0 text-left ${isDark ? "text-sky-300 hover:text-sky-200" : "text-sky-700 hover:text-slate-900"}`}
-                        >
-                          {project.prototypeUrl!.replace(/^https?:\/\//, "")}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3">
+                  <h3
+                    className={`text-3xl sm:text-4xl font-black uppercase tracking-[0.1em] ${isDark ? "text-white" : "text-slate-950"}`}
+                  >
+                    {localize(project.title, language)}
+                  </h3>
+                  <p
+                    className={`text-sm leading-relaxed ${isDark ? "text-slate-300" : "text-slate-700"}`}
+                  >
+                    {localize(project.description, language)}
+                  </p>
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div
-                      className={`rounded-[1.5rem] border p-3 text-xs ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                      className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
                     >
-                      {localize(
-                        {
-                          id: "UI yang intuitif dan siap scaling.",
-                          en: "Intuitive UI ready for scaling.",
-                        },
-                        language,
-                      )}
+                      {project.framework}
                     </div>
                     <div
                       className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
                     >
-                      {localize(
-                        {
-                          id: "Kolaborasi real-time dan insight produk.",
-                          en: "Real-time collaboration and product insight.",
-                        },
-                        language,
-                      )}
+                      {localize(uiText.startFrom, language)}{" "}
+                      {localize(project.estimate, language)}
                     </div>
                   </div>
                   <div
-                    className={`flex items-center gap-3 text-sm font-semibold ${isDark ? "text-slate-300 group-hover:text-white" : "text-slate-700 group-hover:text-slate-950"} transition-colors`}
+                    className={`text-sm ${isDark ? "text-slate-300" : "text-slate-600"} leading-relaxed mt-4`}
                   >
-                    <span>{localize(uiText.exploreProject, language)}</span>
-                    <span
-                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors ${isDark ? "bg-white/15 group-hover:bg-white/25 text-white" : "bg-slate-300/30 group-hover:bg-slate-300/50 text-slate-800"}`}
-                    >
-                      →
-                    </span>
+                    <span className="font-semibold">
+                      {localize(uiText.prototype, language)}:
+                    </span>{" "}
+                    {!project.prototypeUrl || project.prototypeUrl === "#" ? (
+                      <span
+                        className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+                          isDark
+                            ? "border-slate-600 bg-slate-800 text-slate-400"
+                            : "border-slate-300 bg-slate-100 text-slate-500"
+                        }`}
+                      >
+                        TBC
+                      </span>
+                    ) : (
+                      <a
+                        href={project.prototypeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`Open ${project.prototypeUrl!.replace(/^https?:\/\//, "")}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className={`group/pill inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1.5 align-middle text-xs font-semibold transition-all duration-200 hover:-translate-y-px hover:shadow-md ${
+                          isDark
+                            ? "border-sky-400/40 bg-sky-500/15 text-sky-200 hover:border-sky-300 hover:bg-sky-500/25 hover:text-white"
+                            : "border-sky-300 bg-sky-50 text-sky-800 hover:border-sky-400 hover:bg-sky-100 hover:text-sky-950"
+                        }`}
+                      >
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-60 group-hover/pill:opacity-100" />
+                          <span className="relative inline-flex h-2 w-2 rounded-full bg-sky-500" />
+                        </span>
+                        <span className="truncate">
+                          {project.prototypeUrl!.replace(/^https?:\/\//, "")}
+                        </span>
+                      </a>
+                    )}
                   </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div
+                    className={`rounded-[1.5rem] border p-3 text-xs ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                  >
+                    {localize(
+                      {
+                        id: "UI yang intuitif dan siap scaling.",
+                        en: "Intuitive UI ready for scaling.",
+                      },
+                      language,
+                    )}
+                  </div>
+                  <div
+                    className={`rounded-[1.75rem] border p-4 text-sm ${isDark ? "border-white/10 bg-slate-950/80 text-slate-300" : "border-slate-200/60 bg-slate-100/60 text-slate-700"}`}
+                  >
+                    {localize(
+                      {
+                        id: "Kolaborasi real-time dan insight produk.",
+                        en: "Real-time collaboration and product insight.",
+                      },
+                      language,
+                    )}
+                  </div>
+                </div>
+                <div
+                  className={`flex items-center gap-3 text-sm font-semibold ${isDark ? "text-slate-300 group-hover:text-white" : "text-slate-700 group-hover:text-slate-950"} transition-colors`}
+                >
+                  <span>{localize(uiText.exploreProject, language)}</span>
+                  <span
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full transition-colors ${isDark ? "bg-white/15 group-hover:bg-white/25 text-white" : "bg-slate-300/30 group-hover:bg-slate-300/50 text-slate-800"}`}
+                  >
+                    →
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }
