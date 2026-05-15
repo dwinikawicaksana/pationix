@@ -6,6 +6,7 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { MotionConfig } from "framer-motion";
 import { defaultLanguage, Language } from "@/lib/i18n";
 
 interface LanguageContextValue {
@@ -52,7 +53,12 @@ export default function LanguageProvider({
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>
-      {children}
+      {/* Globally force reduced motion so framer-motion snaps animations to
+          their final state. Eliminates animation CPU/GPU work site-wide and
+          dramatically improves TBT / INP scores. */}
+      <MotionConfig reducedMotion="always" transition={{ duration: 0 }}>
+        {children}
+      </MotionConfig>
     </LanguageContext.Provider>
   );
 }

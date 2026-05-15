@@ -23,28 +23,14 @@ export default function PhilosophyCard() {
 
   return (
     <section className="relative overflow-hidden bg-slate-950 py-24 px-6">
-      {/* Video background */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover"
-        src="/assets/videos/video-section.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
-
-      {/* Background ambiance */}
+      {/* Background ambiance (video removed for performance — replaced with static gradient) */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Dark overlay to ensure readability over video */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-slate-900/75 to-slate-950/80" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/60 via-transparent to-slate-950/40" />
 
         <div className="hidden lg:block">
-          {/* Static orb left */}
           <div className="absolute -left-32 top-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-sky-300/20 dark:bg-sky-500/10 blur-3xl opacity-100" />
-          {/* Static orb right */}
           <div className="absolute -right-32 top-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-indigo-300/20 dark:bg-purple-500/10 blur-3xl opacity-100" />
-          {/* Center glow */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] rounded-full bg-cyan-400/10 dark:bg-cyan-500/8 blur-3xl" />
         </div>
       </div>

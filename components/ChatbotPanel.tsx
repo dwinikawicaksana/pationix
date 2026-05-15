@@ -53,11 +53,10 @@ export default function ChatbotPanel() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    // Scroll to chatbot section when loading finishes
-    if (!isLoading && messages.length > 0) {
-      const chatSection = document.getElementById("chatbot");
-      chatSection?.scrollIntoView({ behavior: "smooth" });
+    // Scroll ONLY the messages container, never the whole page.
+    const container = messagesEndRef.current?.parentElement;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
     }
   }, [messages, isLoading]);
 

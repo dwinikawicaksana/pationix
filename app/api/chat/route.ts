@@ -98,10 +98,15 @@ Keep responses conversational, clear, and focused on helping them understand the
 
 export async function POST(request: NextRequest) {
   try {
-    const apiKey = process.env.GOOGLE_API_KEY;
+    // Accept either GOOGLE_API_KEY or GEMINI_API_KEY so deployments using
+    // either convention work without code changes.
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
     if (!apiKey) {
+      console.error(
+        "[Chat API] Missing GOOGLE_API_KEY / GEMINI_API_KEY environment variable. Set it on your host (e.g. Vercel/Hostinger) for the chatbot to work.",
+      );
       return NextResponse.json(
-        { error: "Chat service not configured" },
+        { error: "Chat service not configured (missing API key)" },
         { status: 503 },
       );
     }
