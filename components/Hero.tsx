@@ -368,11 +368,12 @@ export default function Hero({ data }: { data: HeroData }) {
                         ? "/assets/videos/video-section.mp4"
                         : "/assets/videos/video-hero-white.mp4"
                     }
-                    preload="auto"
+                    preload="metadata"
                     autoPlay
                     muted
                     loop
                     playsInline
+                    disablePictureInPicture
                   />
                 )}
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,7,7,0.05)_0%,rgba(7,7,7,0.24)_38%,rgba(7,7,7,0.94)_100%)] dark:bg-[linear-gradient(180deg,rgba(7,7,7,0.12)_0%,rgba(7,7,7,0.36)_38%,rgba(7,7,7,0.96)_100%)]" />

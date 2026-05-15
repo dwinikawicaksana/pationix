@@ -1,9 +1,27 @@
 import type { Metadata } from "next";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import LanguageProvider from "@/components/LanguageProvider";
 import LoadingScreen from "@/components/LoadingScreen";
 import ScrollToTop from "@/components/ScrollToTop";
 import SupportButton from "@/components/SupportButton";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-inter",
+  display: "swap",
+  preload: true,
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
+  display: "swap",
+  preload: false,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://paitonix.com"),
@@ -66,18 +84,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html
+      lang="id"
+      suppressHydrationWarning
+      className={`${inter.variable} ${playfair.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&display=swap"
-          rel="stylesheet"
-        />
         <link rel="icon" href="/assets/images/favicon.png" type="image/png" />
         <link
           rel="apple-touch-icon"
@@ -127,16 +139,12 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body
-        className="antialiased overflow-x-hidden bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300"
-        style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
-      >
+      <body className="font-inter antialiased overflow-x-hidden bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors duration-300">
         {/* Global audio element for welcome voice */}
         <audio
           id="welcome-audio"
           src="/assets/audio/welcome-voice.mp3"
-          preload="auto"
-          autoPlay
+          preload="none"
           muted
           playsInline
         />
@@ -144,12 +152,17 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){
-  var a=document.getElementById('welcome-audio');
-  if(!a){a=new Audio('/assets/audio/welcome-voice.mp3');a.id='welcome-audio-js';document.body&&document.body.appendChild(a);}
-  a.muted=true;a.volume=0;a.playbackRate=0.75;
-  var p=a.play();
-  if(p)p.then(function(){window.__audioStarted=true;}).catch(function(){window.__audioStarted=false;});
-  window.__welcomeAudio=a;
+  if(typeof window==='undefined')return;
+  function init(){
+    var a=document.getElementById('welcome-audio');
+    if(!a){a=new Audio('/assets/audio/welcome-voice.mp3');a.id='welcome-audio-js';document.body&&document.body.appendChild(a);}
+    a.muted=true;a.volume=0;a.playbackRate=0.75;
+    var p=a.play();
+    if(p)p.then(function(){window.__audioStarted=true;}).catch(function(){window.__audioStarted=false;});
+    window.__welcomeAudio=a;
+  }
+  if('requestIdleCallback' in window){requestIdleCallback(init,{timeout:2500});}
+  else{setTimeout(init,1500);}
 })()`,
           }}
         />

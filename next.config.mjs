@@ -49,6 +49,20 @@ const nextConfig = {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
+        ],
+      },
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/assets/:path*",
+        headers: [
           {
             key: "Cache-Control",
             value: "public, max-age=31536000, immutable",
