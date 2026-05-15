@@ -1,7 +1,89 @@
+import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { fetchLandingData } from "@/lib/fetcher";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+
+const OG_IMAGE = "/assets/images/og-meta.png";
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { lang?: string };
+}): Promise<Metadata> {
+  const lang = searchParams?.lang === "en" ? "en" : "id";
+
+  if (lang === "en") {
+    return {
+      title:
+        "Paitonix — Web Development, Mobile Development & AI Solutions Agency in Indonesia",
+      description:
+        "Paitonix is a digital agency in Indonesia specialising in Web Development, Mobile Development, Digital Consultation, and AI Solutions. We build scalable, modern digital products for local and international businesses.",
+      openGraph: {
+        type: "website",
+        url: "https://paitonix.com/?lang=en",
+        siteName: "Paitonix",
+        title:
+          "Paitonix — Web Development, Mobile Development & AI Solutions Agency in Indonesia",
+        description:
+          "Indonesia-based digital agency. Web Development, Mobile Development, Digital Consultation & AI Solutions for businesses worldwide.",
+        images: [
+          {
+            url: OG_IMAGE,
+            width: 1200,
+            height: 630,
+            alt: "Paitonix — Web & AI Solutions Agency Indonesia",
+          },
+        ],
+        locale: "en_US",
+      },
+      twitter: {
+        card: "summary_large_image",
+        site: "@paitonix",
+        title:
+          "Paitonix — Web Development, Mobile Development & AI Solutions Agency in Indonesia",
+        description:
+          "Indonesia-based digital agency: Web Development, Mobile Development, Digital Consultation & AI Solutions.",
+        images: [OG_IMAGE],
+      },
+    };
+  }
+
+  // default: Indonesian
+  return {
+    title:
+      "Paitonix — Web Development, Mobile Development & AI Solutions Indonesia",
+    description:
+      "Paitonix adalah agency digital di Indonesia yang menghadirkan layanan Web Development, Mobile Development, Digital Consultation, dan AI Solutions. Kami membangun produk digital yang scalable dan modern untuk bisnis Anda.",
+    openGraph: {
+      type: "website",
+      url: "https://paitonix.com/?lang=id",
+      siteName: "Paitonix",
+      title:
+        "Paitonix — Web Development, Mobile Development & AI Solutions Indonesia",
+      description:
+        "Agency digital Indonesia: Web Development, Mobile Development, Digital Consultation & AI Solutions untuk bisnis lokal & internasional.",
+      images: [
+        {
+          url: OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: "Paitonix — Web & AI Solutions Indonesia",
+        },
+      ],
+      locale: "id_ID",
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@paitonix",
+      title:
+        "Paitonix — Web Development, Mobile Development & AI Solutions Indonesia",
+      description:
+        "Agency digital Indonesia: Web Development, Mobile Development, Digital Consultation & AI Solutions.",
+      images: [OG_IMAGE],
+    },
+  };
+}
 
 // Above-the-fold components are imported statically. Everything below the fold
 // is dynamically imported so it does not bloat the initial JS payload that

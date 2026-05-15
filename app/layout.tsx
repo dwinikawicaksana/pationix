@@ -34,9 +34,67 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://paitonix.com"),
-  title: "Paitonix — Digital Product Studio",
+  title: {
+    default:
+      "Paitonix — Web Development, Mobile Development & AI Solutions Indonesia",
+    template: "%s | Paitonix",
+  },
   description:
-    "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
+    "Paitonix adalah agency digital di Indonesia yang menghadirkan Web Development, Mobile Development, Digital Consultation, dan AI Solutions untuk bisnis lokal maupun internasional. Kami membangun produk digital yang scalable, modern, dan berdampak nyata.",
+  keywords: [
+    // Brand
+    "Paitonix",
+    "Paitonix Bali",
+    "Paitonix Indonesia",
+
+    // Local Bali SEO
+    "jasa pembuatan website Bali",
+    "jasa website Bali",
+    "web developer Bali",
+    "developer website Denpasar",
+    "jasa aplikasi Bali",
+    "software house Bali",
+    "studio digital Bali",
+    "jasa UI UX Bali",
+    "jasa landing page Bali",
+    "developer freelance Bali",
+    "website bisnis Bali",
+    "website hotel Bali",
+    "website villa Bali",
+    "website restoran Bali",
+    "digital agency Bali",
+
+    // Indonesia SEO
+    "web development Indonesia",
+    "software house Indonesia",
+    "jasa developer website Indonesia",
+    "jasa pembuatan aplikasi Indonesia",
+    "AI developer Indonesia",
+    "website development company Indonesia",
+    "digital product studio Indonesia",
+
+    // International SEO
+    "Bali web development agency",
+    "Indonesia web development agency",
+    "web app development services",
+    "custom website development",
+    "AI solutions company",
+    "mobile app development agency",
+    "UI UX design studio",
+    "startup product development",
+    "SaaS development agency",
+    "modern web applications",
+    "full stack developer Indonesia",
+    "remote software development team",
+
+    // AI / Modern Era
+    "AI products Bali",
+    "AI website integration",
+    "automation solutions",
+    "smart business solutions",
+    "next generation digital solutions",
+    "AI-powered applications",
+  ],
   alternates: {
     canonical: "/",
     languages: {
@@ -64,26 +122,29 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://paitonix.com",
     siteName: "Paitonix",
-    title: "Paitonix — Digital Product Studio",
+    title:
+      "Paitonix — Web Development, Mobile Development & AI Solutions Indonesia",
     description:
-      "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
+      "Agency digital Indonesia untuk Web Development, Mobile Development, Digital Consultation, dan AI Solutions. Kami membangun produk digital modern untuk bisnis lokal & internasional.",
     images: [
       {
-        url: "/assets/images/meta-img.png",
+        url: "/assets/images/og-meta.png",
         width: 1200,
         height: 630,
-        alt: "Paitonix — Digital Product Studio",
+        alt: "Paitonix — Web Development, Mobile & AI Solutions Indonesia",
       },
     ],
     locale: "id_ID",
+    alternateLocale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     site: "@paitonix",
-    title: "Paitonix — Digital Product Studio",
+    title:
+      "Paitonix — Web Development, Mobile Development & AI Solutions Indonesia",
     description:
-      "Paitonix builds powerful websites, scalable mobile apps, and AI-powered products for businesses ready to grow in the modern digital era.",
-    images: ["/assets/images/meta-img.png"],
+      "Agency digital Indonesia: Web Development, Mobile Development, Digital Consultation & AI Solutions untuk bisnis lokal & global.",
+    images: ["/assets/images/og-meta.png"],
   },
 };
 
@@ -128,6 +189,13 @@ export default function RootLayout({
                   name: "Paitonix",
                   url: "https://paitonix.com",
                   logo: "https://paitonix.com/assets/images/logo-black-transparent.png",
+                  description:
+                    "Agency digital di Indonesia — Web Development, Mobile Development, Digital Consultation, dan AI Solutions untuk bisnis lokal maupun internasional.",
+                  address: {
+                    "@type": "PostalAddress",
+                    addressCountry: "ID",
+                  },
+                  areaServed: ["Indonesia", "Worldwide"],
                   sameAs: ["https://twitter.com/paitonix"],
                 },
                 {
